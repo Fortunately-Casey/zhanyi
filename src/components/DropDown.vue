@@ -7,7 +7,7 @@
     <!-- <el-collapse-transition> -->
       <ul class="dropdown-menu" v-show="showDropDown">
         <li v-for="(option,index) in dropList" :key="index">
-          <a href="javascript:void(0)" @click="updateOption(option)">
+          <a href="javascript:void(0)" @click="updateOption(option,index)">
             {{ option.name }}
           </a>
         </li>
@@ -40,10 +40,11 @@
       document.addEventListener("click", this.hidePandel, false);
     },
     methods: {
-      updateOption(option) {
+      updateOption(option,index) {
         this.$emit('changeChoose',{
           value:option,
-          type:this.dropDownType
+          type:this.dropDownType,
+          index:index
         })
         this.showDropDown = false;
         // if(this.dropDownType === "city") {

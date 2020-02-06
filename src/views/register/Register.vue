@@ -3,10 +3,10 @@
     <div class="logo"></div>
     <div class="register-box">
       <div class="name-and-phone">
-        <input type="text" class="name" placeholder="姓名" v-model="username" />
-        <input type="text" class="phone" placeholder="电话" v-model="phone" />
+        <input type="text" class="name" placeholder="姓名" v-model="username"  @blur="lostblur"/>
+        <input type="text" class="phone" placeholder="电话" v-model="phone"  @blur="lostblur"/>
       </div>
-      <input type="text" class="idNumber" placeholder="身份证号" v-model="usernumber" />
+      <input type="text" class="idNumber" placeholder="身份证号" v-model="usernumber"  @blur="lostblur"/>
       <div class="address">
         <div class="label">家庭住址</div>
         <div class="value">
@@ -24,14 +24,14 @@
               @changeChoose="changeChoose"
             ></drop-down>
             <drop-down
-              :dropList="streetList"
+              :dropList="areaList[areaIndex].streets"
               :chosedOption="chosedStreet"
               :dropDownType="'street'"
               @changeChoose="changeChoose"
             ></drop-down>
           </div>
           <div class="bottom">
-            <input type="text" placeholder="具体地址" class="specific-address" v-model="specificAddress" />
+            <input type="text" placeholder="具体地址" class="specific-address" v-model="specificAddress"  @blur="lostblur"/>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
             >{{item.name}}</div>
           </div>
           <div class="bottom">
-            <input type="text" placeholder="途径地区" class="cross-city" v-model="crossCity"/>
+            <input type="text" placeholder="途径地区" class="cross-city" v-model="crossCity" :disabled="choosedCity==3?false:true"  @blur="lostblur"/>
           </div>
         </div>
       </div>
@@ -79,8 +79,10 @@
 <script>
 import DropDown from "@/components/DropDown.vue";
 import { Toast } from "mint-ui";
-import { Todate } from "@/common/tool/tool.js";
+import { Todate , blur } from "@/common/tool/tool.js";
 import { saveUserInfo } from "@/api/register.js";
+import { cityData } from "@/common/data.js";
+
 export default {
   data() {
     return {
@@ -98,31 +100,14 @@ export default {
           name: "其他"
         }
       ],
-      choosedCity: "",
+      choosedCity: 0,
       cityList: [
         {
           name: "南通"
-        },
-        {
-          name: "其他"
         }
       ],
-      areaList: [
-        {
-          name: "崇川区"
-        },
-        {
-          name: "港闸区"
-        }
-      ],
-      streetList: [
-        {
-          name: "观音山街道"
-        },
-        {
-          name: "崇川区"
-        }
-      ],
+      areaList: cityData,
+      areaIndex:0,
       chosedCity: {
         name: "南通"
       },
@@ -137,7 +122,8 @@ export default {
       phone: "",
       usernumber: "",
       specificAddress: "",
-      crossCity: ""
+      crossCity: "",
+      isOther: false
     };
   },
   computed: {},
@@ -150,6 +136,8 @@ export default {
         this.chosedCity = val.value;
       } else if (val.type === "area") {
         this.chosedArea = val.value;
+        this.areaIndex = val.index;
+        this.chosedStreet = this.areaList[val.index].streets[0];
       } else if (val.type === "street") {
         this.chosedStreet = val.value;
       }
@@ -169,19 +157,23 @@ export default {
           return false; 
       } 
     },
+    lostblur() {
+      blur()
+    },
     saveUserInfo() {
       var vm = this;
+      var importArea = vm.choosedCity===3?vm.crossCity:vm.citys[vm.choosedCity].name
       var params = {
       idCard:vm.usernumber,
       name:vm.username,
-      city:"南通",
-      country:"崇川",
-      street:"街道",
+      city:vm.chosedCity.name,
+      country:vm.chosedArea.name,
+      street:vm.chosedStreet.name,
       address:vm.specificAddress,
       mobile:vm.phone,
       wxID:"test",
-      importArea:vm.crossCity,
-      dtDate:vm.returnDate(vm.pickerValue)
+      importArea:importArea?importArea:"",
+      dtDate:vm.pickerValue?vm.returnDate(vm.pickerValue):""
       }
       saveUserInfo(params).then((resp) => {
         if(resp.data.success){
@@ -190,12 +182,12 @@ export default {
             iconClass: "icon icon-success"
           })
           vm.$router.push({
-            path:"/map",
+            path:"/index",
             query:"casey"
           })
         }else {
            Toast({
-            message: "注册失败！",
+            message: resp.data.data,
             iconClass: "icon icon-success"
           })
         }
@@ -203,7 +195,8 @@ export default {
     }
   },
   components: {
-    DropDown
+    DropDown,
+    
   },
   watch: {
     username(value) {
@@ -233,7 +226,7 @@ export default {
 .register {
   height: 100%;
   width: 100%;
-  background: url("../assets/image/bg.png") no-repeat;
+  background: url("../../assets/image/bg.png") no-repeat;
   background-size: contain;
   position: relative;
 
@@ -253,12 +246,12 @@ export default {
     }
 
     .little-left {
-      background: url("../assets/image/china.png") no-repeat;
+      background: url("../../assets/image/china.png") no-repeat;
       left: 20px;
     }
 
     .little-right {
-      background: url("../assets/image/nantong.png") no-repeat;
+      background: url("../../assets/image/nantong.png") no-repeat;
       right: 20px;
     }
 
@@ -267,7 +260,7 @@ export default {
       height: 114px;
       position: absolute;
       left: 50%;
-      background: url("../assets/image/comeup.png") no-repeat;
+      background: url("../../assets/image/comeup.png") no-repeat;
       transform: translateX(-50%);
       bottom: 0;
     }
@@ -280,7 +273,7 @@ export default {
     left: 50%;
     top: 6%;
     transform: translateX(-50%);
-    background: url("../assets/image/logo.png") no-repeat;
+    background: url("../../assets/image/logo.png") no-repeat;
   }
 
   .register-box {

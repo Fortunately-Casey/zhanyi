@@ -1,7 +1,7 @@
 <template>
   <baidu-map id="register" :center="center" :zoom="zoom" @ready="handler">
     <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
-    <button @click="startPosition" class="start-button">开始记录</button>
+    <!-- <button @click="startPosition" class="start-button">开始记录</button> -->
   </baidu-map>
 </template>
 

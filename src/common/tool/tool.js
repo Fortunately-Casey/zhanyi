@@ -25,7 +25,24 @@ export function Todate(num) { //Fri Oct 31 18:00:00 UTC+0800 2008
     week["Sun"] = "日";
     str = num.split(" ");
     // date = str[5] + "-";
-    date = str[3] + "-" + month[str[1]] + "-" + str[2] ;
+    date = str[3] + "-" + month[str[1]] + "-" + str[2];
     //date=date+" 周"+week[str[0]];
     return date;
+}
+
+export function blur() {
+    setTimeout(function () {
+        var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0;
+        window.scrollTo(0, Math.max(scrollHeight - 1, 0));
+    }, 100);
+}
+
+export function getURL(url) {
+    let _result = '';
+    if (process.env.NODE_ENV === 'development') {
+        _result = `/api/${url}`; // 开发环境会自动走代理
+    } else if (process.env.NODE_ENV === 'production') {
+        _result = `http://yqfk.ntschy.com/api/${url}`; // 正式环境地址
+    }
+    return _result;
 }
