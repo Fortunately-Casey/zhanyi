@@ -31,7 +31,7 @@
             ></drop-down>
           </div>
           <div class="bottom">
-            <input type="text" placeholder="具体地址" class />
+            <input type="text" placeholder="具体地址" class="specific-address" v-model="specificAddress" />
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
             >{{item.name}}</div>
           </div>
           <div class="bottom">
-            <input type="text" placeholder="途径地区" class />
+            <input type="text" placeholder="途径地区" class="cross-city" v-model="crossCity"/>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
           <span v-if="pickerValue">{{returnDate(pickerValue)}}</span>
         </div>
       </div>
-      <div class="register-button">注册</div>
+      <div class="register-button" @click="saveUserInfo">注册</div>
     </div>
     <div class="bottom-box">
       <div class="little-left"></div>
@@ -80,6 +80,7 @@
 import DropDown from "@/components/DropDown.vue";
 import { Toast } from "mint-ui";
 import { Todate } from "@/common/tool/tool.js";
+import { saveUserInfo } from "@/api/register.js";
 export default {
   data() {
     return {
@@ -134,7 +135,9 @@ export default {
       pickerValue: "",
       username: "",
       phone: "",
-      usernumber: ""
+      usernumber: "",
+      specificAddress: "",
+      crossCity: ""
     };
   },
   computed: {},
@@ -159,6 +162,44 @@ export default {
     },
     nameChange(value) {
       console.log(value);
+    },
+    checkPhone(phone){ 
+      if(!(/^1(3|4|5|7|8)\d{9}$/.test(phone))){ 
+          alert("手机号码有误，请重填");  
+          return false; 
+      } 
+    },
+    saveUserInfo() {
+      var vm = this;
+      var params = {
+      idCard:vm.usernumber,
+      name:vm.username,
+      city:"南通",
+      country:"崇川",
+      street:"街道",
+      address:vm.specificAddress,
+      mobile:vm.phone,
+      wxID:"test",
+      importArea:vm.crossCity,
+      dtDate:vm.returnDate(vm.pickerValue)
+      }
+      saveUserInfo(params).then((resp) => {
+        if(resp.data.success){
+          Toast({
+            message: "注册成功！",
+            iconClass: "icon icon-success"
+          })
+          vm.$router.push({
+            path:"/map",
+            query:"casey"
+          })
+        }else {
+           Toast({
+            message: "注册失败！",
+            iconClass: "icon icon-success"
+          })
+        }
+      })
     }
   },
   components: {
@@ -167,12 +208,23 @@ export default {
   watch: {
     username(value) {
       var nameReg = /^[\u4E00-\u9FA5]{2,4}$/;
-      if (!nameReg.test(name)) {
+      if (!(nameReg.test(name))) {
         Toast({
-          message: "请输入正确的姓名！",
+          message: "请输入合法中文姓名！",
           iconClass: "icon icon-success"
         });
       }
+    },
+    phone(value) {
+      // this.checkPhone(18662843424);
+      // var phoneReg = /^1[3456789]\d{9}$/;
+      // console.log(phoneReg.test(1221321))
+      // if (!phoneReg.test(Number(value))) {
+      //   Toast({
+      //     message: "请输入合法手机号！",
+      //     iconClass: "icon icon-success"
+      //   });
+      // }
     }
   }
 };
