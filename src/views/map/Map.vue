@@ -1,6 +1,6 @@
 <template>
   <baidu-map id="register" :center="center" :zoom="zoom" @ready="handler">
-    <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
+    <!-- <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation> -->
     <!-- <button @click="startPosition" class="start-button">开始记录</button> -->
   </baidu-map>
 </template>
@@ -16,6 +16,7 @@ export default {
   },
   methods: {
     handler({ BMap, map }) {
+      window.baseMap = map;
       // this.baseMap = map;
       // this.BMap = BMap;
       // console.log(BMap, map);
@@ -32,8 +33,8 @@ export default {
           // _this.initLocation = true;
           // console.log("center:", _this.center); // 如果这里直接使用this是不行的
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-            var mk = new BMap.Marker(r.point);
-            map.addOverlay(mk);
+            // var mk = new BMap.Marker(r.point);
+            // map.addOverlay(mk);
             map.panTo(r.point);
             console.log("您的位置：" + r.point.lng + "," + r.point.lat);
           } else {

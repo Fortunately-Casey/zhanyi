@@ -10,7 +10,6 @@ Vue.use(BaiduMap, {
   ak: "Ocm4ieXqGPaZZgblGHi4GTnDfGfZcBbv"
 });
 Vue.config.productionTip = false;
-
 new Vue({
   router,
   store,

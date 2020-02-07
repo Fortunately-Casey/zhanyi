@@ -3,10 +3,22 @@
     <div class="logo"></div>
     <div class="register-box">
       <div class="name-and-phone">
-        <input type="text" class="name" placeholder="姓名" v-model="username"  @blur="lostblur"/>
-        <input type="text" class="phone" placeholder="电话" v-model="phone"  @blur="lostblur"/>
+        <input
+          type="text"
+          class="name"
+          placeholder="姓名"
+          v-model="username"
+          @blur="lostblur('username')"
+        />
+        <input type="text" class="phone" placeholder="电话" v-model="phone" @blur="lostblur('phone')" />
       </div>
-      <input type="text" class="idNumber" placeholder="身份证号" v-model="usernumber"  @blur="lostblur"/>
+      <input
+        type="text"
+        class="idNumber"
+        placeholder="身份证号"
+        v-model="usernumber"
+        @blur="lostblur('usernumber')"
+      />
       <div class="address">
         <div class="label">家庭住址</div>
         <div class="value">
@@ -31,7 +43,13 @@
             ></drop-down>
           </div>
           <div class="bottom">
-            <input type="text" placeholder="具体地址" class="specific-address" v-model="specificAddress"  @blur="lostblur"/>
+            <input
+              type="text"
+              placeholder="具体地址"
+              class="specific-address"
+              v-model="specificAddress"
+              @blur="lostblur"
+            />
           </div>
         </div>
       </div>
@@ -48,7 +66,14 @@
             >{{item.name}}</div>
           </div>
           <div class="bottom">
-            <input type="text" placeholder="途径地区" class="cross-city" v-model="crossCity" :disabled="choosedCity==3?false:true"  @blur="lostblur"/>
+            <input
+              type="text"
+              placeholder="途径地区"
+              class="cross-city"
+              v-model="crossCity"
+              :disabled="choosedCity==3?false:true"
+              @blur="lostblur"
+            />
           </div>
         </div>
       </div>
@@ -79,7 +104,7 @@
 <script>
 import DropDown from "@/components/DropDown.vue";
 import { Toast } from "mint-ui";
-import { Todate , blur } from "@/common/tool/tool.js";
+import { Todate, blur, chinaDateTime } from "@/common/tool/tool.js";
 import { saveUserInfo } from "@/api/register.js";
 import { cityData } from "@/common/data.js";
 
@@ -107,7 +132,7 @@ export default {
         }
       ],
       areaList: cityData,
-      areaIndex:0,
+      areaIndex: 0,
       chosedCity: {
         name: "南通"
       },
@@ -148,78 +173,89 @@ export default {
     returnDate(value) {
       return Todate(value);
     },
-    nameChange(value) {
-      console.log(value);
-    },
-    checkPhone(phone){ 
-      if(!(/^1(3|4|5|7|8)\d{9}$/.test(phone))){ 
-          alert("手机号码有误，请重填");  
-          return false; 
-      } 
-    },
-    lostblur() {
-      blur()
+    lostblur(value) {
+      var vm = this;
+      if (value === "username") {
+        vm.nameReg(vm.username);
+      } else if (value === "phone") {
+        vm.phoneReg(vm.phone);
+      } else if (value === "usernumber") {
+        vm.userNumberReg(vm.usernumber)
+      }
+      blur();
     },
     saveUserInfo() {
       var vm = this;
-      var importArea = vm.choosedCity===3?vm.crossCity:vm.citys[vm.choosedCity].name
+      var importArea =
+        vm.choosedCity === 3 ? vm.crossCity : vm.citys[vm.choosedCity].name;
       var params = {
-      idCard:vm.usernumber,
-      name:vm.username,
-      city:vm.chosedCity.name,
-      country:vm.chosedArea.name,
-      street:vm.chosedStreet.name,
-      address:vm.specificAddress,
-      mobile:vm.phone,
-      wxID:"test",
-      importArea:importArea?importArea:"",
-      dtDate:vm.pickerValue?vm.returnDate(vm.pickerValue):""
-      }
-      saveUserInfo(params).then((resp) => {
-        if(resp.data.success){
+        idCard: vm.usernumber,
+        name: vm.username,
+        city: vm.chosedCity.name,
+        country: vm.chosedArea.name,
+        street: vm.chosedStreet.name,
+        address: vm.specificAddress,
+        mobile: vm.phone,
+        wxID: vm.$route.query.WxId,
+        importArea: importArea ? importArea : "",
+        dtDate: vm.pickerValue ? vm.returnDate(vm.pickerValue) : ""
+      };
+      saveUserInfo(params).then(resp => {
+        if (resp.data.success) {
           Toast({
             message: "注册成功！",
             iconClass: "icon icon-success"
-          })
+          });
           vm.$router.push({
-            path:"/index",
-            query:"casey"
-          })
-        }else {
-           Toast({
+            path: "/index/punch",
+            query: {
+              IDCard:vm.$route.query.IDCard,
+              WxId:vm.$route.query.IDCard
+            }
+          });
+        } else {
+          Toast({
             message: resp.data.data,
             iconClass: "icon icon-success"
-          })
+          });
         }
-      })
-    }
-  },
-  components: {
-    DropDown,
-    
-  },
-  watch: {
-    username(value) {
-      var nameReg = /^[\u4E00-\u9FA5]{2,4}$/;
-      if (!(nameReg.test(name))) {
+      });
+    },
+    nameReg(value) {
+      var nameReg = /^[\u4e00-\u9fa5]{2,6}$/;
+      if (!nameReg.test(value)) {
         Toast({
           message: "请输入合法中文姓名！",
           iconClass: "icon icon-success"
         });
+        return;
       }
     },
-    phone(value) {
-      // this.checkPhone(18662843424);
-      // var phoneReg = /^1[3456789]\d{9}$/;
-      // console.log(phoneReg.test(1221321))
-      // if (!phoneReg.test(Number(value))) {
-      //   Toast({
-      //     message: "请输入合法手机号！",
-      //     iconClass: "icon icon-success"
-      //   });
-      // }
+    phoneReg(value) {
+      var phoneReg = /^1[3456789]\d{9}$/;
+      if (!phoneReg.test(Number(value))) {
+        Toast({
+          message: "请输入合法手机号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+    },
+    userNumberReg(value) {
+      var userNumberReg = /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+      if (!userNumberReg.test(Number(value))) {
+        Toast({
+          message: "请输入合法身份证号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
     }
-  }
+  },
+  components: {
+    DropDown
+  },
+  watch: {}
 };
 </script>
 <style lang="less">
