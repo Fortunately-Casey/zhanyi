@@ -184,3 +184,11 @@ export function getCenterPoint(path) {
     return new BMap.Point(x, y);
     //return path[0];
 }
+
+export function compare(property){
+    return function(a,b){
+        var value1 = a[property];
+        var value2 = b[property];
+        return value1 - value2;
+    }
+}

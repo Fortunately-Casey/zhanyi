@@ -18,7 +18,7 @@ export default {
     handler({ BMap, map }) {
       window.baseMap = map;
       map.addEventListener("click", function(e) {
-          console.log(e);
+          // console.log(e);
       })
       // this.baseMap = map;
       // this.BMap = BMap;

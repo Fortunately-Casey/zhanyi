@@ -35,7 +35,7 @@
           <div class="quarters">疫情小区数</div>
           <div class="people-number">昨日新增确诊总人数</div>
           <div class="quarters-number">昨日新增疫情小区数</div>
-          <div class="date">统计日期</div>
+          <!-- <div class="date">统计日期</div> -->
         </div>
         <ul>
           <li v-for="(item,index) in dateList" :key="index">
@@ -44,13 +44,13 @@
             <div class="quarters">{{item.region}}</div>
             <div class="people-number">{{item.patientGain}}</div>
             <div class="quarters-number">{{item.regionGain}}</div>
-            <div class="date">{{item.dateString}}</div>
+            <!-- <div class="date">{{item.dateString}}</div> -->
           </li>
         </ul>
       </div>
     </div>
     <div class="ch-logo"></div>
-    <div
+    <!-- <div
       class="button epidemic-button"
       :class="isshowEpidemic?'yellow-chosed':''"
       @click="showEpidemic"
@@ -63,10 +63,10 @@
       @click="showTrajectory"
     >
       <div class="icon" :class="isShowTrajectory?'open':'close'"></div>确诊轨迹
-    </div>
-    <div class="button area-button" @click="showArea" :class="isShowArea?'red-chosed':''">
+    </div>-->
+    <!-- <div class="button area-button" @click="showArea" :class="isShowArea?'red-chosed':''">
       <div class="icon" :class="isShowArea?'open':'close'"></div>疫区查看
-    </div>
+    </div>-->
     <div
       class="button near-trajectory"
       :class="isShowNearTrajectory?'red-chosed':''"
@@ -109,6 +109,25 @@
       </div>
       <div class="close-button" @click="isShowArea = false">关闭</div>
     </div>
+    <div class="sortList" v-if="isShowSort">
+      <div>
+        <div
+          class="sort-item"
+          v-for="(item,index) in sortList"
+          :key="index"
+          @click="locationTo(item)"
+        >
+          <div class="name">{{item.id.regionName}}</div>
+          <div class="length">
+            <div class="location"></div>
+            {{(item.length/1000).toFixed(2)+ "km"}}
+          </div>
+        </div>
+      </div>
+      <div class="close">
+          <div class="close-button" @click="closeSort">关闭</div>
+      </div>
+    </div>
     <m-map></m-map>
   </div>
 </template>
@@ -122,7 +141,7 @@ import {
   getPatient,
   getPatientTrail
 } from "@/api/homeMap.js";
-import { getCenterPoint } from "@/common/tool/tool.js";
+import { getCenterPoint, compare } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
 export default {
   data() {
@@ -140,6 +159,7 @@ export default {
       //   isShowWindow:false,
       date: "",
       dateList: [],
+      isShowSort: false,
       areaList: [
         {
           name: "崇川区"
@@ -172,14 +192,107 @@ export default {
       chosedArea: {
         name: "崇川区"
       },
-      patientList: []
+      patientList: [],
+      sortList: []
     };
   },
   created() {
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
+    this.drawPoint();
+    this.drawPloy();
   },
   methods: {
+    drawPoint() {
+      getPatientTrail().then(resp => {
+        var points = [];
+        var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
+          anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
+          imageSize: new BMap.Size(30, 30) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
+          // offset: new BMap.Size(-10, 45), // 指定定位位置
+          // imageOffset: new BMap.Size(0, 0 - 10 * 25) // 设置图片偏移
+        });
+        // console.log(resp.data.data);
+        resp.data.data.map(v => {
+          if (v) {
+            var pt = new BMap.Point(v.bdx, v.bdy);
+            points.push(pt);
+            var opts = {
+              position: new BMap.Point(v.bdx, v.bdy), // 指定文本标注所在的地理位置
+              offset: new BMap.Size(10, -30) //设置文本偏移量
+            };
+            var label = new BMap.Label(v.placeName, opts); // 创建文本标注对象
+            label.setStyle({
+              color: "red",
+              fontSize: "12px",
+              height: "20px",
+              lineHeight: "20px",
+              fontFamily: "微软雅黑"
+            });
+            window.baseMap.addOverlay(label);
+          }
+        });
+        var options = {
+          size: BMAP_POINT_SIZE_BIG,
+          shape: BMAP_POINT_SHAPE_CIRCLE,
+          color: "red"
+        };
+        console.log(points);
+        var pointCollection = new BMap.PointCollection(points, options);
+        window.baseMap.addOverlay(pointCollection);
+      });
+      //   for (; i < MAX; i++) {
+      //     pt = new BMap.Point(Math.random() * 40 + 85, Math.random() * 30 + 21);
+      //     markers.push(new BMap.Marker(pt));
+      //   }
+      //   //最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
+      //   var markerClusterer = new BMapLib.MarkerClusterer(map, {
+      //     markers: markers
+      //   });
+    },
+    drawPloy() {
+      getRegionData().then(resp => {
+        var polyList = [];
+        resp.data.data.map(item => {
+          var path = [];
+          var newStr = item.cors1.substr(0, item.cors1.length - 1);
+          newStr.split("],").map(v => {
+            path.push({
+              lng: v.substr(1).split(",")[0],
+              lat: v.substr(1).split(",")[1]
+            });
+          });
+          //   console.log(item)
+          //   var pt = new BMap.Point(getCenterPoint(path).lng, getCenterPoint(path).lat);
+          //   points.push(pt);
+          var opts = {
+            position: new BMap.Point(
+              getCenterPoint(path).lng,
+              getCenterPoint(path).lat
+            ), // 指定文本标注所在的地理位置
+            offset: new BMap.Size(10, -30) //设置文本偏移量
+          };
+          var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
+          label.setStyle({
+            color: "red",
+            fontSize: "12px",
+            height: "20px",
+            lineHeight: "20px",
+            fontFamily: "微软雅黑"
+          });
+          window.baseMap.addOverlay(label);
+          polyList.push(getCenterPoint(path));
+        });
+        var options = {
+          size: BMAP_POINT_SIZE_BIG,
+          shape: BMAP_POINT_SHAPE_CIRCLE,
+          color: "red"
+        };
+        console.log(polyList);
+        var pointCollection = new BMap.PointCollection(polyList, options);
+        window.baseMap.addOverlay(pointCollection);
+      });
+    },
     changeChoose(val) {
       var vm = this;
       this.chosedArea = val.value;
@@ -246,7 +359,7 @@ export default {
       this.isShowNearArea = false;
       if (this.isShowNearTrajectory) {
         this.isShowNearTrajectory = !this.isShowNearTrajectory;
-        window.baseMap.clearOverlays();
+        // window.baseMap.clearOverlays();
       } else {
         getPatientTrail().then(resp => {
           var geolocation = new BMap.Geolocation();
@@ -260,6 +373,7 @@ export default {
                     var pointB = new BMap.Point(v.bdx, v.bdy);
                     lengthList.push({
                       id: v.id,
+                      placeName: v.placeName,
                       length: window.baseMap
                         .getDistance(pointA, pointB)
                         .toFixed(2),
@@ -282,8 +396,21 @@ export default {
                 var marker = new BMap.Marker(new BMap.Point(max.bdx, max.bdy), {
                   icon: myIcon
                 });
+                var opts = {
+                  position: new BMap.Point(max.bdx, max.bdy), // 指定文本标注所在的地理位置
+                  offset: new BMap.Size(0, -20) //设置文本偏移量
+                };
+                var label = new BMap.Label(max.placeName, opts); // 创建文本标注对象
+                label.setStyle({
+                  color: "red",
+                  fontSize: "12px",
+                  height: "20px",
+                  lineHeight: "20px",
+                  fontFamily: "微软雅黑"
+                });
                 window.baseMap.panTo(new BMap.Point(max.bdx, max.bdy));
-                window.baseMap.addOverlay(marker);
+                // window.baseMap.addOverlay(label);
+                // window.baseMap.addOverlay(marker);
                 var allOverlay = window.baseMap.getOverlays();
               } else {
                 // alert("failed" + this.getStatus());
@@ -360,40 +487,43 @@ export default {
                   }
                 });
 
-                var max = lengthList.sort(function(a, b) {
-                  return a.length < b.length;
-                })[0];
-                console.log(max);
-                var maxList = [];
-                // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-                max.path.map(v => {
-                  maxList.push(new BMap.Point(v.lng, v.lat));
-                });
-                var polygon = new BMap.Polygon(maxList, {
-                  strokeColor: "#FE8E00",
-                  strokeWeight: 2,
-                  strokeOpacity: 1,
-                  fillColor: "#FE8E00"
-                }); //创建多边形
-                var opts = {
-                  position: getCenterPoint(maxList), // 指定文本标注所在的地理位置
-                  offset: new BMap.Size(-60, -40) //设置文本偏移量
-                };
-                var label = new BMap.Label(max.id.regionName, opts); // 创建文本标注对象
-                label.setStyle({
-                  color: "red",
-                  fontSize: "12px",
-                  height: "20px",
-                  lineHeight: "20px",
-                  fontFamily: "微软雅黑"
-                });
+                vm.sortList = lengthList.sort(compare("length"));
+                vm.isShowSort = true;
+                // console.log(sortList);
+                // var max = lengthList.sort(function(a, b) {
+                //   return a.length < b.length;
+                // })[0];
+                // console.log(max);
+                // var maxList = [];
+                // // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+                // max.path.map(v => {
+                //   maxList.push(new BMap.Point(v.lng, v.lat));
+                // });
+                // var polygon = new BMap.Polygon(maxList, {
+                //   strokeColor: "#FE8E00",
+                //   strokeWeight: 2,
+                //   strokeOpacity: 1,
+                //   fillColor: "#FE8E00"
+                // }); //创建多边形
+                // var opts = {
+                //   position: getCenterPoint(maxList), // 指定文本标注所在的地理位置
+                //   offset: new BMap.Size(-60, -40) //设置文本偏移量
+                // };
+                // var label = new BMap.Label(max.id.regionName, opts); // 创建文本标注对象
+                // label.setStyle({
+                //   color: "red",
+                //   fontSize: "12px",
+                //   height: "20px",
+                //   lineHeight: "20px",
+                //   fontFamily: "微软雅黑"
+                // });
                 // polygon.regionID = item.id;
 
                 this.isShowArea = false;
-                window.baseMap.addOverlay(label);
-                window.baseMap.panTo(getCenterPoint(maxList));
-                window.baseMap.setZoom(16);
-                window.baseMap.addOverlay(polygon); //增加多边形
+                // window.baseMap.addOverlay(label);
+                // window.baseMap.panTo(getCenterPoint(maxList));
+                // window.baseMap.setZoom(16);
+                // window.baseMap.addOverlay(polygon); //增加多边形
                 // var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
                 //   anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
                 //   imageSize: new BMap.Size(20, 20) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
@@ -445,8 +575,12 @@ export default {
         lineHeight: "20px",
         fontFamily: "微软雅黑"
       });
+      console.log(item.id);
       polygon.regionID = item.id;
-
+      polygon.addEventListener("click", function() {
+        //   alert(this.regionID)
+        alert("1111");
+      });
       this.isShowArea = false;
       window.baseMap.addOverlay(label);
       window.baseMap.panTo(getCenterPoint(pointList));
@@ -457,6 +591,18 @@ export default {
       // }).then((resp) => {
       //     console.log(resp)
       // })
+    },
+    locationTo(item) {
+      var point = new BMap.Point(
+        getCenterPoint(item.path).lng,
+        getCenterPoint(item.path).lat
+      );
+      window.baseMap.panTo(point);
+      window.baseMap.setZoom(16);
+    },
+    closeSort() {
+        this.isShowNearArea = false;
+        this.isShowSort = false;
     }
   },
   components: {
@@ -552,7 +698,7 @@ export default {
         div {
           float: left;
           font-size: 10px;
-          width: 16.66%;
+          width: 20%;
           text-align: center;
         }
       }
@@ -566,7 +712,7 @@ export default {
           div {
             float: left;
             font-size: 10px;
-            width: 16.66%;
+            width: 20%;
             text-align: center;
           }
         }
@@ -712,19 +858,19 @@ export default {
     }
   }
   .my-location {
-    width: 70px;
+    width: 80px;
     height: 20px;
     line-height: 20px;
     text-align: right;
     position: absolute;
-    left: 25px;
-    bottom: 160px;
+    right: 15px;
+    top: 100px;
     z-index: 999;
-    font-size: 12px;
+    font-size: 13px;
     color: #d22c2c;
     .location-icon {
-      width: 12px;
-      height: 10px;
+      width: 15px;
+      height: 12px;
       background: url("../../assets/image/location.png") no-repeat;
       background-size: 100% 100%;
       position: absolute;
@@ -833,6 +979,66 @@ export default {
       font-size: 13px;
       color: #fff;
       border-radius: 15px;
+    }
+  }
+  .sortList {
+    width: 100%;
+    height: 190px;
+    padding-top: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    background-color: #fff;
+    border-top: 1px solid rgb(224, 223, 223);
+    overflow-y: auto;
+    .sort-item {
+      display: flex;
+      height: 30px;
+      font-size: 14px;
+      .name {
+        padding-left: 20px;
+        line-height: 30px;
+        box-sizing: border-box;
+        flex: 1;
+      }
+      .length {
+        padding-right: 20px;
+        text-align: right;
+        line-height: 30px;
+        box-sizing: border-box;
+        flex: 1;
+        position: relative;
+        .location {
+          width: 12px;
+          height: 12px;
+          background: url("../../assets/image/record1.png") no-repeat;
+          background-size: 100% 100%;
+          position: absolute;
+          top: 50%;
+          right: 100px;
+          transform: translateY(-50%);
+        }
+      }
+    }
+    .close {
+      width: 100%;
+      height: 40px;
+      background-color: #fff;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 999;
+      .close-button {
+          width: 100px;
+          height: 28px;
+          line-height: 28px;
+          color: #fff;
+          background-color: #e75a4f;
+          border-radius: 14px;
+          text-align: center;
+          margin: 0 auto;
+      }
     }
   }
 }
