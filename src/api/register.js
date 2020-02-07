@@ -48,7 +48,9 @@ export function saveRouteDetail(params) {
 // 轨迹打卡结束
 export function endRoute(params) {
     const url = getURL("/clockin/endRoute")
-    return axios.post(url,params).then((resp) => {
+    return axios.get(url,{
+        params:params
+    }).then((resp) => {
         return Promise.resolve(resp)
     }).catch((err) => {
         console.log(err)

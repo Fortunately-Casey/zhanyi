@@ -16,6 +16,11 @@ const routes = [{
     },
   },
   {
+    path: "/homeMap",
+    name:"homeMap",
+    component: resolve => require(["../views/home/HomeMap.vue"], resolve),
+  },
+  {
     path: "/index",
     name: "index",
     component: resolve => require(["../views/Content.vue"], resolve),

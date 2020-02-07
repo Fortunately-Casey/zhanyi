@@ -85,6 +85,7 @@
         </div>
       </div>
       <div class="register-button" @click="saveUserInfo">注册</div>
+      <div class="copy-right">版权所有©南通市测绘院有限公司</div>
     </div>
     <div class="bottom-box">
       <div class="little-left"></div>
@@ -148,7 +149,7 @@ export default {
       usernumber: "",
       specificAddress: "",
       crossCity: "",
-      isOther: false
+      isOther: false,
     };
   },
   computed: {},
@@ -180,7 +181,7 @@ export default {
       } else if (value === "phone") {
         vm.phoneReg(vm.phone);
       } else if (value === "usernumber") {
-        vm.userNumberReg(vm.usernumber)
+        vm.userNumberReg(vm.usernumber);
       }
       blur();
     },
@@ -209,8 +210,8 @@ export default {
           vm.$router.push({
             path: "/index/punch",
             query: {
-              IDCard:vm.$route.query.IDCard,
-              WxId:vm.$route.query.IDCard
+              IDCard: vm.$route.query.IDCard,
+              WxId: vm.$route.query.IDCard
             }
           });
         } else {
@@ -423,6 +424,12 @@ export default {
       background-color: #e75a4f;
       border-radius: 22.5px;
       margin: 0 auto;
+    }
+    .copy-right {
+      text-align: center;
+      color: #867575;
+      margin-top: 10px;
+      font-size: 12px;
     }
   }
 }

@@ -23,18 +23,31 @@ export default {
   },
   methods: {
     choseTab(index) {
+      var vm = this;
       this.chosedTab = index;
       if (index === 0) {
         this.$router.push({
-          path: "/index/punch"
+          path: "/index/punch",
+          query: {
+            IDCard: vm.$route.query.IDCard,
+            WxId: vm.$route.query.IDCard
+          }
         });
       } else if (index === 1) {
         this.$router.push({
-          path: "/index/mine"
+          path: "/index/mine",
+          query: {
+            IDCard: vm.$route.query.IDCard,
+            WxId: vm.$route.query.IDCard
+          }
         });
       } else if (index === 2) {
         this.$router.push({
-          path: "/index/administration"
+          path: "/index/administration",
+          query: {
+            IDCard: vm.$route.query.IDCard,
+            WxId: vm.$route.query.IDCard
+          }
         });
       }
     },
@@ -43,7 +56,7 @@ export default {
     }
   },
   components: {
-    MMap,
+    MMap
     // MPunch,
     // MMine,
     // MAdministration
