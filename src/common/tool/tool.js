@@ -167,3 +167,20 @@ function getAngle(n, next) {
     }
     return ret;
 }
+// 获取中心点
+export function getCenterPoint(path) {
+    //var path =e.;
+    //Array<Point> 返回多边型的点数组
+    //var ret=parseFloat(num1)+parseFloat(num2);
+    var x = 0.0;
+    var y = 0.0;
+    for (var i = 0; i < path.length; i++) {
+        x = x + parseFloat(path[i].lng);
+        y = y + parseFloat(path[i].lat);
+    }
+    x = x / path.length;
+    y = y / path.length;
+    //return new BMap.Point(path[0].lng,path[0].lat);
+    return new BMap.Point(x, y);
+    //return path[0];
+}

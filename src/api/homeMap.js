@@ -46,3 +46,17 @@ export function getPatient(params) {
     })
 }
 
+// 查看轨迹
+export function getPatientTrail(params) {
+    const url = getURL("/clockin/getPatientTrail")
+    return axios.get(url, {
+        params:params
+    }).then((resp) => {
+        return Promise.resolve(resp)
+    }).catch((err) => {
+        console.log(err)
+    })
+}
+
+
+

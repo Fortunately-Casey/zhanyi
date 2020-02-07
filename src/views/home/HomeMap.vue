@@ -50,20 +50,35 @@
       </div>
     </div>
     <div class="ch-logo"></div>
-    <div class="button epidemic-button" :class="isshowEpidemic?'yellow-chosed':''">
+    <div
+      class="button epidemic-button"
+      :class="isshowEpidemic?'yellow-chosed':''"
+      @click="showEpidemic"
+    >
       <div class="icon" :class="isshowEpidemic?'open':'close'"></div>疫情小区
     </div>
-    <div class="button trajectory-button" :class="isShowTrajectory?'red-chosed':''">
+    <div
+      class="button trajectory-button"
+      :class="isShowTrajectory?'red-chosed':''"
+      @click="showTrajectory"
+    >
       <div class="icon" :class="isShowTrajectory?'open':'close'"></div>确诊轨迹
     </div>
     <div class="button area-button" @click="showArea" :class="isShowArea?'red-chosed':''">
       <div class="icon" :class="isShowArea?'open':'close'"></div>疫区查看
     </div>
-    <div class="button near-trajectory" :class="isShowNearTrajectory?'red-chosed':''">
+    <div
+      class="button near-trajectory"
+      :class="isShowNearTrajectory?'red-chosed':''"
+      @click="showNearTrajectory"
+    >
       <div class="icon" :class="isShowNearTrajectory?'open':'close'"></div>最近轨迹
     </div>
-    <div class="button near-area" :class="isShowNearArea?'yellow-chosed':''">
+    <div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">
       <div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区
+    </div>
+    <div class="my-location" @click="location">
+      <div class="location-icon"></div>我的位置
     </div>
     <div class="area-infowindow" v-if="isShowArea">
       <div class="top">
@@ -77,7 +92,7 @@
           ></drop-down>
         </div>
       </div>
-      <div class="table-title">海安县 (4个小区)</div>
+      <div class="table-title">{{chosedArea.name}} ({{patientList.length}}个小区)</div>
       <div class="info-table">
         <div class="header">
           <div class="index">序号</div>
@@ -104,8 +119,11 @@ import {
   getDayStatisticsTotal,
   getDayStatisticsDetails,
   getRegionData,
-  getPatient
+  getPatient,
+  getPatientTrail
 } from "@/api/homeMap.js";
+import { getCenterPoint } from "@/common/tool/tool.js";
+import startIcon from "@/assets/image/startIcon.png";
 export default {
   data() {
     return {
@@ -174,6 +192,10 @@ export default {
     },
     showArea() {
       var vm = this;
+      this.isshowEpidemic = false;
+      this.isShowTrajectory = false;
+      this.isShowNearTrajectory = false;
+      this.isShowNearArea = false;
       if (this.isShowArea) {
         this.isShowArea = !this.isShowArea;
       } else {
@@ -202,6 +224,200 @@ export default {
         vm.dateList = resp.data.data;
       });
     },
+    showEpidemic() {
+      this.isShowTrajectory = false;
+      this.isShowArea = false;
+      this.isShowNearTrajectory = false;
+      this.isShowNearArea = false;
+      this.isshowEpidemic = !this.isshowEpidemic;
+    },
+    showTrajectory() {
+      this.isshowEpidemic = false;
+      this.isShowArea = false;
+      this.isShowNearTrajectory = false;
+      this.isShowNearArea = false;
+      this.isShowTrajectory = !this.isShowTrajectory;
+    },
+    showNearTrajectory() {
+      var vm = this;
+      this.isshowEpidemic = false;
+      this.isShowTrajectory = false;
+      this.isShowArea = false;
+      this.isShowNearArea = false;
+      if (this.isShowNearTrajectory) {
+        this.isShowNearTrajectory = !this.isShowNearTrajectory;
+        window.baseMap.clearOverlays();
+      } else {
+        getPatientTrail().then(resp => {
+          var geolocation = new BMap.Geolocation();
+          geolocation.getCurrentPosition(
+            function(r) {
+              if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                var lengthList = [];
+                resp.data.data.map(v => {
+                  if (v) {
+                    var pointA = new BMap.Point(r.point.lng, r.point.lat);
+                    var pointB = new BMap.Point(v.bdx, v.bdy);
+                    lengthList.push({
+                      id: v.id,
+                      length: window.baseMap
+                        .getDistance(pointA, pointB)
+                        .toFixed(2),
+                      bdx: v.bdx,
+                      bdy: v.bdy
+                    });
+                  }
+                });
+
+                var max = lengthList.sort(function(a, b) {
+                  return a.length < b.length;
+                })[0];
+                console.log(max);
+                var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
+                  anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
+                  imageSize: new BMap.Size(30, 30) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
+                  // offset: new BMap.Size(-10, 45), // 指定定位位置
+                  // imageOffset: new BMap.Size(0, 0 - 10 * 25) // 设置图片偏移
+                });
+                var marker = new BMap.Marker(new BMap.Point(max.bdx, max.bdy), {
+                  icon: myIcon
+                });
+                window.baseMap.panTo(new BMap.Point(max.bdx, max.bdy));
+                window.baseMap.addOverlay(marker);
+                var allOverlay = window.baseMap.getOverlays();
+              } else {
+                // alert("failed" + this.getStatus());
+              }
+            },
+            { enableHighAccuracy: true }
+          );
+          this.isShowNearTrajectory = !this.isShowNearTrajectory;
+        });
+      }
+    },
+    location() {
+      var geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(
+        function(r) {
+          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+            var mk = new BMap.Marker(r.point);
+            window.baseMap.addOverlay(mk);
+            window.baseMap.panTo(r.point);
+          } else {
+            alert("failed" + this.getStatus());
+          }
+        },
+        { enableHighAccuracy: true }
+      );
+    },
+    showNearArea() {
+      var vm = this;
+      this.isshowEpidemic = false;
+      this.isShowTrajectory = false;
+      this.isShowArea = false;
+      this.isShowNearTrajectory = false;
+      if (this.isShowNearArea) {
+        this.isShowNearArea = !this.isShowNearArea;
+        window.baseMap.clearOverlays();
+      } else {
+        getRegionData().then(resp => {
+          //   console.log(resp.data.data);
+          var polyList = [];
+          resp.data.data.map(item => {
+            var path = [];
+            var newStr = item.cors1.substr(0, item.cors1.length - 1);
+            newStr.split("],").map(v => {
+              path.push({
+                lng: v.substr(1).split(",")[0],
+                lat: v.substr(1).split(",")[1]
+              });
+            });
+            polyList.push({
+              value: item,
+              centerPoint: getCenterPoint(path),
+              path: path
+            });
+          });
+          var geolocation = new BMap.Geolocation();
+          geolocation.getCurrentPosition(
+            function(r) {
+              if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                var lengthList = [];
+                polyList.map(v => {
+                  if (v) {
+                    var pointA = new BMap.Point(r.point.lng, r.point.lat);
+                    var pointB = new BMap.Point(
+                      v.centerPoint.lng,
+                      v.centerPoint.lat
+                    );
+                    lengthList.push({
+                      id: v.value,
+                      length: window.baseMap
+                        .getDistance(pointA, pointB)
+                        .toFixed(2),
+                      path: v.path
+                    });
+                  }
+                });
+
+                var max = lengthList.sort(function(a, b) {
+                  return a.length < b.length;
+                })[0];
+                console.log(max);
+                var maxList = [];
+                // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+                max.path.map(v => {
+                  maxList.push(new BMap.Point(v.lng, v.lat));
+                });
+                var polygon = new BMap.Polygon(maxList, {
+                  strokeColor: "#FE8E00",
+                  strokeWeight: 2,
+                  strokeOpacity: 1,
+                  fillColor: "#FE8E00"
+                }); //创建多边形
+                var opts = {
+                  position: getCenterPoint(maxList), // 指定文本标注所在的地理位置
+                  offset: new BMap.Size(-60, -40) //设置文本偏移量
+                };
+                var label = new BMap.Label(max.id.regionName, opts); // 创建文本标注对象
+                label.setStyle({
+                  color: "red",
+                  fontSize: "12px",
+                  height: "20px",
+                  lineHeight: "20px",
+                  fontFamily: "微软雅黑"
+                });
+                // polygon.regionID = item.id;
+
+                this.isShowArea = false;
+                window.baseMap.addOverlay(label);
+                window.baseMap.panTo(getCenterPoint(maxList));
+                window.baseMap.setZoom(16);
+                window.baseMap.addOverlay(polygon); //增加多边形
+                // var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
+                //   anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
+                //   imageSize: new BMap.Size(20, 20) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
+                //   // offset: new BMap.Size(-10, 45), // 指定定位位置
+                //   // imageOffset: new BMap.Size(0, 0 - 10 * 25) // 设置图片偏移
+                // });
+                // var marker = new BMap.Marker(new BMap.Point(max.bdx, max.bdy), {
+                //   icon: myIcon
+                // });
+                // window.baseMap.panTo(new BMap.Point(max.bdx, max.bdy));
+                // window.baseMap.addOverlay(marker);
+                // var allOverlay = window.baseMap.getOverlays();
+              } else {
+                // alert("failed" + this.getStatus());
+              }
+            },
+            { enableHighAccuracy: true }
+          );
+          console.log(polyList);
+
+          this.isShowNearArea = !this.isShowNearArea;
+        });
+      }
+    },
     // 查看
     lookAt(item) {
       var pointList = [];
@@ -218,7 +434,7 @@ export default {
         fillColor: "#FE8E00"
       }); //创建多边形
       var opts = {
-        position: pointList[0], // 指定文本标注所在的地理位置
+        position: getCenterPoint(pointList), // 指定文本标注所在的地理位置
         offset: new BMap.Size(-60, -40) //设置文本偏移量
       };
       var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
@@ -230,10 +446,10 @@ export default {
         fontFamily: "微软雅黑"
       });
       polygon.regionID = item.id;
-      
+
       this.isShowArea = false;
       window.baseMap.addOverlay(label);
-      window.baseMap.panTo(pointList[0]);
+      window.baseMap.panTo(getCenterPoint(pointList));
       window.baseMap.setZoom(16);
       window.baseMap.addOverlay(polygon); //增加多边形
       // getPatient({
@@ -493,6 +709,28 @@ export default {
       height: 12px;
       background: url("../../assets/image/最近疫区1.png") no-repeat;
       background-size: 100% 100%;
+    }
+  }
+  .my-location {
+    width: 70px;
+    height: 20px;
+    line-height: 20px;
+    text-align: right;
+    position: absolute;
+    left: 25px;
+    bottom: 160px;
+    z-index: 999;
+    font-size: 12px;
+    color: #d22c2c;
+    .location-icon {
+      width: 12px;
+      height: 10px;
+      background: url("../../assets/image/location.png") no-repeat;
+      background-size: 100% 100%;
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
   .area-infowindow {
