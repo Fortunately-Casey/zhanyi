@@ -25,7 +25,7 @@ const routes = [{
         meta: {
           title: "出行打卡"
         },
-        component: resolve => require(["../views/components/Punch.vue"], resolve)
+        component: resolve => require(["../views/components/punch/Punch.vue"], resolve)
       },
       {
         path: "/index/mine",
@@ -66,7 +66,7 @@ const routes = [{
         meta: {
           title: "管理"
         },
-        component: resolve => require(["../views/components/Administration.vue"], resolve)
+        component: resolve => require(["../views/components/administration/Administration.vue"], resolve)
       }
     ]
   }

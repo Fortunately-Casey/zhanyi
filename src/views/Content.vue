@@ -12,9 +12,9 @@
 </template>
 <script>
 import MMap from "./map/Map.vue";
-import MPunch from "@/views/components/Punch.vue";
-import MAdministration from "@/views/components/Administration.vue";
-import MMine from "@/views/components/Mine.vue";
+// import MPunch from "@/views/components/Punch.vue";
+// import MAdministration from "@/views/components/Administration.vue";
+// import MMine from "@/views/components/Mine.vue";
 export default {
   data() {
     return {
@@ -44,12 +44,12 @@ export default {
   },
   components: {
     MMap,
-    MPunch,
-    MMine,
-    MAdministration
+    // MPunch,
+    // MMine,
+    // MAdministration
   }
 };
-</script>
+</script> 
 <style lang="less">
 .content {
   width: 100%;

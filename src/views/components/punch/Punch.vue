@@ -449,7 +449,7 @@ export default {
           .icon {
             width: 16px;
             height: 14px;
-            background: url("../../assets/image/location.png") no-repeat;
+            background: url("../../../assets/image/location.png") no-repeat;
             float: left;
             margin-top: 7px;
           }
