@@ -1199,7 +1199,9 @@ export default {
     .search-list {
       width: 286px;
       height: 162px;
-      box-shadow: 2px 2px 3px #ccdbec;
+      //   box-shadow: 2px 2px 3px #ccdbec;
+      box-sizing: border-box;
+      border: 1px solid rgb(190, 185, 185);
       overflow-y: auto;
       background-color: #fff;
       position: fixed;
@@ -1207,7 +1209,8 @@ export default {
       bottom: 0px;
       z-index: 1999;
       .search-item {
-        font-size: 14px;
+        font-size: 13px;
+        padding-left: 4px;
       }
     }
   }
