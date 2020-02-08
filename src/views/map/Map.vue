@@ -18,8 +18,8 @@ export default {
     handler({ BMap, map }) {
       window.baseMap = map;
       map.addEventListener("click", function(e) {
-          // console.log(e);
-      })
+        // console.log(e);
+      });
       // this.baseMap = map;
       // this.BMap = BMap;
       // console.log(BMap, map);
@@ -46,6 +46,233 @@ export default {
         },
         { enableHighAccuracy: true }
       );
+      var styleJson = [
+        {
+          featureType: "poilabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "estatelabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "estatelabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "on"
+          }
+        },
+        {
+          featureType: "estatelabel",
+          elementType: "labels.text",
+          stylers: {
+            fontsize: 24
+          }
+        },
+        {
+          featureType: "poilabel",
+          elementType: "labels.text",
+          stylers: {
+            fontsize: 24
+          }
+        },
+        {
+          featureType: "medicallabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "on"
+          }
+        },
+        {
+          featureType: "medicallabel",
+          elementType: "labels.text",
+          stylers: {
+            fontsize: 26
+          }
+        },
+        {
+          featureType: "restaurantlabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "hotellabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "carservicelabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "transportationlabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "financelabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "scenicspotslabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "scenicspotslabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "restaurantlabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "hotellabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "carservicelabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "lifeservicelabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "lifeservicelabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "poilabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "on"
+          }
+        },
+        {
+          featureType: "entertainmentlabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "entertainmentlabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "businesstowerlabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "businesstowerlabel",
+          elementType: "labels.text",
+          stylers: {
+            fontsize: 24
+          }
+        },
+        {
+          featureType: "companylabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "companylabel",
+          elementType: "labels.text",
+          stylers: {
+            fontsize: 24
+          }
+        },
+        {
+          featureType: "shoppinglabel",
+          elementType: "labels",
+          stylers: {
+            visibility: "on"
+          }
+        },
+        {
+          featureType: "shoppinglabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "educationlabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "transportationlabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "financelabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "off"
+          }
+        },
+        {
+          featureType: "governmentlabel",
+          elementType: "labels.icon",
+          stylers: {
+            visibility: "on"
+          }
+        }
+      ];
+      map.setMapStyle({ styleJson: styleJson });
       // 下面注释是百度地图API官方实现方法，因为我使用自定义图标覆盖物，所以没有使用这种方法！
       // 如使用以下这种方法，那么我Template里所写的自定义定位图标代码是不需要的
       // var geolocation = new BMap.Geolocation();
@@ -75,7 +302,7 @@ export default {
             result
           ) {
             // console.log(result);
-            console.log(result)
+            console.log(result);
             alert(result.address);
             // if (result) {
             //   //根据当前位置经纬度解析成地址

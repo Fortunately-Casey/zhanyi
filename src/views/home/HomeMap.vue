@@ -67,13 +67,13 @@
     <!-- <div class="button area-button" @click="showArea" :class="isShowArea?'red-chosed':''">
       <div class="icon" :class="isShowArea?'open':'close'"></div>疫区查看
     </div>-->
-    <div
+    <!-- <div
       class="button near-trajectory"
       :class="isShowNearTrajectory?'red-chosed':''"
       @click="showNearTrajectory"
     >
       <div class="icon" :class="isShowNearTrajectory?'open':'close'"></div>最近轨迹
-    </div>
+    </div>-->
     <div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">
       <div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区
     </div>
@@ -110,6 +110,18 @@
       <div class="close-button" @click="isShowArea = false">关闭</div>
     </div>
     <div class="sortList" v-if="isShowSort">
+      <div class="search-input">
+        <input type="text" class="searh" @blur="lostblur" placeholder="请输入关键字" v-model="keyword" />
+        <div class="search-icon" @click="keywordSearch"></div>
+      </div>
+      <div class="search-list" v-if="isShowSearchList">
+        <div
+          v-for="(item,index) in searchList"
+          :key="index"
+          class="search-item"
+          @click="setTo(item)"
+        >{{item.name}}</div>
+      </div>
       <div>
         <div
           class="sort-item"
@@ -125,7 +137,7 @@
         </div>
       </div>
       <div class="close">
-          <div class="close-button" @click="closeSort">关闭</div>
+        <div class="close-button" @click="closeSort">关闭</div>
       </div>
     </div>
     <m-map></m-map>
@@ -141,8 +153,9 @@ import {
   getPatient,
   getPatientTrail
 } from "@/api/homeMap.js";
-import { getCenterPoint, compare } from "@/common/tool/tool.js";
+import { getCenterPoint, compare, blur } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
+import locIcon from "@/assets/image/blue-loc.png";
 export default {
   data() {
     return {
@@ -193,13 +206,16 @@ export default {
         name: "崇川区"
       },
       patientList: [],
-      sortList: []
+      sortList: [],
+      keyword: "",
+      searchList: [],
+      isShowSearchList: false
     };
   },
   created() {
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
-    this.drawPoint();
+    // this.drawPoint();
     this.drawPloy();
   },
   methods: {
@@ -249,6 +265,9 @@ export default {
       //   var markerClusterer = new BMapLib.MarkerClusterer(map, {
       //     markers: markers
       //   });
+    },
+    lostblur() {
+      blur();
     },
     drawPloy() {
       getRegionData().then(resp => {
@@ -427,9 +446,16 @@ export default {
       geolocation.getCurrentPosition(
         function(r) {
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-            var mk = new BMap.Marker(r.point);
+            var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
+              anchor: new BMap.Size(5, 5),
+              imageSize: new BMap.Size(25, 25)
+            });
+            var mk = new BMap.Marker(r.point, {
+              icon: locPoint
+            });
             window.baseMap.addOverlay(mk);
             window.baseMap.panTo(r.point);
+            window.baseMap.setZoom(16);
           } else {
             alert("failed" + this.getStatus());
           }
@@ -445,7 +471,7 @@ export default {
       this.isShowNearTrajectory = false;
       if (this.isShowNearArea) {
         this.isShowNearArea = !this.isShowNearArea;
-        window.baseMap.clearOverlays();
+        // window.baseMap.clearOverlays();
       } else {
         getRegionData().then(resp => {
           //   console.log(resp.data.data);
@@ -601,8 +627,105 @@ export default {
       window.baseMap.setZoom(16);
     },
     closeSort() {
-        this.isShowNearArea = false;
-        this.isShowSort = false;
+      this.isShowNearArea = false;
+      this.isShowSort = false;
+      window.baseMap.clearOverlays();
+      this.drawPloy();
+    },
+    keywordSearch() {
+      var vm = this;
+      //   var myKeys = [this.keyword];
+      //   var local = new BMap.LocalSearch(window.baseMap, {
+      //     renderOptions: { map: window.baseMap, panel: "r-result" },
+      //     pageCapacity: 5
+      //   });
+      //   local.searchInBounds(myKeys, window.baseMap.getBounds());
+      var options = {
+        onSearchComplete: function(results) {
+          // 判断状态是否正确
+          if (local.getStatus() == BMAP_STATUS_SUCCESS) {
+            var s = [];
+            for (var i = 0; i < results.getCurrentNumPois(); i++) {
+              s.push({
+                name: results.getPoi(i).title,
+                address: results.getPoi(i).address,
+                lng: results.getPoi(i).point.lng,
+                lat: results.getPoi(i).point.lat
+              });
+            }
+            console.log(s);
+            vm.searchList = s;
+            // document.getElementById("r-result").innerHTML = s.join("<br/>");
+          }
+        }
+      };
+      var local = new BMap.LocalSearch(window.baseMap, options);
+      local.search(this.keyword);
+      vm.isShowSearchList = true;
+    },
+    setTo(item) {
+      var vm = this;
+      vm.isShowSearchList = false;
+      window.baseMap.clearOverlays();
+      this.drawPloy();
+      var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
+        anchor: new BMap.Size(5, 5),
+        imageSize: new BMap.Size(25, 25)
+      });
+      //   console.log(new BMap.Point(item.lng,item.lat))
+      var mk = new BMap.Marker(new BMap.Point(item.lng, item.lat), {
+        icon: locPoint
+      });
+      window.baseMap.addOverlay(mk);
+      window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
+      window.baseMap.setZoom(16);
+      getRegionData().then(resp => {
+        //   console.log(resp.data.data);
+        var polyList = [];
+        resp.data.data.map(item => {
+          var path = [];
+          var newStr = item.cors1.substr(0, item.cors1.length - 1);
+          newStr.split("],").map(v => {
+            path.push({
+              lng: v.substr(1).split(",")[0],
+              lat: v.substr(1).split(",")[1]
+            });
+          });
+          polyList.push({
+            value: item,
+            centerPoint: getCenterPoint(path),
+            path: path
+          });
+        });
+        // var geolocation = new BMap.Geolocation();
+        // geolocation.getCurrentPosition(
+        //   function(r) {
+        //     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+        var lengthList = [];
+        polyList.map(v => {
+          if (v) {
+            var pointA = new BMap.Point(item.lng, item.lat);
+            var pointB = new BMap.Point(v.centerPoint.lng, v.centerPoint.lat);
+            lengthList.push({
+              id: v.value,
+              length: window.baseMap.getDistance(pointA, pointB).toFixed(2),
+              path: v.path
+            });
+          }
+        });
+
+        vm.sortList = lengthList.sort(compare("length"));
+        //     //   vm.isShowSort = true;
+        //     } else {
+        //       // alert("failed" + this.getStatus());
+        //     }
+        //   },
+        //   { enableHighAccuracy: true }
+        // );
+        console.log(polyList);
+
+        this.isShowNearArea = !this.isShowNearArea;
+      });
     }
   },
   components: {
@@ -859,19 +982,23 @@ export default {
   }
   .my-location {
     width: 80px;
-    height: 20px;
-    line-height: 20px;
+    height: 30px;
+    border-radius: 15px;
+    font-size: 12px;
+    line-height: 30px;
     text-align: right;
+    padding-right: 8px;
+    box-sizing: border-box;
     position: absolute;
     right: 15px;
     top: 100px;
     z-index: 999;
-    font-size: 13px;
-    color: #d22c2c;
+    background-color: #d22d2d;
+    color: #fff;
     .location-icon {
       width: 15px;
-      height: 12px;
-      background: url("../../assets/image/location.png") no-repeat;
+      height: 15px;
+      background: url("../../assets/image/loc-logo.png") no-repeat;
       background-size: 100% 100%;
       position: absolute;
       left: 5px;
@@ -983,8 +1110,9 @@ export default {
   }
   .sortList {
     width: 100%;
-    height: 190px;
-    padding-top: 10px;
+    height: 120px;
+    padding-top: 30px;
+    padding-bottom: 40px;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -993,21 +1121,25 @@ export default {
     border-top: 1px solid rgb(224, 223, 223);
     overflow-y: auto;
     .sort-item {
-      display: flex;
+      //   display: flex;
       height: 30px;
       font-size: 14px;
       .name {
         padding-left: 20px;
         line-height: 30px;
         box-sizing: border-box;
-        flex: 1;
+        // flex: 1;
+        float: left;
+        width: 50%;
       }
       .length {
         padding-right: 20px;
         text-align: right;
         line-height: 30px;
         box-sizing: border-box;
-        flex: 1;
+        float: left;
+        width: 50%;
+        // flex: 1;
         position: relative;
         .location {
           width: 12px;
@@ -1030,14 +1162,52 @@ export default {
       bottom: 0;
       z-index: 999;
       .close-button {
-          width: 100px;
-          height: 28px;
-          line-height: 28px;
-          color: #fff;
-          background-color: #e75a4f;
-          border-radius: 14px;
-          text-align: center;
-          margin: 0 auto;
+        width: 100px;
+        height: 28px;
+        line-height: 28px;
+        color: #fff;
+        background-color: #e75a4f;
+        border-radius: 14px;
+        text-align: center;
+        margin: 0 auto;
+      }
+    }
+    .search-input {
+      width: 100%;
+      height: 30px;
+      background-color: #fff;
+      position: fixed;
+      left: 0;
+      bottom: 160px;
+      z-index: 999;
+      input {
+        float: left;
+        margin-top: 10px;
+        margin-left: 20px;
+        width: 75%;
+      }
+      .search-icon {
+        width: 20px;
+        height: 20px;
+        background: url("../../assets/image/search-icon.png") no-repeat;
+        background-size: 100% 100%;
+        float: right;
+        margin-top: 8px;
+        margin-right: 20px;
+      }
+    }
+    .search-list {
+      width: 286px;
+      height: 162px;
+      box-shadow: 2px 2px 3px #ccdbec;
+      overflow-y: auto;
+      background-color: #fff;
+      position: fixed;
+      left: 20px;
+      bottom: 0px;
+      z-index: 1999;
+      .search-item {
+        font-size: 14px;
       }
     }
   }
