@@ -1,7 +1,7 @@
 <template>
   <div class="home-map">
     <div class="home-header">
-      <div class="title">截止{{date}} 12:00 南通数据统计</div>
+      <div class="title">截止{{date}}  南通数据统计</div>
       <div class="open" @click="isShowMore = !isShowMore">{{isShowMore?"收起数据":"展开区县数据"}}</div>
       <div class="cart"></div>
       <div class="tabs">
@@ -74,9 +74,9 @@
     >
       <div class="icon" :class="isShowNearTrajectory?'open':'close'"></div>最近轨迹
     </div>-->
-    <div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">
-      <div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区
-    </div>
+    <!--<div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">-->
+      <!--<div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区-->
+    <!--</div>-->
     <div class="my-location" @click="location">
       <div class="location-icon"></div>我的位置
     </div>
@@ -109,11 +109,16 @@
       </div>
       <div class="close-button" @click="isShowArea = false">关闭</div>
     </div>
-    <div class="sortList" v-if="isShowSort">
-      <div class="search-input">
-        <input type="text" class="searh" @blur="lostblur" placeholder="请输入关键字" v-model="keyword" />
-        <div class="search-icon" @click="keywordSearch"></div>
+    <div :class="isShowSearchList?'sortList act':'sortList'" v-if="isShowSort">
+
+      <div class="link">
+        <span>附近疫情小区</span>
+        <div class="search-input">
+          <input type="text" class="searh" @input="keywordSearch" @click="onblur" @blur="lostblur" placeholder="输入地址查看周边详情" v-model="keyword" />
+          <!-- <div class="search-icon" @click="keywordSearch"></div> -->
+        </div>
       </div>
+      <!--<div class="kuai"></div>-->
       <div class="search-list" v-if="isShowSearchList">
         <div
           v-for="(item,index) in searchList"
@@ -129,15 +134,26 @@
           :key="index"
           @click="locationTo(item)"
         >
-          <div class="name">{{item.id.regionName}}</div>
-          <div class="length">
-            <div class="location"></div>
-            {{(item.length/1000).toFixed(2)+ "km"}}
+          <div class="name">{{item.id.regionName}}
+            <div class="address">{{item.id.address}}</div>
+          </div>
+
+          <div :class="index==0?'length1':'length'">
+            <!--<div class="location"></div>-->
+            <template v-if="index==0">
+              <span>距您最近</span>&nbsp;&nbsp;&nbsp;{{(item.length/1000).toFixed(2)+ "km"}}
+            </template>
+            <template v-else>
+              {{(item.length/1000).toFixed(2)+ "km"}}
+            </template>
           </div>
         </div>
       </div>
       <div class="close">
-        <div class="close-button" @click="closeSort">关闭</div>
+        <!--<div class="close-button" @click="closeSort">关闭</div>-->
+        数据来源：南通市疾病预防控制中心
+        <i @click="showNantongCH"></i>
+        <div class="chy-name" v-if="isShowName">南通市测绘院有限公司</div>
       </div>
     </div>
     <m-map></m-map>
@@ -155,7 +171,7 @@ import {
 } from "@/api/homeMap.js";
 import { getCenterPoint, compare, blur } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
-import locIcon from "@/assets/image/blue-loc.png";
+import locIcon from "@/assets/image/blue-loc1.png";
 export default {
   data() {
     return {
@@ -209,7 +225,10 @@ export default {
       sortList: [],
       keyword: "",
       searchList: [],
-      isShowSearchList: false
+      isShowSearchList: false,
+      isShowName:false,
+      pointOne:{},
+      pointTwo:{}
     };
   },
   created() {
@@ -217,7 +236,16 @@ export default {
     this.getDayStatisticsDetails();
     // this.drawPoint();
     this.drawPloy();
+
   },
+    mounted(){
+        var vm = this;
+        setTimeout(function () {
+            vm.location();
+            vm.showNearArea();
+            vm.showNearArea();
+        },500)
+    },
   methods: {
     drawPoint() {
       getPatientTrail().then(resp => {
@@ -266,6 +294,10 @@ export default {
       //     markers: markers
       //   });
     },
+      onblur(){
+        var vm = this;
+          vm.isShowSearchList = false;
+      },
     lostblur() {
       blur();
     },
@@ -274,13 +306,18 @@ export default {
         var polyList = [];
         resp.data.data.map(item => {
           var path = [];
-          var newStr = item.cors1.substr(0, item.cors1.length - 1);
-          newStr.split("],").map(v => {
+          console.log(item)
+          // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+          // newStr.split("],").map(v => {
+          //   path.push({
+          //     lng: v.substr(1).split(",")[0],
+          //     lat: v.substr(1).split(",")[1]
+          //   });
+          // });
             path.push({
-              lng: v.substr(1).split(",")[0],
-              lat: v.substr(1).split(",")[1]
+                lng: item.bdx,
+                lat: item.bdy
             });
-          });
           //   console.log(item)
           //   var pt = new BMap.Point(getCenterPoint(path).lng, getCenterPoint(path).lat);
           //   points.push(pt);
@@ -294,18 +331,20 @@ export default {
           var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
           label.setStyle({
             color: "red",
-            fontSize: "12px",
-            height: "20px",
-            lineHeight: "20px",
+            fontSize: "14px",
+            padding:"0 8px",
+            height: "24px",
+            lineHeight: "24px",
+            borderRadius:"12px",
             fontFamily: "微软雅黑"
           });
           window.baseMap.addOverlay(label);
           polyList.push(getCenterPoint(path));
         });
         var options = {
-          size: BMAP_POINT_SIZE_BIG,
+          size: BMAP_POINT_SIZE_BIGGER,
           shape: BMAP_POINT_SHAPE_CIRCLE,
-          color: "red"
+          color: "red",
         };
         console.log(polyList);
         var pointCollection = new BMap.PointCollection(polyList, options);
@@ -446,13 +485,15 @@ export default {
       geolocation.getCurrentPosition(
         function(r) {
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-            var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
+            var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
               anchor: new BMap.Size(5, 5),
-              imageSize: new BMap.Size(25, 25)
+              imageSize: new BMap.Size(40, 40)
             });
             var mk = new BMap.Marker(r.point, {
               icon: locPoint
             });
+            this.pointOne = r.point;
+            console.log(this.pointOne)
             window.baseMap.addOverlay(mk);
             window.baseMap.panTo(r.point);
             window.baseMap.setZoom(16);
@@ -478,13 +519,17 @@ export default {
           var polyList = [];
           resp.data.data.map(item => {
             var path = [];
-            var newStr = item.cors1.substr(0, item.cors1.length - 1);
-            newStr.split("],").map(v => {
+            // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+            // newStr.split("],").map(v => {
+            //   path.push({
+            //     lng: v.substr(1).split(",")[0],
+            //     lat: v.substr(1).split(",")[1]
+            //   });
+            // });
               path.push({
-                lng: v.substr(1).split(",")[0],
-                lat: v.substr(1).split(",")[1]
+                  lng: item.bdx,
+                  lat: item.bdy
               });
-            });
             polyList.push({
               value: item,
               centerPoint: getCenterPoint(path),
@@ -576,6 +621,7 @@ export default {
     },
     // 查看
     lookAt(item) {
+        console.log(1)
       var pointList = [];
       var newStr = item.cors1.substr(0, item.cors1.length - 1);
       newStr.split("],").map(v => {
@@ -619,12 +665,22 @@ export default {
       // })
     },
     locationTo(item) {
-      var point = new BMap.Point(
-        getCenterPoint(item.path).lng,
-        getCenterPoint(item.path).lat
-      );
-      window.baseMap.panTo(point);
-      window.baseMap.setZoom(16);
+        var vm = this;
+        if (vm.isShowSearchList){
+            vm.isShowSearchList = false;
+        }else {
+            var point = new BMap.Point(
+                getCenterPoint(item.path).lng,
+                getCenterPoint(item.path).lat
+            );
+            vm.pointTwo = point;
+            console.log(vm.pointOne,vm.pointTwo)
+            // window.baseMap.panTo(point);
+            // window.baseMap.setZoom(16);
+            window.baseMap.setViewport([vm.pointOne,vm.pointTwo]);
+            vm.drawPloy();
+        }
+
     },
     closeSort() {
       this.isShowNearArea = false;
@@ -665,9 +721,10 @@ export default {
     },
     setTo(item) {
       var vm = this;
+      vm.keyword = item.name;
       vm.isShowSearchList = false;
       window.baseMap.clearOverlays();
-      this.drawPloy();
+      vm.drawPloy();
       var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
         anchor: new BMap.Size(5, 5),
         imageSize: new BMap.Size(25, 25)
@@ -676,6 +733,7 @@ export default {
       var mk = new BMap.Marker(new BMap.Point(item.lng, item.lat), {
         icon: locPoint
       });
+      vm.pointOne = new BMap.Point(item.lng, item.lat);
       window.baseMap.addOverlay(mk);
       window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
       window.baseMap.setZoom(16);
@@ -684,13 +742,17 @@ export default {
         var polyList = [];
         resp.data.data.map(item => {
           var path = [];
-          var newStr = item.cors1.substr(0, item.cors1.length - 1);
-          newStr.split("],").map(v => {
+          // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+          // newStr.split("],").map(v => {
+          //   path.push({
+          //     lng: v.substr(1).split(",")[0],
+          //     lat: v.substr(1).split(",")[1]
+          //   });
+          // });
             path.push({
-              lng: v.substr(1).split(",")[0],
-              lat: v.substr(1).split(",")[1]
+                lng: item.bdx,
+                lat: item.bdy
             });
-          });
           polyList.push({
             value: item,
             centerPoint: getCenterPoint(path),
@@ -724,8 +786,14 @@ export default {
         // );
         console.log(polyList);
 
-        this.isShowNearArea = !this.isShowNearArea;
+        vm.isShowNearArea = !vm.isShowNearArea;
       });
+    },
+    showNantongCH() {
+        this.isShowName = true;
+        setTimeout(() => {
+            this.isShowName = false;
+        },2000)
     }
   },
   components: {
@@ -751,13 +819,13 @@ export default {
     border-radius: 5px;
     padding-top: 30px;
     .title {
-      font-size: 10px;
+      font-size: 12px;
       position: absolute;
       left: 8px;
       top: 6px;
     }
     .open {
-      font-size: 10px;
+      font-size: 12px;
       color: #d73d3f;
       position: absolute;
       right: 12px;
@@ -785,10 +853,10 @@ export default {
         text-align: center;
         .value {
           line-height: 25px;
-          font-size: 22px;
+          font-size: 24px;
           border-right: 1px solid rgba(216, 214, 214, 0.712);
           span {
-            font-size: 14px;
+            font-size: 12px;
           }
         }
         .text {
@@ -820,7 +888,7 @@ export default {
         height: 35px;
         div {
           float: left;
-          font-size: 10px;
+          font-size: 12px;
           width: 20%;
           text-align: center;
         }
@@ -834,7 +902,7 @@ export default {
           line-height: 20px;
           div {
             float: left;
-            font-size: 10px;
+            font-size: 12px;
             width: 20%;
             text-align: center;
           }
@@ -1111,7 +1179,7 @@ export default {
   .sortList {
     width: 100%;
     height: 120px;
-    padding-top: 30px;
+    padding-top: 40px;
     padding-bottom: 40px;
     position: absolute;
     left: 0;
@@ -1120,6 +1188,23 @@ export default {
     background-color: #fff;
     border-top: 1px solid rgb(224, 223, 223);
     overflow-y: auto;
+    .link{
+      width: 100%;
+      height: 40px;
+      display: flex;
+      flex-direction: row;
+      position: fixed;
+      z-index: 999;
+      bottom: 160px;
+      background-color: #fff;
+      span{
+        width: 35%;
+        color:#d22c2c;
+        padding-left: 20px;
+        line-height: 40px;
+      }
+    }
+
     .sort-item {
       //   display: flex;
       height: 30px;
@@ -1130,7 +1215,16 @@ export default {
         box-sizing: border-box;
         // flex: 1;
         float: left;
-        width: 50%;
+        width: 60%;
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+        .address{
+          font-size: 12px;
+          padding-left: 20px;
+          color: #ccc;
+          overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+        }
       }
       .length {
         padding-right: 20px;
@@ -1138,29 +1232,64 @@ export default {
         line-height: 30px;
         box-sizing: border-box;
         float: left;
-        width: 50%;
+        width: 40%;
         // flex: 1;
         position: relative;
-        .location {
-          width: 12px;
-          height: 12px;
-          background: url("../../assets/image/record1.png") no-repeat;
-          background-size: 100% 100%;
+      }
+      .length1 {
+        padding-right: 20px;
+        text-align: right;
+        line-height: 30px;
+        box-sizing: border-box;
+        float: left;
+        width: 40%;
+        // flex: 1;
+        color: #d22c2c;
+        position: relative;
+        span{
+          font-size: 12px;
+          height: 30px;
+          line-height: 30px;
           position: absolute;
-          top: 50%;
-          right: 100px;
-          transform: translateY(-50%);
+          top: 0;
+          right: 80px;
         }
       }
     }
     .close {
       width: 100%;
       height: 40px;
+      line-height: 40px;
       background-color: #fff;
       position: fixed;
       left: 0;
       bottom: 0;
       z-index: 999;
+      font-size: 10px;
+      color: #ccc;
+      text-align: center;
+      i{
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        right: 20px;
+        margin-top: 10px;
+        background: url("../../assets/image/CHY-logo.png") no-repeat;
+        background-size: 20px 20px;
+      }
+      .chy-name {
+          width: 180px;
+          height: 20px;
+          line-height: 20px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%,-50%);
+          z-index: 999;
+          color: gray;
+          font-size: 14px;
+          background-color: #fff;
+      }
       .close-button {
         width: 100px;
         height: 28px;
@@ -1173,18 +1302,19 @@ export default {
       }
     }
     .search-input {
-      width: 100%;
+      width: 65%;
       height: 30px;
       background-color: #fff;
-      position: fixed;
-      left: 0;
-      bottom: 160px;
+      /*position: fixed;*/
+      /*left: 40%;*/
+      /*bottom: 160px;*/
       z-index: 999;
       input {
-        float: left;
-        margin-top: 10px;
+        /*float: left;*/
+        margin-top: 12px;
         margin-left: 20px;
-        width: 75%;
+        width: 80%;
+        // width: calc(100% - 85px);
       }
       .search-icon {
         width: 20px;
@@ -1197,7 +1327,7 @@ export default {
       }
     }
     .search-list {
-      width: 286px;
+      width: 90%;
       height: 162px;
       //   box-shadow: 2px 2px 3px #ccdbec;
       box-sizing: border-box;
@@ -1213,6 +1343,9 @@ export default {
         padding-left: 4px;
       }
     }
+  }
+  .act{
+    overflow: hidden;
   }
 }
 </style>
