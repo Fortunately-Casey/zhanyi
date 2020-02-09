@@ -240,7 +240,9 @@ export default {
       isShowName: false,
       pointOne: {},
       pointTwo: {},
-      clickIndex: 0
+      clickIndex: "",
+      blueMark:"",
+      pointCollection2:""
     };
   },
   created() {
@@ -257,7 +259,7 @@ export default {
       vm.location();
       vm.showNearArea();
       vm.drawPloy();
-    }, 500);
+    }, 1000);
   },
   methods: {
     shareList(imgUrl, link, desc, title) {
@@ -269,9 +271,6 @@ export default {
         .post(signUrl, { url: url })
         .then(res => {
           res = res.data.data;
-          console.log(res);
-          console.log("-----------------------");
-          console.log("res.noncestr:" + res.nonceStr);
           wx.config({
             debug: false, // true:是调试模式,调试时候弹窗,会打印出日志
             appId: res.appId, // 微信appid
@@ -369,7 +368,6 @@ export default {
           shape: BMAP_POINT_SHAPE_CIRCLE,
           color: "red"
         };
-        console.log(points);
         var pointCollection = new BMap.PointCollection(points, options);
         window.baseMap.addOverlay(pointCollection);
       });
@@ -391,7 +389,6 @@ export default {
     },
     drawPloy(point) {
       var vm = this; 
-      console.log('2222')
       getRegionData().then(resp => {
         var polyList = [];
         resp.data.data.map(item => {
@@ -429,13 +426,13 @@ export default {
           });
           window.baseMap.addOverlay(label);
           polyList.push(getCenterPoint(path));
+          window.titleLabel = label;
         });
         var options = {
           size: BMAP_POINT_SIZE_BIGGER,
           shape: BMAP_POINT_SHAPE_CIRCLE,
           color: "red"
         };
-        console.log(polyList);
         var pointCollection = new BMap.PointCollection(polyList, options);
         window.baseMap.addOverlay(pointCollection);
         if(point) {
@@ -446,7 +443,8 @@ export default {
     splitName(name) {
         return name.slice(3)
     },
-    // drawPloy() {
+    // drawPloy(point) {
+    //   var vm = this;
     //   getRegionData().then(resp => {
     //     var polyList = [];
     //     resp.data.data.map(item => {
@@ -488,7 +486,12 @@ export default {
     //       window.baseMap.addOverlay(marker);
     //       marker.setLabel(label);
     //       polyList.push(getCenterPoint(path));
+          
     //     });
+    //     if(point) {
+            
+    //         vm.drawBlue(point);
+    //     }
     //     // var options = {
     //     //   size: BMAP_POINT_SIZE_BIGGER,
     //     //   shape: BMAP_POINT_SHAPE_CIRCLE,
@@ -593,7 +596,6 @@ export default {
                 var max = lengthList.sort(function(a, b) {
                   return a.length < b.length;
                 })[0];
-                console.log(max);
                 var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
                   anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
                   imageSize: new BMap.Size(30, 30) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
@@ -644,7 +646,6 @@ export default {
               icon: locPoint
             });
             vm.pointOne = r.point;
-            console.log(vm.pointOne);
             window.baseMap.addOverlay(mk);
             window.baseMap.setZoom(17);
             window.baseMap.panTo(r.point);
@@ -657,6 +658,7 @@ export default {
     },
     clickMyLocation() {
        var vm = this;
+       vm.clickIndex = "";
        window.baseMap.clearOverlays();
        vm.drawPloy();
        vm.keyword = "";
@@ -672,7 +674,6 @@ export default {
               icon: locPoint
             });
             vm.pointOne = r.point;
-            console.log(vm.pointOne);
             window.baseMap.addOverlay(mk);
             window.baseMap.setZoom(17);
             window.baseMap.panTo(r.point);
@@ -723,7 +724,6 @@ export default {
               //   },
               //   { enableHighAccuracy: true }
               // );
-              console.log(polyList);
 
               // vm.isShowNearArea = !vm.isShowNearArea;
             });
@@ -843,7 +843,6 @@ export default {
             },
             { enableHighAccuracy: true }
           );
-          console.log(polyList);
 
           this.isShowNearArea = !this.isShowNearArea;
         });
@@ -851,7 +850,6 @@ export default {
     },
     // 查看
     lookAt(item) {
-      console.log(1);
       var pointList = [];
       var newStr = item.cors1.substr(0, item.cors1.length - 1);
       newStr.split("],").map(v => {
@@ -877,7 +875,6 @@ export default {
         lineHeight: "20px",
         fontFamily: "微软雅黑"
       });
-      console.log(item.id);
       polygon.regionID = item.id;
       polygon.addEventListener("click", function() {
         //   alert(this.regionID)
@@ -894,19 +891,34 @@ export default {
       //     console.log(resp)
       // })
     },
-    drawBlue(point) {
-        var points2 = [point]; // 添加海量点数据
- 
+    drawBlue(point,name) {
+        var vm = this;
+        window.baseMap.removeOverlay(vm.pointCollection2);
+        var points2 = [point]; 
+        // window.baseMap.removeOverlay(vm.blueMaker);
+        var allOverlay = window.baseMap.getOverlays();
+        var opts = {
+            position: point, // 指定文本标注所在的地理位置
+            offset: new BMap.Size(10, -30) //设置文本偏移量
+        };
         var options2 = {
             size: BMAP_POINT_SIZE_BIGGER,
             shape: BMAP_POINT_SHAPE_CIRCLE,
             color: 'blue'
         }
-         var pointCollection2 = new BMap.PointCollection(points2, options2);
-         window.baseMap.addOverlay(pointCollection2);
+        var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
+              anchor: new BMap.Size(20, 10),
+              imageSize: new BMap.Size(40, 40)
+            });
+        vm.blueMark = new BMap.Marker(point, {
+            icon: locPoint
+        });
+        vm.blueMark.name = "blueMark";
+        vm.pointCollection2 = new BMap.PointCollection(points2, options2);
+         //  pointCollection2.setTop(true);
+        window.baseMap.addOverlay(vm.pointCollection2);
     },
     locationTo(item,index) {
-      console.log(item)
       var vm = this;
       vm.clickIndex = index;
       if (vm.isShowSearchList) {
@@ -917,53 +929,41 @@ export default {
           getCenterPoint(item.path).lat
         );
         vm.pointTwo = point;
-        // console.log(vm.pointOne,vm.pointTwo)
-        // window.baseMap.panTo(point);
-        // window.baseMap.setZoom(17);
+        vm.drawBlue(point);
         window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
           margins: [90, 30, 220, 30]
         });
-        vm.drawPloy(point);
-        
-        // var points2 = [point]; // 添加海量点数据
- 
-        // var options2 = {
-        //     size: BMAP_POINT_SIZE_BIGGER,
-        //     shape: BMAP_POINT_SHAPE_CIRCLE,
-        //     color: 'blue'
-        // }
-        //  var pointCollection2 = new BMap.PointCollection(points2, options2);
-        //  window.baseMap.addOverlay(pointCollection2);
-        // var allOverlay = window.baseMap.getOverlays();
-        // var opts = {
-        //     position: point, // 指定文本标注所在的地理位置
-        //     offset: new BMap.Size(10, -30) //设置文本偏移量
-        // };
-        // for (var i = 0; i < allOverlay.length -1; i++){
-        //   if(allOverlay[i].getLabel) {
-        //     if(allOverlay[i].getLabel()&&allOverlay[i].getLabel().content == item.id.regionName){
-        //       // map.removeOverlay(allOverlay[i]);
-        //       console.log(allOverlay[i].getLabel().content)
-        //       var label = new BMap.Label(allOverlay[i].getLabel().content, opts); // 创建文本标注对象
-        //       label.setStyle({
-        //         color: "blue",
-        //         fontSize: "14px",
-        //         padding: "0 8px",
-        //         height: "24px",
-        //         lineHeight: "24px",
-        //         borderRadius: "12px",
-        //         fontFamily: "微软雅黑"
-        //       });
-        //       allOverlay[i].setLabel(label);
-        //       return false;
-        //     }
-        //   }
+        var allOverlay = window.baseMap.getOverlays();
+        var opts = {
+            position: point, // 指定文本标注所在的地理位置
+            offset: new BMap.Size(10, -30) //设置文本偏移量
+        };
+        for (var i = 0; i < allOverlay.length -1; i++){
+          if(allOverlay[i].getLabel) {
+            console.log(allOverlay[i].getLabel());
+            if(allOverlay[i].getLabel()&&allOverlay[i].getLabel().content == item.id.regionName){
+              // map.removeOverlay(allOverlay[i]);
+              console.log(allOverlay[i].getLabel().content,'11111')
+              // var label = new BMap.Label(allOverlay[i].getLabel().content, opts); // 创建文本标注对象
+              // label.setStyle({
+              //   color: "blue",
+              //   fontSize: "14px",
+              //   padding: "0 8px",
+              //   height: "24px",
+              //   lineHeight: "24px",
+              //   borderRadius: "12px",
+              //   fontFamily: "微软雅黑"
+              // });
+              // allOverlay[i].setLabel(label);
+              return false;
+            }
+          }
         //   // if(allOverlay[i].getLabel().content == item.id.regionName){
         //   //   // map.removeOverlay(allOverlay[i]);
         //   //   console.log(allOverlay[i].getLabel().content)
         //   //   return false;
         //   // }
-        // }
+        }
       }
     },
     closeSort() {

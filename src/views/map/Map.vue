@@ -20,6 +20,44 @@ export default {
       map.addEventListener("click", function(e) {
         // console.log(e);
       });
+      map.addEventListener("zoomend", function (e) {
+         var ZoomNum = map.getZoom();
+         var layers =  window.baseMap.getOverlays();
+         if(ZoomNum >= 13) {
+            layers.map((v) => {
+                if(v.content&&v.content !=="shadow") {
+                    //  console.log(v.content);
+                    v.show();
+                }
+            })
+         }else {
+             layers.map((v) => {
+                if(v.content&&v.content !=="shadow") {
+                    //  console.log(v.content);
+                    v.hide();
+                }
+            })
+         }   
+      });
+      map.addEventListener("moveend", function (e) {
+      var ZoomNum = map.getZoom();
+         var layers =  window.baseMap.getOverlays();
+         if(ZoomNum >= 13) {
+            layers.map((v) => {
+                if(v.content&&v.content !=="shadow") {
+                    //  console.log(v.content);
+                    v.show();
+                }
+            })
+         }else {
+             layers.map((v) => {
+                if(v.content&&v.content !=="shadow") {
+                    //  console.log(v.content);
+                    v.hide();
+                }
+            })
+         } 
+      })
       // this.baseMap = map;
       // this.BMap = BMap;
       // console.log(BMap, map);
