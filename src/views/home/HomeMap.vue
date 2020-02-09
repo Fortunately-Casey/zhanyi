@@ -77,7 +77,7 @@
     <!--<div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">-->
     <!--<div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区-->
     <!--</div>-->
-    <div class="my-location" @click="location">
+    <div class="my-location" @click="clickMyLocation">
       <div class="location-icon"></div>我的位置
     </div>
     <div class="area-infowindow" v-if="isShowArea">
@@ -646,8 +646,87 @@ export default {
             vm.pointOne = r.point;
             console.log(vm.pointOne);
             window.baseMap.addOverlay(mk);
-            window.baseMap.setZoom(16);
+            window.baseMap.setZoom(17);
             window.baseMap.panTo(r.point);
+          } else {
+            alert("failed" + this.getStatus());
+          }
+        },
+        { enableHighAccuracy: true }
+      );
+    },
+    clickMyLocation() {
+       var vm = this;
+       window.baseMap.clearOverlays();
+       vm.drawPloy();
+       vm.keyword = "";
+      var geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(
+        function(r) {
+          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+            var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
+              anchor: new BMap.Size(5, 5),
+              imageSize: new BMap.Size(40, 40)
+            });
+            var mk = new BMap.Marker(r.point, {
+              icon: locPoint
+            });
+            vm.pointOne = r.point;
+            console.log(vm.pointOne);
+            window.baseMap.addOverlay(mk);
+            window.baseMap.setZoom(17);
+            window.baseMap.panTo(r.point);
+            getRegionData().then(resp => {
+              //   console.log(resp.data.data);
+              var polyList = [];
+              resp.data.data.map(item => {
+                var path = [];
+                // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+                // newStr.split("],").map(v => {
+                //   path.push({
+                //     lng: v.substr(1).split(",")[0],
+                //     lat: v.substr(1).split(",")[1]
+                //   });
+                // });
+                path.push({
+                  lng: item.bdx,
+                  lat: item.bdy
+                });
+                polyList.push({
+                  value: item,
+                  centerPoint: getCenterPoint(path),
+                  path: path
+                });
+              });
+              // var geolocation = new BMap.Geolocation();
+              // geolocation.getCurrentPosition(
+              //   function(r) {
+              //     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+              var lengthList = [];
+              polyList.map(v => {
+                if (v) {
+                  var pointA = r.point;
+                  var pointB = new BMap.Point(v.centerPoint.lng, v.centerPoint.lat);
+                  lengthList.push({
+                    id: v.value,
+                    length: window.baseMap.getDistance(pointA, pointB).toFixed(2),
+                    path: v.path
+                  });
+                }
+              });
+
+              vm.sortList = lengthList.sort(compare("length"));
+              //     //   vm.isShowSort = true;
+              //     } else {
+              //       // alert("failed" + this.getStatus());
+              //     }
+              //   },
+              //   { enableHighAccuracy: true }
+              // );
+              console.log(polyList);
+
+              // vm.isShowNearArea = !vm.isShowNearArea;
+            });
           } else {
             alert("failed" + this.getStatus());
           }
@@ -744,7 +823,7 @@ export default {
                 this.isShowArea = false;
                 // window.baseMap.addOverlay(label);
                 // window.baseMap.panTo(getCenterPoint(maxList));
-                // window.baseMap.setZoom(16);
+                // window.baseMap.setZoom(17);
                 // window.baseMap.addOverlay(polygon); //增加多边形
                 // var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
                 //   anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
@@ -806,7 +885,7 @@ export default {
       });
       this.isShowArea = false;
       window.baseMap.addOverlay(label);
-      window.baseMap.setZoom(16);
+      window.baseMap.setZoom(17);
       window.baseMap.panTo(getCenterPoint(pointList));
       window.baseMap.addOverlay(polygon); //增加多边形
       // getPatient({
@@ -840,7 +919,7 @@ export default {
         vm.pointTwo = point;
         // console.log(vm.pointOne,vm.pointTwo)
         // window.baseMap.panTo(point);
-        // window.baseMap.setZoom(16);
+        // window.baseMap.setZoom(17);
         window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
           margins: [90, 30, 220, 30]
         });
@@ -941,7 +1020,7 @@ export default {
       });
       vm.pointOne = new BMap.Point(item.lng, item.lat);
       window.baseMap.addOverlay(mk);
-      window.baseMap.setZoom(16);
+      window.baseMap.setZoom(17);
       window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
 
       getRegionData().then(resp => {
@@ -1423,7 +1502,7 @@ export default {
         box-sizing: border-box;
         // flex: 1;
         float: left;
-        width: 69%;
+        width: 65%;
         display: flex;
         flex-direction: row;
         overflow: hidden;
@@ -1444,7 +1523,7 @@ export default {
         line-height: 30px;
         box-sizing: border-box;
         float: left;
-        width: 31%;
+        width: 35%;
         // flex: 1;
         position: relative;
       }
@@ -1454,7 +1533,7 @@ export default {
         line-height: 30px;
         box-sizing: border-box;
         float: left;
-        width: 31%;
+        width: 35%;
         // flex: 1;
         color: #d22c2c;
         position: relative;
@@ -1464,7 +1543,7 @@ export default {
           line-height: 30px;
           position: absolute;
           top: 0;
-          right: 65px;
+          right: 75px;
         }
       }
     }
@@ -1536,6 +1615,7 @@ export default {
         margin-top: 12px;
         margin-left: 20px;
         width: 85%;
+        font-size:14px;
         // width: calc(100% - 85px);
       }
       .search-icon {
