@@ -1,7 +1,7 @@
 <template>
   <div class="home-map">
     <div class="home-header">
-      <div class="title">截止{{date}} 南通统计数据</div>
+      <div class="title">截止{{date}} 南通市疫情统计数据</div>
       <div class="open" @click="isShowMore = !isShowMore">{{isShowMore?"收起数据":"展开区县数据"}}</div>
       <div class="cart"></div>
       <div class="tabs">
@@ -144,7 +144,7 @@
         >
           <div class="name">
             {{item.id.regionName}}
-            <div class="address">{{item.id.address}}</div>
+            <div class="address">{{splitName(item.id.address)}}</div>
           </div>
 
           <div :class="index==0?'length1':'length'">
@@ -442,6 +442,9 @@ export default {
           vm.drawBlue(point);
         }
       });
+    },
+    splitName(name) {
+        return name.slice(3)
     },
     // drawPloy() {
     //   getRegionData().then(resp => {
@@ -1405,7 +1408,7 @@ export default {
       span {
         width: 35%;
         color: #d22c2c;
-        padding-left: 20px;
+        padding-left: 10px;
         line-height: 40px;
       }
     }
@@ -1415,12 +1418,12 @@ export default {
       height: 30px;
       font-size: 14px;
       .name {
-        padding-left: 20px;
+        padding-left: 10px;
         line-height: 30px;
         box-sizing: border-box;
         // flex: 1;
         float: left;
-        width: 60%;
+        width: 69%;
         display: flex;
         flex-direction: row;
         overflow: hidden;
@@ -1428,7 +1431,7 @@ export default {
         text-overflow: ellipsis;
         .address {
           font-size: 12px;
-          padding-left: 20px;
+          padding-left: 10px;
           color: #ccc;
           overflow: hidden;
           white-space: nowrap;
@@ -1436,22 +1439,22 @@ export default {
         }
       }
       .length {
-        padding-right: 20px;
+        padding-right: 10px;
         text-align: right;
         line-height: 30px;
         box-sizing: border-box;
         float: left;
-        width: 40%;
+        width: 31%;
         // flex: 1;
         position: relative;
       }
       .length1 {
-        padding-right: 20px;
+        padding-right: 10px;
         text-align: right;
         line-height: 30px;
         box-sizing: border-box;
         float: left;
-        width: 40%;
+        width: 31%;
         // flex: 1;
         color: #d22c2c;
         position: relative;
@@ -1461,7 +1464,7 @@ export default {
           line-height: 30px;
           position: absolute;
           top: 0;
-          right: 80px;
+          right: 65px;
         }
       }
     }
@@ -1532,7 +1535,7 @@ export default {
         /*float: left;*/
         margin-top: 12px;
         margin-left: 20px;
-        width: 80%;
+        width: 85%;
         // width: calc(100% - 85px);
       }
       .search-icon {
