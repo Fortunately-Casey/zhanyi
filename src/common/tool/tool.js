@@ -24,7 +24,7 @@ export function getURL(url) {
     if (process.env.NODE_ENV === 'development') {
         _result = `/api${url}`; // 开发环境会自动走代理
     } else if (process.env.NODE_ENV === 'production') {
-        _result = `http://yqfk.ntschy.com/api${url}`; // 正式环境地址
+        _result = `https://yqfk.ntschy.com/api${url}`; // 正式环境地址
     }
     return _result;
 }

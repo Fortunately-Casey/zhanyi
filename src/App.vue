@@ -13,7 +13,7 @@ export default {
     console.log();
     document.getElementsByTagName(
       "title"
-    )[0].innerText = `南通市“战役图”:${arr[1] + "-" + arr[2]}最新数据`;
+    )[0].innerText = `南通市“战疫图”:${arr[1] + "-" + arr[2]}最新数据`;
   },
   mounted() {
     // setInterval(() => {

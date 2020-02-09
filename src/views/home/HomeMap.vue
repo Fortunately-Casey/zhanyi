@@ -1,7 +1,7 @@
 <template>
   <div class="home-map">
     <div class="home-header">
-      <div class="title">截止{{date}}  南通数据统计</div>
+      <div class="title">截止{{date}}  南通统计数据</div>
       <div class="open" @click="isShowMore = !isShowMore">{{isShowMore?"收起数据":"展开区县数据"}}</div>
       <div class="cart"></div>
       <div class="tabs">
@@ -114,7 +114,7 @@
       <div class="link">
         <span>附近疫情小区</span>
         <div class="search-input">
-          <input type="text" class="searh" @input="keywordSearch" @click="onblur" @blur="lostblur" placeholder="输入地址查看周边详情" v-model="keyword" />
+          <input type="text" class="searh" @input="keywordSearch" @click="onblur" @blur="lostblur" placeholder="输入地址并选择要查看的地点" v-model="keyword" />
           <!-- <div class="search-icon" @click="keywordSearch"></div> -->
         </div>
       </div>
@@ -235,7 +235,7 @@ export default {
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
     // this.drawPoint();
-    this.drawPloy();
+    // this.drawPloy();
 
   },
     mounted(){
@@ -243,7 +243,7 @@ export default {
         setTimeout(function () {
             vm.location();
             vm.showNearArea();
-            vm.showNearArea();
+            vm.drawPloy();
         },500)
     },
   methods: {
@@ -306,7 +306,6 @@ export default {
         var polyList = [];
         resp.data.data.map(item => {
           var path = [];
-          console.log(item)
           // var newStr = item.cors1.substr(0, item.cors1.length - 1);
           // newStr.split("],").map(v => {
           //   path.push({
@@ -481,6 +480,7 @@ export default {
       }
     },
     location() {
+      var vm = this;
       var geolocation = new BMap.Geolocation();
       geolocation.getCurrentPosition(
         function(r) {
@@ -492,8 +492,8 @@ export default {
             var mk = new BMap.Marker(r.point, {
               icon: locPoint
             });
-            this.pointOne = r.point;
-            console.log(this.pointOne)
+              vm.pointOne = r.point;
+            console.log(vm.pointOne)
             window.baseMap.addOverlay(mk);
             window.baseMap.panTo(r.point);
             window.baseMap.setZoom(16);
@@ -674,10 +674,12 @@ export default {
                 getCenterPoint(item.path).lat
             );
             vm.pointTwo = point;
-            console.log(vm.pointOne,vm.pointTwo)
+            // console.log(vm.pointOne,vm.pointTwo)
             // window.baseMap.panTo(point);
             // window.baseMap.setZoom(16);
-            window.baseMap.setViewport([vm.pointOne,vm.pointTwo]);
+            window.baseMap.setViewport([vm.pointOne,vm.pointTwo],{
+              margins:[90,30,220,30]
+            });
             vm.drawPloy();
         }
 

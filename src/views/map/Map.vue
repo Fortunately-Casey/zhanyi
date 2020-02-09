@@ -46,323 +46,323 @@ export default {
         },
         { enableHighAccuracy: true }
       );
-      var styleJson = [
-        {
-          featureType: "poilabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "estatelabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "estatelabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "estatelabel",
-          elementType: "labels.text",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "poilabel",
-          elementType: "labels.text",
-          stylers: {
-            fontsize: "24"
-          }
-        },
-        {
-          featureType: "medicallabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "on"
-          }
-        },
-        {
-          featureType: "medicallabel",
-          elementType: "labels.text",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "restaurantlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "hotellabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "carservicelabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "transportationlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "financelabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "scenicspotslabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "scenicspotslabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "restaurantlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "hotellabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "carservicelabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "lifeservicelabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "lifeservicelabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "poilabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "entertainmentlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "entertainmentlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "businesstowerlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "businesstowerlabel",
-          elementType: "labels.text",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "companylabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "companylabel",
-          elementType: "labels.text",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "shoppinglabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "shoppinglabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "educationlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "transportationlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "financelabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "governmentlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "airportlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "airportlabel",
-          elementType: "labels.icon",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "educationlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "businesstowerlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "companylabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "governmentlabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "medicallabel",
-          elementType: "labels",
-          stylers: {
-            visibility: "on"
-          }
-        },
-        {
-          featureType: "village",
-          elementType: "labels",
-          stylers: {
-            visibility: "on"
-          }
-        },
-        {
-          featureType: "transportation",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "education",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "manmade",
-          elementType: "labels",
-          stylers: {
-            visibility: "on"
-          }
-        },
-        {
-          featureType: "scenicspots",
-          elementType: "labels",
-          stylers: {
-            visibility: "off"
-          }
-        },
-        {
-          featureType: "medical",
-          elementType: "labels",
-          stylers: {
-            visibility: "on"
-          }
-        }
-      ];
+        var styleJson = [
+            {
+                featureType: "poilabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "estatelabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "estatelabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "on"
+                }
+            },
+            {
+                featureType: "estatelabel",
+                elementType: "labels.text",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "poilabel",
+                elementType: "labels.text",
+                stylers: {
+                    fontsize: "24"
+                }
+            },
+            {
+                featureType: "medicallabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "on"
+                }
+            },
+            {
+                featureType: "medicallabel",
+                elementType: "labels.text",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "restaurantlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "hotellabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "carservicelabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "transportationlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "financelabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "scenicspotslabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "scenicspotslabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "restaurantlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "hotellabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "carservicelabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "lifeservicelabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "lifeservicelabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "poilabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "entertainmentlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "entertainmentlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "businesstowerlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "businesstowerlabel",
+                elementType: "labels.text",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "companylabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "companylabel",
+                elementType: "labels.text",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "shoppinglabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "shoppinglabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "educationlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "transportationlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "financelabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "governmentlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "airportlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "airportlabel",
+                elementType: "labels.icon",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "educationlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "businesstowerlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "companylabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "governmentlabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "medicallabel",
+                elementType: "labels",
+                stylers: {
+                    visibility: "on"
+                }
+            },
+            {
+                featureType: "village",
+                elementType: "labels",
+                stylers: {
+                    visibility: "on"
+                }
+            },
+            {
+                featureType: "transportation",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "education",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "manmade",
+                elementType: "labels",
+                stylers: {
+                    visibility: "on"
+                }
+            },
+            {
+                featureType: "scenicspots",
+                elementType: "labels",
+                stylers: {
+                    visibility: "off"
+                }
+            },
+            {
+                featureType: "medical",
+                elementType: "labels",
+                stylers: {
+                    visibility: "on"
+                }
+            }
+        ];
       // var styleJson = [
       //   [
       //     {
