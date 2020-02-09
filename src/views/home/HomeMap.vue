@@ -495,8 +495,8 @@ export default {
               vm.pointOne = r.point;
             console.log(vm.pointOne)
             window.baseMap.addOverlay(mk);
-            window.baseMap.panTo(r.point);
             window.baseMap.setZoom(16);
+            window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
           }
@@ -655,8 +655,8 @@ export default {
       });
       this.isShowArea = false;
       window.baseMap.addOverlay(label);
-      window.baseMap.panTo(getCenterPoint(pointList));
       window.baseMap.setZoom(16);
+      window.baseMap.panTo(getCenterPoint(pointList));
       window.baseMap.addOverlay(polygon); //增加多边形
       // getPatient({
       //     regionID:item.id
@@ -737,8 +737,9 @@ export default {
       });
       vm.pointOne = new BMap.Point(item.lng, item.lat);
       window.baseMap.addOverlay(mk);
-      window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
       window.baseMap.setZoom(16);
+      window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
+     
       getRegionData().then(resp => {
         //   console.log(resp.data.data);
         var polyList = [];
