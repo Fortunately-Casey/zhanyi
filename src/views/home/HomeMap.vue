@@ -1,7 +1,7 @@
 <template>
   <div class="home-map">
     <div class="home-header">
-      <div class="title">截止{{date}}  南通统计数据</div>
+      <div class="title">截止{{date}} 南通统计数据</div>
       <div class="open" @click="isShowMore = !isShowMore">{{isShowMore?"收起数据":"展开区县数据"}}</div>
       <div class="cart"></div>
       <div class="tabs">
@@ -75,7 +75,7 @@
       <div class="icon" :class="isShowNearTrajectory?'open':'close'"></div>最近轨迹
     </div>-->
     <!--<div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">-->
-      <!--<div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区-->
+    <!--<div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区-->
     <!--</div>-->
     <div class="my-location" @click="location">
       <div class="location-icon"></div>我的位置
@@ -110,11 +110,18 @@
       <div class="close-button" @click="isShowArea = false">关闭</div>
     </div>
     <div :class="isShowSearchList?'sortList act':'sortList'" v-if="isShowSort">
-
       <div class="link">
         <span>附近疫情小区</span>
         <div class="search-input">
-          <input type="text" class="searh" @input="keywordSearch" @click="onblur" @blur="lostblur" placeholder="输入地址并选择要查看的地点" v-model="keyword" />
+          <input
+            type="text"
+            class="searh"
+            @input="keywordSearch"
+            @click="onblur"
+            @blur="lostblur"
+            placeholder="输入地址并选择要查看的地点"
+            v-model="keyword"
+          />
           <!-- <div class="search-icon" @click="keywordSearch"></div> -->
         </div>
       </div>
@@ -132,20 +139,21 @@
           class="sort-item"
           v-for="(item,index) in sortList"
           :key="index"
-          @click="locationTo(item)"
+          @click="locationTo(item,index)"
+          :class="clickIndex === index?'clickChosed':''"
         >
-          <div class="name">{{item.id.regionName}}
+          <div class="name">
+            {{item.id.regionName}}
             <div class="address">{{item.id.address}}</div>
           </div>
 
           <div :class="index==0?'length1':'length'">
             <!--<div class="location"></div>-->
             <template v-if="index==0">
-              <span>距您最近</span>&nbsp;&nbsp;&nbsp;{{(item.length/1000).toFixed(2)+ "km"}}
+              <span>距您最近</span>
+              &nbsp;&nbsp;&nbsp;{{(item.length/1000).toFixed(2)+ "km"}}
             </template>
-            <template v-else>
-              {{(item.length/1000).toFixed(2)+ "km"}}
-            </template>
+            <template v-else>{{(item.length/1000).toFixed(2)+ "km"}}</template>
           </div>
         </div>
       </div>
@@ -172,11 +180,9 @@ import {
 import { getCenterPoint, compare, blur } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
 import locIcon from "@/assets/image/blue-loc1.png";
-import wx from 'weixin-js-sdk'
+import wx from "weixin-js-sdk";
 import axios from "axios";
-import {
-    getURL
-} from "@/common/tool/tool";
+import { getURL } from "@/common/tool/tool";
 export default {
   data() {
     return {
@@ -231,104 +237,104 @@ export default {
       keyword: "",
       searchList: [],
       isShowSearchList: false,
-      isShowName:false,
-      pointOne:{},
-      pointTwo:{}
+      isShowName: false,
+      pointOne: {},
+      pointTwo: {},
+      clickIndex: 0
     };
   },
   created() {
-  	
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
-//  this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + this.date + ' 最新数据', '南通市“战疫图”:' + this.date + ' 最新数据');
+    //  this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + this.date + ' 最新数据', '南通市“战疫图”:' + this.date + ' 最新数据');
 
     // this.drawPoint();
     // this.drawPloy();
-
   },
-    mounted(){
-        var vm = this;
-        setTimeout(function () {
-            vm.location();
-            vm.showNearArea();
-            vm.drawPloy();
-        },500)
-    },
+  mounted() {
+    var vm = this;
+    setTimeout(function() {
+      vm.location();
+      vm.showNearArea();
+      vm.drawPloy();
+    }, 500);
+  },
   methods: {
-  	shareList(imgUrl, link, desc, title) {
-			    // var url = encodeURIComponent(link)
-			    var url = link
-			    // 分享
-			    const signUrl = getURL("/weixin/getSignPackage")
-			    axios.post(signUrl, {url: url}).then((res) => {
-			        res = res.data.data;
-			        console.log(res);
-			        console.log("-----------------------");
-			        console.log('res.noncestr:'+res.nonceStr);
-			        wx.config({
-			            debug: false, // true:是调试模式,调试时候弹窗,会打印出日志
-			            appId: res.appId, // 微信appid
-			            timestamp: res.timestamp, // 时间戳
-			            nonceStr: res.nonceStr, // 随机字符串
-			            signature: res.signature, // 签名
-			            jsApiList: [
-			                // 所有要调用的 API 都要加到这个列表中
-			                'updateTimelineShareData',
-			                'updateAppMessageShareData'
-			            ]
-			        })
-			        wx.checkJsApi({
-			            jsApiList: [
-			                // 所有要调用的 API 都要加到这个列表中
-			                'updateTimelineShareData',
-			                'updateAppMessageShareData'
-			            ],
-			            success: function (res) {
-			                // alert("checkJsApi:success");
-			            }
-			        })
-			
-			        wx.ready(function () {
-			            // 微信分享的数据
-			            var shareData = {
-			                imgUrl: imgUrl, // 分享显示的缩略图地址
-			                link: link, // 分享地址
-			                desc: desc, // 分享描述
-			                title: title, // 分享标题
-			                success: function () {
-			                    // 分享成功可以做相应的数据处理
-			                    // alert('分享成功')
-			                    // alert('appId:' + res.appId)
-			                    // alert('timestamp:' + res.timestamp)
-			                    // alert('nonceStr:' + res.nonceStr)
-			                    // alert('signature:' + res.signature)
-			                    console.log('调用成功');
-			                },
-			                fail: function () {
-			                    // alert('调用失败')
-												console.log('失败');
-			                },
-			                complete: function () {
-			                    // alert('调用结束')
-												console.log('调用结束');
-			                }
-			            }
-			            wx.updateAppMessageShareData(shareData);
-			            wx.updateTimelineShareData(shareData);
-			            
-			        })
-			        wx.error(function (res) {
-			            // config信息验证失败会执行error函数，如签名过期导致验证失败，
-			            // 具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，
-			            // 对于SPA可以在这里更新签名。
-			            console.log(res)
-			            //alert('分享失败')
-			
-			        })
-			    }).catch((err) => {
-			        console.log(err)
-			    })
-			},
+    shareList(imgUrl, link, desc, title) {
+      // var url = encodeURIComponent(link)
+      var url = link;
+      // 分享
+      const signUrl = getURL("/weixin/getSignPackage");
+      axios
+        .post(signUrl, { url: url })
+        .then(res => {
+          res = res.data.data;
+          console.log(res);
+          console.log("-----------------------");
+          console.log("res.noncestr:" + res.nonceStr);
+          wx.config({
+            debug: false, // true:是调试模式,调试时候弹窗,会打印出日志
+            appId: res.appId, // 微信appid
+            timestamp: res.timestamp, // 时间戳
+            nonceStr: res.nonceStr, // 随机字符串
+            signature: res.signature, // 签名
+            jsApiList: [
+              // 所有要调用的 API 都要加到这个列表中
+              "updateTimelineShareData",
+              "updateAppMessageShareData"
+            ]
+          });
+          wx.checkJsApi({
+            jsApiList: [
+              // 所有要调用的 API 都要加到这个列表中
+              "updateTimelineShareData",
+              "updateAppMessageShareData"
+            ],
+            success: function(res) {
+              // alert("checkJsApi:success");
+            }
+          });
+
+          wx.ready(function() {
+            // 微信分享的数据
+            var shareData = {
+              imgUrl: imgUrl, // 分享显示的缩略图地址
+              link: link, // 分享地址
+              desc: desc, // 分享描述
+              title: title, // 分享标题
+              success: function() {
+                // 分享成功可以做相应的数据处理
+                // alert('分享成功')
+                // alert('appId:' + res.appId)
+                // alert('timestamp:' + res.timestamp)
+                // alert('nonceStr:' + res.nonceStr)
+                // alert('signature:' + res.signature)
+                console.log("调用成功");
+              },
+              fail: function() {
+                // alert('调用失败')
+                console.log("失败");
+              },
+              complete: function() {
+                // alert('调用结束')
+                console.log("调用结束");
+              }
+            };
+            wx.updateAppMessageShareData(shareData);
+            wx.updateTimelineShareData(shareData);
+          });
+          wx.error(function(res) {
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，
+            // 具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，
+            // 对于SPA可以在这里更新签名。
+            console.log(res);
+            //alert('分享失败')
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     drawPoint() {
       getPatientTrail().then(resp => {
         var points = [];
@@ -376,14 +382,16 @@ export default {
       //     markers: markers
       //   });
     },
-      onblur(){
-        var vm = this;
-          vm.isShowSearchList = false;
-      },
+    onblur() {
+      var vm = this;
+      vm.isShowSearchList = false;
+    },
     lostblur() {
       blur();
     },
-    drawPloy() {
+    drawPloy(point) {
+      var vm = this; 
+      console.log('2222')
       getRegionData().then(resp => {
         var polyList = [];
         resp.data.data.map(item => {
@@ -395,10 +403,10 @@ export default {
           //     lat: v.substr(1).split(",")[1]
           //   });
           // });
-            path.push({
-                lng: item.bdx,
-                lat: item.bdy
-            });
+          path.push({
+            lng: item.bdx,
+            lat: item.bdy
+          });
           //   console.log(item)
           //   var pt = new BMap.Point(getCenterPoint(path).lng, getCenterPoint(path).lat);
           //   points.push(pt);
@@ -413,10 +421,10 @@ export default {
           label.setStyle({
             color: "red",
             fontSize: "14px",
-            padding:"0 8px",
+            padding: "0 8px",
             height: "24px",
             lineHeight: "24px",
-            borderRadius:"12px",
+            borderRadius: "12px",
             fontFamily: "微软雅黑"
           });
           window.baseMap.addOverlay(label);
@@ -425,13 +433,69 @@ export default {
         var options = {
           size: BMAP_POINT_SIZE_BIGGER,
           shape: BMAP_POINT_SHAPE_CIRCLE,
-          color: "red",
+          color: "red"
         };
         console.log(polyList);
         var pointCollection = new BMap.PointCollection(polyList, options);
         window.baseMap.addOverlay(pointCollection);
+        if(point) {
+          vm.drawBlue(point);
+        }
       });
     },
+    // drawPloy() {
+    //   getRegionData().then(resp => {
+    //     var polyList = [];
+    //     resp.data.data.map(item => {
+    //       var path = [];
+    //       // var newStr = item.cors1.substr(0, item.cors1.length - 1);
+    //       // newStr.split("],").map(v => {
+    //       //   path.push({
+    //       //     lng: v.substr(1).split(",")[0],
+    //       //     lat: v.substr(1).split(",")[1]
+    //       //   });
+    //       // });
+    //       path.push({
+    //         lng: item.bdx,
+    //         lat: item.bdy
+    //       });
+    //       //   console.log(item)
+    //       //   var pt = new BMap.Point(getCenterPoint(path).lng, getCenterPoint(path).lat);
+    //       //   points.push(pt);
+    //       var opts = {
+    //         position: new BMap.Point(
+    //           getCenterPoint(path).lng,
+    //           getCenterPoint(path).lat
+    //         ), // 指定文本标注所在的地理位置
+    //         offset: new BMap.Size(10, -30) //设置文本偏移量
+    //       };
+    //       var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
+    //       label.setStyle({
+    //         color: "red",
+    //         fontSize: "14px",
+    //         padding: "0 8px",
+    //         height: "24px",
+    //         lineHeight: "24px",
+    //         borderRadius: "12px",
+    //         fontFamily: "微软雅黑"
+    //       });
+    //       var point = new BMap.Point(getCenterPoint(path).lng,
+    //           getCenterPoint(path).lat);
+    //       var marker = new BMap.Marker(point);
+    //       window.baseMap.addOverlay(marker);
+    //       marker.setLabel(label);
+    //       polyList.push(getCenterPoint(path));
+    //     });
+    //     // var options = {
+    //     //   size: BMAP_POINT_SIZE_BIGGER,
+    //     //   shape: BMAP_POINT_SHAPE_CIRCLE,
+    //     //   color: "red"
+    //     // };
+    //     // console.log(polyList);
+    //     // var pointCollection = new BMap.PointCollection(polyList, options);
+    //     // window.baseMap.addOverlay(pointCollection);
+    //   });
+    // },
     changeChoose(val) {
       var vm = this;
       this.chosedArea = val.value;
@@ -468,7 +532,12 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
-        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + vm.date + ' 最新数据', '南通市“战疫图”:' + vm.date + ' 最新数据');
+        this.shareList(
+          "https://yqfk.ntschy.com/swnt.png",
+          window.location.href,
+          "南通市“战疫图”:" + vm.date + " 最新数据",
+          "南通市“战疫图”:" + vm.date + " 最新数据"
+        );
       });
     },
     getDayStatisticsDetails() {
@@ -564,6 +633,7 @@ export default {
     },
     location() {
       var vm = this;
+      vm.clickIndex = "";
       var geolocation = new BMap.Geolocation();
       geolocation.getCurrentPosition(
         function(r) {
@@ -575,8 +645,8 @@ export default {
             var mk = new BMap.Marker(r.point, {
               icon: locPoint
             });
-              vm.pointOne = r.point;
-            console.log(vm.pointOne)
+            vm.pointOne = r.point;
+            console.log(vm.pointOne);
             window.baseMap.addOverlay(mk);
             window.baseMap.setZoom(16);
             window.baseMap.panTo(r.point);
@@ -609,10 +679,10 @@ export default {
             //     lat: v.substr(1).split(",")[1]
             //   });
             // });
-              path.push({
-                  lng: item.bdx,
-                  lat: item.bdy
-              });
+            path.push({
+              lng: item.bdx,
+              lat: item.bdy
+            });
             polyList.push({
               value: item,
               centerPoint: getCenterPoint(path),
@@ -704,7 +774,7 @@ export default {
     },
     // 查看
     lookAt(item) {
-        console.log(1)
+      console.log(1);
       var pointList = [];
       var newStr = item.cors1.substr(0, item.cors1.length - 1);
       newStr.split("],").map(v => {
@@ -747,25 +817,77 @@ export default {
       //     console.log(resp)
       // })
     },
-    locationTo(item) {
-        var vm = this;
-        if (vm.isShowSearchList){
-            vm.isShowSearchList = false;
-        }else {
-            var point = new BMap.Point(
-                getCenterPoint(item.path).lng,
-                getCenterPoint(item.path).lat
-            );
-            vm.pointTwo = point;
-            // console.log(vm.pointOne,vm.pointTwo)
-            // window.baseMap.panTo(point);
-            // window.baseMap.setZoom(16);
-            window.baseMap.setViewport([vm.pointOne,vm.pointTwo],{
-              margins:[90,30,220,30]
-            });
-            vm.drawPloy();
+    drawBlue(point) {
+        var points2 = [point]; // 添加海量点数据
+ 
+        var options2 = {
+            size: BMAP_POINT_SIZE_BIGGER,
+            shape: BMAP_POINT_SHAPE_CIRCLE,
+            color: 'blue'
         }
-
+         var pointCollection2 = new BMap.PointCollection(points2, options2);
+         window.baseMap.addOverlay(pointCollection2);
+    },
+    locationTo(item,index) {
+      console.log(item)
+      var vm = this;
+      vm.clickIndex = index;
+      if (vm.isShowSearchList) {
+        vm.isShowSearchList = false;
+      } else {
+        var point = new BMap.Point(
+          getCenterPoint(item.path).lng,
+          getCenterPoint(item.path).lat
+        );
+        vm.pointTwo = point;
+        // console.log(vm.pointOne,vm.pointTwo)
+        // window.baseMap.panTo(point);
+        // window.baseMap.setZoom(16);
+        window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
+          margins: [90, 30, 220, 30]
+        });
+        vm.drawPloy(point);
+        
+        // var points2 = [point]; // 添加海量点数据
+ 
+        // var options2 = {
+        //     size: BMAP_POINT_SIZE_BIGGER,
+        //     shape: BMAP_POINT_SHAPE_CIRCLE,
+        //     color: 'blue'
+        // }
+        //  var pointCollection2 = new BMap.PointCollection(points2, options2);
+        //  window.baseMap.addOverlay(pointCollection2);
+        // var allOverlay = window.baseMap.getOverlays();
+        // var opts = {
+        //     position: point, // 指定文本标注所在的地理位置
+        //     offset: new BMap.Size(10, -30) //设置文本偏移量
+        // };
+        // for (var i = 0; i < allOverlay.length -1; i++){
+        //   if(allOverlay[i].getLabel) {
+        //     if(allOverlay[i].getLabel()&&allOverlay[i].getLabel().content == item.id.regionName){
+        //       // map.removeOverlay(allOverlay[i]);
+        //       console.log(allOverlay[i].getLabel().content)
+        //       var label = new BMap.Label(allOverlay[i].getLabel().content, opts); // 创建文本标注对象
+        //       label.setStyle({
+        //         color: "blue",
+        //         fontSize: "14px",
+        //         padding: "0 8px",
+        //         height: "24px",
+        //         lineHeight: "24px",
+        //         borderRadius: "12px",
+        //         fontFamily: "微软雅黑"
+        //       });
+        //       allOverlay[i].setLabel(label);
+        //       return false;
+        //     }
+        //   }
+        //   // if(allOverlay[i].getLabel().content == item.id.regionName){
+        //   //   // map.removeOverlay(allOverlay[i]);
+        //   //   console.log(allOverlay[i].getLabel().content)
+        //   //   return false;
+        //   // }
+        // }
+      }
     },
     closeSort() {
       this.isShowNearArea = false;
@@ -806,6 +928,7 @@ export default {
     },
     setTo(item) {
       var vm = this;
+      vm.clickIndex = "";
       vm.keyword = item.name;
       vm.isShowSearchList = false;
       window.baseMap.clearOverlays();
@@ -822,7 +945,7 @@ export default {
       window.baseMap.addOverlay(mk);
       window.baseMap.setZoom(16);
       window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
-     
+
       getRegionData().then(resp => {
         //   console.log(resp.data.data);
         var polyList = [];
@@ -835,10 +958,10 @@ export default {
           //     lat: v.substr(1).split(",")[1]
           //   });
           // });
-            path.push({
-                lng: item.bdx,
-                lat: item.bdy
-            });
+          path.push({
+            lng: item.bdx,
+            lat: item.bdy
+          });
           polyList.push({
             value: item,
             centerPoint: getCenterPoint(path),
@@ -876,10 +999,10 @@ export default {
       });
     },
     showNantongCH() {
-        this.isShowName = true;
-        setTimeout(() => {
-            this.isShowName = false;
-        },2000)
+      this.isShowName = true;
+      setTimeout(() => {
+        this.isShowName = false;
+      }, 2000);
     }
   },
   components: {
@@ -938,6 +1061,7 @@ export default {
         height: 45px;
         text-align: center;
         .value {
+          height:30px;
           line-height: 25px;
           font-size: 24px;
           border-right: 1px solid rgba(216, 214, 214, 0.712);
@@ -1274,7 +1398,7 @@ export default {
     background-color: #fff;
     border-top: 1px solid rgb(224, 223, 223);
     overflow-y: auto;
-    .link{
+    .link {
       width: 100%;
       height: 40px;
       display: flex;
@@ -1283,9 +1407,9 @@ export default {
       z-index: 999;
       bottom: 160px;
       background-color: #fff;
-      span{
+      span {
         width: 35%;
-        color:#d22c2c;
+        color: #d22c2c;
         padding-left: 20px;
         line-height: 40px;
       }
@@ -1304,12 +1428,16 @@ export default {
         width: 60%;
         display: flex;
         flex-direction: row;
-        overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
-        .address{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        .address {
           font-size: 12px;
           padding-left: 20px;
           color: #ccc;
-          overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
       .length {
@@ -1332,7 +1460,7 @@ export default {
         // flex: 1;
         color: #d22c2c;
         position: relative;
-        span{
+        span {
           font-size: 12px;
           height: 30px;
           line-height: 30px;
@@ -1340,6 +1468,16 @@ export default {
           top: 0;
           right: 80px;
         }
+      }
+    }
+    .clickChosed {
+      background-color: rgb(39, 39, 253);
+      border-radius: 15px;
+      .name {
+        color: #fff;
+      }
+      .length {
+        color: #fff;
       }
     }
     .close {
@@ -1354,7 +1492,7 @@ export default {
       font-size: 10px;
       color: #ccc;
       text-align: center;
-      i{
+      i {
         width: 20px;
         height: 20px;
         position: absolute;
@@ -1364,17 +1502,17 @@ export default {
         background-size: 20px 20px;
       }
       .chy-name {
-          width: 180px;
-          height: 20px;
-          line-height: 20px;
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%,-50%);
-          z-index: 999;
-          color: gray;
-          font-size: 14px;
-          background-color: #fff;
+        width: 180px;
+        height: 20px;
+        line-height: 20px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+        color: gray;
+        font-size: 14px;
+        background-color: #fff;
       }
       .close-button {
         width: 100px;
@@ -1430,7 +1568,7 @@ export default {
       }
     }
   }
-  .act{
+  .act {
     overflow: hidden;
   }
 }
