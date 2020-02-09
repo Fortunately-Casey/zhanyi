@@ -172,6 +172,11 @@ import {
 import { getCenterPoint, compare, blur } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
 import locIcon from "@/assets/image/blue-loc1.png";
+import wx from 'weixin-js-sdk'
+import axios from "axios";
+import {
+    getURL
+} from "@/common/tool/tool";
 export default {
   data() {
     return {
@@ -232,8 +237,11 @@ export default {
     };
   },
   created() {
+  	
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
+//  this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + this.date + ' 最新数据', '南通市“战疫图”:' + this.date + ' 最新数据');
+
     // this.drawPoint();
     // this.drawPloy();
 
@@ -247,6 +255,80 @@ export default {
         },500)
     },
   methods: {
+  	shareList(imgUrl, link, desc, title) {
+			    // var url = encodeURIComponent(link)
+			    var url = link
+			    // 分享
+			    const signUrl = getURL("/weixin/getSignPackage")
+			    axios.post(signUrl, {url: url}).then((res) => {
+			        res = res.data.data;
+			        console.log(res);
+			        console.log("-----------------------");
+			        console.log('res.noncestr:'+res.nonceStr);
+			        wx.config({
+			            debug: false, // true:是调试模式,调试时候弹窗,会打印出日志
+			            appId: res.appId, // 微信appid
+			            timestamp: res.timestamp, // 时间戳
+			            nonceStr: res.nonceStr, // 随机字符串
+			            signature: res.signature, // 签名
+			            jsApiList: [
+			                // 所有要调用的 API 都要加到这个列表中
+			                'updateTimelineShareData',
+			                'updateAppMessageShareData'
+			            ]
+			        })
+			        wx.checkJsApi({
+			            jsApiList: [
+			                // 所有要调用的 API 都要加到这个列表中
+			                'updateTimelineShareData',
+			                'updateAppMessageShareData'
+			            ],
+			            success: function (res) {
+			                // alert("checkJsApi:success");
+			            }
+			        })
+			
+			        wx.ready(function () {
+			            // 微信分享的数据
+			            var shareData = {
+			                imgUrl: imgUrl, // 分享显示的缩略图地址
+			                link: link, // 分享地址
+			                desc: desc, // 分享描述
+			                title: title, // 分享标题
+			                success: function () {
+			                    // 分享成功可以做相应的数据处理
+			                    // alert('分享成功')
+			                    // alert('appId:' + res.appId)
+			                    // alert('timestamp:' + res.timestamp)
+			                    // alert('nonceStr:' + res.nonceStr)
+			                    // alert('signature:' + res.signature)
+			                    console.log('调用成功');
+			                },
+			                fail: function () {
+			                    // alert('调用失败')
+												console.log('失败');
+			                },
+			                complete: function () {
+			                    // alert('调用结束')
+												console.log('调用结束');
+			                }
+			            }
+			            wx.updateAppMessageShareData(shareData);
+			            wx.updateTimelineShareData(shareData);
+			            
+			        })
+			        wx.error(function (res) {
+			            // config信息验证失败会执行error函数，如签名过期导致验证失败，
+			            // 具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，
+			            // 对于SPA可以在这里更新签名。
+			            console.log(res)
+			            //alert('分享失败')
+			
+			        })
+			    }).catch((err) => {
+			        console.log(err)
+			    })
+			},
     drawPoint() {
       getPatientTrail().then(resp => {
         var points = [];
@@ -386,6 +468,7 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
+        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + vm.date + ' 最新数据', '南通市“战疫图”:' + vm.date + ' 最新数据');
       });
     },
     getDayStatisticsDetails() {
