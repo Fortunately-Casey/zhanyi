@@ -532,12 +532,7 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
-        this.shareList(
-          "https://yqfk.ntschy.com/swnt.png",
-          window.location.href,
-          "南通市“战疫图”:" + vm.date + " 最新数据",
-          "南通市“战疫图”:" + vm.date + " 最新数据"
-        );
+        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区\n一图在手，疫情我有', '战疫图 • 南通');
       });
     },
     getDayStatisticsDetails() {
