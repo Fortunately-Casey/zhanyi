@@ -134,7 +134,7 @@
           @click="setTo(item)"
         >{{item.name}}</div>
       </div>
-      <div class="list-wrap">
+      <div class="list-wrap" >
         <div
           class="sort-item"
           v-for="(item,index) in sortList"
@@ -389,9 +389,9 @@ export default {
     },
     openInfo:function(content,mk){
       var opts = {
-        width : 250,     // 信息窗口宽度
+        width : 100,     // 信息窗口宽度
         height: 80,     // 信息窗口高度
-        title : "信息窗口" , // 信息窗口标题
+        title : "详情" , // 信息窗口标题
         enableMessage:true//设置允许信息窗发送短息
       };
       var p = mk;
@@ -413,8 +413,9 @@ export default {
           });
           mk.id = data[i].id;
           vm.markList.push(mk);
+          var values = data[i].remarks.split("|").join("<br>");
           window.baseMap.addOverlay(mk);
-          addClickHandler("123",mk);
+          addClickHandler(values,mk);
           var options = {
             position: pt,
             offset: new BMap.Size(10, -30) //设置文本偏移量
