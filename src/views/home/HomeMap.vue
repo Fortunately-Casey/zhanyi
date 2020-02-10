@@ -357,7 +357,7 @@ export default {
             };
             var label = new BMap.Label(v.placeName, opts); // 创建文本标注对象
             label.setStyle({
-              color: "red",
+              color: "#D22D2D",
               fontSize: "12px",
               height: "20px",
               lineHeight: "20px",
@@ -369,7 +369,7 @@ export default {
         var options = {
           size: BMAP_POINT_SIZE_BIG,
           shape: BMAP_POINT_SHAPE_CIRCLE,
-          color: "red"
+          color: "#D22D2D"
         };
         var pointCollection = new BMap.PointCollection(points, options);
         window.baseMap.addOverlay(pointCollection);
@@ -401,7 +401,7 @@ export default {
           };
           var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
           label.setStyle({
-            color: "red",
+            color: "#D22D2D",
             fontSize: "14px",
             padding: "0 8px",
             height: "24px",
@@ -416,7 +416,7 @@ export default {
         var options = {
           size: BMAP_POINT_SIZE_BIGGER,
           shape: BMAP_POINT_SHAPE_CIRCLE,
-          color: "red"
+          color: "#D22D2D"
         };
         window.baseMap.setViewport(polyList, {
             margins: [90, 30, 220, 30]
@@ -539,7 +539,7 @@ export default {
                 };
                 var label = new BMap.Label(max.placeName, opts); // 创建文本标注对象
                 label.setStyle({
-                  color: "red",
+                  color: "#D22D2D",
                   fontSize: "12px",
                   height: "20px",
                   lineHeight: "20px",
@@ -737,7 +737,7 @@ export default {
       };
       var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
       label.setStyle({
-        color: "red",
+        color: "#D22D2D",
         fontSize: "12px",
         height: "20px",
         lineHeight: "20px",
@@ -818,7 +818,7 @@ export default {
             };
             var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
             label.setStyle({
-              color: "red",
+              color: "#D22D2D",
               fontSize: "14px",
               padding: "0 8px",
               height: "24px",
@@ -833,7 +833,7 @@ export default {
           var options = {
             size: BMAP_POINT_SIZE_BIGGER,
             shape: BMAP_POINT_SHAPE_CIRCLE,
-            color: "red"
+            color: "#D22D2D"
           };
           window.baseMap.setViewport(polyList, {
               margins: [90, 30, 220, 30]
@@ -1224,8 +1224,9 @@ export default {
     right: 15px;
     top: 100px;
     z-index: 999;
-    background-color: #d22d2d;
-    color: #fff;
+    background-color: #fff;
+    border:1px solid #0083EC;
+    color: #0083EC;
     .location-icon {
       width: 15px;
       height: 15px;
