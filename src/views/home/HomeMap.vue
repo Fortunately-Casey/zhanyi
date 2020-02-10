@@ -186,6 +186,7 @@ import axios from "axios";
 import { getURL } from "@/common/tool/tool";
 import icon1 from "@/assets/image/v1.png"
 import icon2 from "@/assets/image/v2.gif"
+import $ from 'jquery'
 
 export default {
   data() {
@@ -438,6 +439,7 @@ export default {
             for(var j = 0;j<vm.sortList.length;j++){
               if(vm.sortList[j].id.id == marker.id){
                 vm.clickIndex = j;
+                vm.scrollToText();
                 break;
               }
             }
@@ -500,6 +502,11 @@ export default {
         window.baseMap.addOverlay(pointCollection);*/
 
       });
+    },
+    scrollToText:function(){
+      var st = $(".sort-item").height() * this.clickIndex;
+      console.log(st);
+     $(".sortList").scrollTop(st);
     },
     changeChoose(val) {
       var vm = this;
