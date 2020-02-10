@@ -180,6 +180,7 @@ import {
 import { getCenterPoint, compare, blur } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
 import locIcon from "@/assets/image/blue-loc1.png";
+import blueIcon from "@/assets/image/shan.gif";
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { getURL } from "@/common/tool/tool";
@@ -242,8 +243,9 @@ export default {
       pointOne: {},
       pointTwo: {},
       clickIndex: "",
-      blueMark:"",
-      pointCollection2:""
+      bluePoint:"",
+      pointCollection2:"",
+      smallPoint:""
     };
   },
   created() {
@@ -519,7 +521,6 @@ export default {
                     });
                   }
                 });
-
                 var max = lengthList.sort(function(a, b) {
                   return a.length < b.length;
                 })[0];
@@ -586,8 +587,9 @@ export default {
     clickMyLocation() {
        var vm = this;
        vm.clickIndex = 0;
-       window.baseMap.clearOverlays();
-       vm.drawPloy();
+      //  window.baseMap.clearOverlays();
+      //  vm.drawPloy();
+       window.baseMap.removeOverlay(vm.smallPoint);
        vm.keyword = "";
        var geolocation = new BMap.Geolocation();
        geolocation.getCurrentPosition(
@@ -631,12 +633,12 @@ export default {
                   });
                 }
               });
-
               vm.sortList = lengthList.sort(compare("length"));
               var bluePoint = new BMap.Point(
                 getCenterPoint(vm.sortList[0].path).lng,
                 getCenterPoint(vm.sortList[0].path).lat
               );
+              vm.setMapArea();
               vm.drawBlue(bluePoint);
             });
           } else {
@@ -710,7 +712,6 @@ export default {
             },
             { enableHighAccuracy: true }
           );
-
           this.isShowNearArea = !this.isShowNearArea;
         });
       }
@@ -760,22 +761,33 @@ export default {
     },
     drawBlue(point) {
         var vm = this;
-        window.baseMap.removeOverlay(vm.pointCollection2);
-        var points2 = [point]; 
+        // window.baseMap.removeOverlay(vm.pointCollection2);
+        window.baseMap.removeOverlay(vm.bluePoint);
+        // var points2 = [point]; 
         // window.baseMap.removeOverlay(vm.blueMaker);
-        var allOverlay = window.baseMap.getOverlays();
+        // var allOverlay = window.baseMap.getOverlays();
         var opts = {
             position: point, // 指定文本标注所在的地理位置
             offset: new BMap.Size(10, -30) //设置文本偏移量
         };
-        var options2 = {
-            size: BMAP_POINT_SIZE_BIGGER,
-            shape: BMAP_POINT_SHAPE_CIRCLE,
-            color: 'blue'
-        }
-        vm.pointCollection2 = new BMap.PointCollection(points2, options2);
-         //  pointCollection2.setTop(true);
-        window.baseMap.addOverlay(vm.pointCollection2);
+        var locPoint = new BMap.Icon(blueIcon, new BMap.Size(20, 20), {
+          anchor: new BMap.Size(10, 10),
+          imageSize: new BMap.Size(20, 20)
+        });
+        var mk = new BMap.Marker(point, {
+          icon: locPoint
+        });
+        vm.bluePoint = mk;
+        window.baseMap.addOverlay(mk);
+        // var options2 = {
+            
+        //     size: BMAP_POINT_SIZE_BIGGER,
+        //     shape: BMAP_POINT_SHAPE_CIRCLE,
+        //     color: 'blue'
+        // }
+        // vm.pointCollection2 = new BMap.PointCollection(points2, options2);
+        //  //  pointCollection2.setTop(true);
+        // window.baseMap.addOverlay(vm.pointCollection2);
     },
     locationTo(item,index,isSetView) {
       var vm = this;
@@ -885,7 +897,8 @@ export default {
         icon: locPoint
       });
       vm.pointOne = new BMap.Point(item.lng, item.lat);
-      window.baseMap.addOverlay(mk);
+      vm.smallPoint = mk;
+      window.baseMap.addOverlay(vm.smallPoint);
       window.baseMap.setZoom(17);
       window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
 
@@ -927,6 +940,22 @@ export default {
       setTimeout(() => {
         this.isShowName = false;
       }, 2000);
+    },
+    setMapArea() {
+      getRegionData().then(resp => {
+        var polyList = [];
+        resp.data.data.map(item => {
+          var path = [];
+          path.push({
+            lng: item.bdx,
+            lat: item.bdy
+          });
+          polyList.push(getCenterPoint(path));
+        });
+        window.baseMap.setViewport(polyList, {
+            margins: [90, 30, 220, 30]
+        });
+      });
     }
   },
   components: {
