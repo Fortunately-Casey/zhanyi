@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       center: { lng: 0, lat: 0 },
-      zoom: 3
+      zoom: 9
     };
   },
   methods: {
@@ -36,6 +36,7 @@ export default {
             })
          }   
       });
+      this.zoom = 9;
       map.addEventListener("moveend", function (e) {
       var ZoomNum = map.getZoom();
          var layers =  window.baseMap.getOverlays();
@@ -56,7 +57,6 @@ export default {
          } 
       })
       let _this = this; 
-      this.zoom = 15;
       var geolocation = new BMap.Geolocation();
       geolocation.getCurrentPosition(
         function(r) {

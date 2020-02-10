@@ -139,7 +139,7 @@
           class="sort-item"
           v-for="(item,index) in sortList"
           :key="index"
-          @click="locationTo(item,index)"
+          @click="locationTo(item,index,true)"
           :class="clickIndex === index?'clickChosed':''"
         >
           <div class="name">
@@ -257,8 +257,8 @@ export default {
     var vm = this;
     setTimeout(function() {
       vm.location();
-      vm.showNearArea();
       vm.drawPloy();
+      vm.showNearArea();
     }, 1000);
   },
   methods: {
@@ -570,7 +570,7 @@ export default {
             });
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
-            window.baseMap.setZoom(17);
+            // window.baseMap.setZoom(17);
             window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
@@ -692,6 +692,7 @@ export default {
                 });
 
                 vm.sortList = lengthList.sort(compare("length"));
+                vm.locationTo(vm.sortList[0],0);
                 vm.isShowSort = true;
                 // console.log(sortList);
                 // var max = lengthList.sort(function(a, b) {
@@ -821,7 +822,7 @@ export default {
          //  pointCollection2.setTop(true);
         window.baseMap.addOverlay(vm.pointCollection2);
     },
-    locationTo(item,index) {
+    locationTo(item,index,isSetView) {
       var vm = this;
       vm.clickIndex = index;
       if (vm.isShowSearchList) {
@@ -833,22 +834,10 @@ export default {
         );
         vm.pointTwo = point;
         vm.drawBlue(point);
-        window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
-          margins: [90, 30, 220, 30]
-        });
-        var allOverlay = window.baseMap.getOverlays();
-        var opts = {
-            position: point, // 指定文本标注所在的地理位置
-            offset: new BMap.Size(10, -30) //设置文本偏移量
-        };
-        for (var i = 0; i < allOverlay.length -1; i++){
-          if(allOverlay[i].getLabel) {
-            console.log(allOverlay[i].getLabel());
-            if(allOverlay[i].getLabel()&&allOverlay[i].getLabel().content == item.id.regionName){
-              console.log(allOverlay[i].getLabel().content,'11111')
-              return false;
-            }
-          }
+        if(isSetView) {
+          window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
+            margins: [90, 30, 220, 30]
+          });
         }
       }
     },
