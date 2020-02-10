@@ -18,7 +18,7 @@ module.exports = {
     open: true,
     /* 设置为0.0.0.0则所有的地址均能访问 */
     // eslint-disable-next-line prettier/prettier
-    host: '192.168.0.107',
+    host: '0.0.0.0',
     port: 8066,
     https: true,
     hotOnly: false,

@@ -24,7 +24,7 @@ export function getDayStatisticsDetails(params) {
 }
 // 区县查看
 export function getRegionData(params) {
-    const url = getURL("/region/getRegionData")
+    const url = getURL("/ncppoint/getNcpPointList")
     return axios.get(url, {
         params:params
     }).then((resp) => {

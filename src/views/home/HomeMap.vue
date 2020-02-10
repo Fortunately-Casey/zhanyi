@@ -184,6 +184,9 @@ import blueIcon from "@/assets/image/shan.gif";
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { getURL } from "@/common/tool/tool";
+import icon1 from "@/assets/image/v1.png"
+import icon2 from "@/assets/image/v2.png"
+
 export default {
   data() {
     return {
@@ -382,10 +385,55 @@ export default {
     lostblur() {
       blur();
     },
-    drawPloy(point) {
+    drawPloy() {
       var vm = this; 
       getRegionData().then(resp => {
-        var polyList = [];
+        console.log(resp);
+        var data = resp.data.data;
+        var locPoint = new BMap.Icon(icon1, new BMap.Size(28, 28));
+        var opts = {
+          width : 250,     // 信息窗口宽度
+          height: 80,     // 信息窗口高度
+          title : "信息窗口" , // 信息窗口标题
+          enableMessage:true//设置允许信息窗发送短息
+        };
+        for(var i = 0;i < data.length;i++){
+          var pt = new BMap.Point(data[i].bdx, data[i].bdy);
+          var mk = new BMap.Marker(pt,{
+            icon: locPoint
+          });
+          window.baseMap.addOverlay(mk);
+          addClickHandler("123",mk);
+        }
+        function addClickHandler(content,marker){
+          marker.addEventListener("click",function(e){
+            openInfo(content,e)}
+          );
+        }
+        function openInfo(content,e){
+          var p = e.target;
+          var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+          var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+          window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
+        }
+        var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
+        label.setStyle({
+          color: "#D22D2D",
+          fontSize: "14px",
+          padding: "0 8px",
+          height: "24px",
+          lineHeight: "24px",
+          borderRadius: "12px",
+          fontFamily: "微软雅黑"
+        });
+        window.baseMap.addOverlay(label);
+      /*
+        var mk = new BMap.Marker(r.point, {
+          icon: locPoint
+        });
+        vm.pointOne = r.point;
+        window.baseMap.addOverlay(mk);*/
+        /*var polyList = [];
         resp.data.data.map(item => {
           var path = [];
           path.push({
@@ -410,6 +458,8 @@ export default {
             fontFamily: "微软雅黑"
           });
           window.baseMap.addOverlay(label);
+          var point = getCenterPoint(path);
+          point.
           polyList.push(getCenterPoint(path));
           window.titleLabel = label;
         });
@@ -422,10 +472,8 @@ export default {
             margins: [90, 30, 220, 30]
         });
         var pointCollection = new BMap.PointCollection(polyList, options);
-        window.baseMap.addOverlay(pointCollection);
-        if(point) {
-          vm.drawBlue(point);
-        }
+        window.baseMap.addOverlay(pointCollection);*/
+
       });
     },
     splitName(name) {
