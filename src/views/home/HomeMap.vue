@@ -232,6 +232,7 @@ export default {
       chosedArea: {
         name: "崇川区"
       },
+      
       patientList: [],
       sortList: [],
       keyword: "",
@@ -570,7 +571,7 @@ export default {
             });
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
-            // window.baseMap.setZoom(17);
+          //  window.baseMap.setZoom(17);
             window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
@@ -921,7 +922,6 @@ export default {
         });
 
         vm.sortList = lengthList.sort(compare("length"));
-        console.log(polyList);
 
         vm.isShowNearArea = !vm.isShowNearArea;
       });

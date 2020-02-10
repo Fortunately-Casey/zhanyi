@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
+    "lib-flexible": "^0.3.2",
     "mint-ui": "^2.2.13",
+    "postcss-px2rem-exclude": "0.0.6",
     "vue": "^2.6.10",
     "vue-baidu-map": "^0.21.22",
     "vue-router": "^3.1.3",
