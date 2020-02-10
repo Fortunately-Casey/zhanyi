@@ -989,7 +989,7 @@ export default {
         height: 45px;
         text-align: center;
         .value {
-          height:30px;
+          height:27px;
           line-height: 25px;
           font-size: 24px;
           border-right: 1px solid rgba(216, 214, 214, 0.712);
@@ -1338,6 +1338,7 @@ export default {
       span {
         width: 35%;
         color: #d22c2c;
+        font-size:14px;
         padding-left: 10px;
         line-height: 40px;
       }
