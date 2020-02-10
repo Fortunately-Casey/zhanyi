@@ -159,7 +159,7 @@
       </div>
       <div class="close">
         <!--<div class="close-button" @click="closeSort">关闭</div>-->
-        数据来源：南通市疾病预防控制中心
+        技术合作：南通市测绘院有限公司
         <i @click="showNantongCH"></i>
         <div class="chy-name" v-if="isShowName">南通市测绘院有限公司</div>
       </div>
@@ -467,7 +467,7 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
-        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区\n一图在手，疫情我有', '战疫图 • 南通');
+        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病防控中心', '战疫图 • 南通（持续更新）');
       });
     },
     getDayStatisticsDetails() {
