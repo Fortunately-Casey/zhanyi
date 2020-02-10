@@ -961,6 +961,13 @@ export default {
   components: {
     MMap,
     DropDown
+  },
+  watch:{
+    keyword() {
+      if(this.keyword === "") {
+        this.isShowSearchList = false;
+      }
+    }
   }
 };
 </script>
