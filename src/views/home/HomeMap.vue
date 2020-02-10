@@ -429,6 +429,7 @@ export default {
             borderRadius: "12px",
             fontFamily: "微软雅黑"
           });
+          label.hide();
           window.baseMap.addOverlay(label);
         }
         function addClickHandler(content,marker){
@@ -861,6 +862,7 @@ export default {
         // window.baseMap.addOverlay(vm.pointCollection2);
     },
     locationTo(item,index,isSetView) {
+      console.log(item);
       var vm = this;
       vm.clickIndex = index;
       var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
