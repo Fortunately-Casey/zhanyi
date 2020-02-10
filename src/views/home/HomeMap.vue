@@ -1225,8 +1225,8 @@ export default {
     top: 100px;
     z-index: 999;
     background-color: #fff;
-    border:1px solid #0083EC;
-    color: #0083EC;
+    border:1px solid #3579f8;
+    color: #3579f8;
     .location-icon {
       width: 15px;
       height: 15px;
@@ -1428,7 +1428,7 @@ export default {
       }
     }
     .clickChosed {
-      background-color:#b5b5f5;
+      background-color:#3579f8;
       border-radius: 15px;
       .name {
         color: #fff;
@@ -1438,6 +1438,9 @@ export default {
       }
 
       .length {
+        color: #fff;
+      }
+      .length1 {
         color: #fff;
       }
     }
