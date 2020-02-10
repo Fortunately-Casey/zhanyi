@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       center: { lng: 0, lat: 0 },
-      zoom: 3
+      zoom: 9
     };
   },
   methods: {
@@ -56,7 +56,7 @@ export default {
          } 
       })
       let _this = this; 
-      this.zoom = 15;
+      //this.zoom = 15;
       var geolocation = new BMap.Geolocation();
       geolocation.getCurrentPosition(
         function(r) {

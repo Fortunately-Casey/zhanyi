@@ -5,6 +5,7 @@ import store from "./store";
 import BaiduMap from "vue-baidu-map";
 import Mint from 'mint-ui';
 import "mint-ui/lib/style.css";
+import 'lib-flexible/flexible.js'
 Vue.use(Mint);
 Vue.use(BaiduMap, {
   ak: "Ocm4ieXqGPaZZgblGHi4GTnDfGfZcBbv"

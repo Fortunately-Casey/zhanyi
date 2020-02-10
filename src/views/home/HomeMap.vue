@@ -570,7 +570,7 @@ export default {
             });
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
-            window.baseMap.setZoom(17);
+          //  window.baseMap.setZoom(17);
             window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
@@ -692,6 +692,7 @@ export default {
                 });
 
                 vm.sortList = lengthList.sort(compare("length"));
+                vm.locationTo(vm.sortList[0]);
                 vm.isShowSort = true;
                 // console.log(sortList);
                 // var max = lengthList.sort(function(a, b) {
@@ -833,9 +834,9 @@ export default {
         );
         vm.pointTwo = point;
         vm.drawBlue(point);
-        window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
-          margins: [90, 30, 220, 30]
-        });
+        // window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
+        //   margins: [90, 30, 220, 30]
+        // });
         var allOverlay = window.baseMap.getOverlays();
         var opts = {
             position: point, // 指定文本标注所在的地理位置
@@ -932,7 +933,6 @@ export default {
         });
 
         vm.sortList = lengthList.sort(compare("length"));
-        console.log(polyList);
 
         vm.isShowNearArea = !vm.isShowNearArea;
       });
