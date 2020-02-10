@@ -250,7 +250,8 @@ export default {
       clickIndex: "",
       bluePoint:"",
       pointCollection2:"",
-      smallPoint:""
+      smallPoint:"",
+      localPoint:""
     };
   },
   created() {
@@ -652,6 +653,7 @@ export default {
             var mk = new BMap.Marker(r.point, {
               icon: locPoint
             });
+            vm.localPoint = mk;
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
           //  window.baseMap.setZoom(17);
@@ -713,12 +715,13 @@ export default {
                 }
               });
               vm.sortList = lengthList.sort(compare("length"));
+               vm.locationTo(vm.sortList[0],0);
               var bluePoint = new BMap.Point(
                 getCenterPoint(vm.sortList[0].path).lng,
                 getCenterPoint(vm.sortList[0].path).lat
               );
               vm.setMapArea();
-              vm.drawBlue(bluePoint);
+              // vm.drawBlue(bluePoint);
             });
           } else {
             alert("failed" + this.getStatus());
@@ -872,15 +875,17 @@ export default {
       console.log(item);
       var vm = this;
       vm.clickIndex = index;
+      // window.baseMap.removeOverlay(vm.localPoint);
       var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
       var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
+      var values = item.id.remarks.split("|").join("<br>");
       for (var i = 0; i < this.markList.length; i++) {
         if (this.markList[i].id == item.id.id) {
           for (var j = 0; j < vm.markList.length; j++) {
             vm.markList[j].setIcon(locPoint1);
           }
           this.markList[i].setIcon(locPoint2);
-          this.openInfo("123", this.markList[i]);
+          this.openInfo(values, this.markList[i]);
           break;
         }
 
@@ -979,8 +984,8 @@ export default {
       vm.clickIndex = "";
       vm.keyword = item.name;
       vm.isShowSearchList = false;
-      window.baseMap.clearOverlays();
-      vm.drawPloy();
+      window.baseMap.removeOverlay(vm.localPoint);
+      // vm.drawPloy();
       var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
         anchor: new BMap.Size(5, 5),
         imageSize: new BMap.Size(25, 25)
@@ -992,7 +997,7 @@ export default {
       vm.pointOne = new BMap.Point(item.lng, item.lat);
       vm.smallPoint = mk;
       window.baseMap.addOverlay(vm.smallPoint);
-      window.baseMap.setZoom(17);
+      window.baseMap.setZoom(9);
       window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
 
       getRegionData().then(resp => {
