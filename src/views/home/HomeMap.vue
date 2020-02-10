@@ -465,7 +465,7 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
-        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区\n数据来源：南通市疾病防控中心', '战疫图 • 南通');
+        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病防控中心', '战疫图 • 南通（持续更新）');
       });
     },
     getDayStatisticsDetails() {
