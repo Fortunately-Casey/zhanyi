@@ -144,7 +144,7 @@
         >
           <div class="name">
             {{item.id.regionName}}
-            <div class="address">{{splitName(item.id.address)}}</div>
+            <div class="address">{{item.id.address}}</div>
           </div>
 
           <div :class="index==0?'length1':'length'">
@@ -404,6 +404,21 @@ export default {
           });
           window.baseMap.addOverlay(mk);
           addClickHandler("123",mk);
+          var options = {
+            position: pt,
+            offset: new BMap.Size(10, -30) //设置文本偏移量
+          };
+          var label = new BMap.Label(data[i].regionName, options); // 创建文本标注对象
+          label.setStyle({
+            color: "#D22D2D",
+            fontSize: "14px",
+            padding: "0 8px",
+            height: "24px",
+            lineHeight: "24px",
+            borderRadius: "12px",
+            fontFamily: "微软雅黑"
+          });
+          window.baseMap.addOverlay(label);
         }
         function addClickHandler(content,marker){
           marker.addEventListener("click",function(e){
@@ -416,17 +431,7 @@ export default {
           var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
           window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
         }
-        var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
-        label.setStyle({
-          color: "#D22D2D",
-          fontSize: "14px",
-          padding: "0 8px",
-          height: "24px",
-          lineHeight: "24px",
-          borderRadius: "12px",
-          fontFamily: "微软雅黑"
-        });
-        window.baseMap.addOverlay(label);
+
       /*
         var mk = new BMap.Marker(r.point, {
           icon: locPoint
@@ -475,9 +480,6 @@ export default {
         window.baseMap.addOverlay(pointCollection);*/
 
       });
-    },
-    splitName(name) {
-        return name.slice(3)
     },
     changeChoose(val) {
       var vm = this;
