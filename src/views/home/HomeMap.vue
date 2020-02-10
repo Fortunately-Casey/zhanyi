@@ -371,14 +371,6 @@ export default {
         var pointCollection = new BMap.PointCollection(points, options);
         window.baseMap.addOverlay(pointCollection);
       });
-      //   for (; i < MAX; i++) {
-      //     pt = new BMap.Point(Math.random() * 40 + 85, Math.random() * 30 + 21);
-      //     markers.push(new BMap.Marker(pt));
-      //   }
-      //   //最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
-      //   var markerClusterer = new BMapLib.MarkerClusterer(map, {
-      //     markers: markers
-      //   });
     },
     onblur() {
       var vm = this;
@@ -393,20 +385,10 @@ export default {
         var polyList = [];
         resp.data.data.map(item => {
           var path = [];
-          // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-          // newStr.split("],").map(v => {
-          //   path.push({
-          //     lng: v.substr(1).split(",")[0],
-          //     lat: v.substr(1).split(",")[1]
-          //   });
-          // });
           path.push({
             lng: item.bdx,
             lat: item.bdy
           });
-          //   console.log(item)
-          //   var pt = new BMap.Point(getCenterPoint(path).lng, getCenterPoint(path).lat);
-          //   points.push(pt);
           var opts = {
             position: new BMap.Point(
               getCenterPoint(path).lng,
@@ -443,65 +425,6 @@ export default {
     splitName(name) {
         return name.slice(3)
     },
-    // drawPloy(point) {
-    //   var vm = this;
-    //   getRegionData().then(resp => {
-    //     var polyList = [];
-    //     resp.data.data.map(item => {
-    //       var path = [];
-    //       // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-    //       // newStr.split("],").map(v => {
-    //       //   path.push({
-    //       //     lng: v.substr(1).split(",")[0],
-    //       //     lat: v.substr(1).split(",")[1]
-    //       //   });
-    //       // });
-    //       path.push({
-    //         lng: item.bdx,
-    //         lat: item.bdy
-    //       });
-    //       //   console.log(item)
-    //       //   var pt = new BMap.Point(getCenterPoint(path).lng, getCenterPoint(path).lat);
-    //       //   points.push(pt);
-    //       var opts = {
-    //         position: new BMap.Point(
-    //           getCenterPoint(path).lng,
-    //           getCenterPoint(path).lat
-    //         ), // 指定文本标注所在的地理位置
-    //         offset: new BMap.Size(10, -30) //设置文本偏移量
-    //       };
-    //       var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
-    //       label.setStyle({
-    //         color: "red",
-    //         fontSize: "14px",
-    //         padding: "0 8px",
-    //         height: "24px",
-    //         lineHeight: "24px",
-    //         borderRadius: "12px",
-    //         fontFamily: "微软雅黑"
-    //       });
-    //       var point = new BMap.Point(getCenterPoint(path).lng,
-    //           getCenterPoint(path).lat);
-    //       var marker = new BMap.Marker(point);
-    //       window.baseMap.addOverlay(marker);
-    //       marker.setLabel(label);
-    //       polyList.push(getCenterPoint(path));
-          
-    //     });
-    //     if(point) {
-            
-    //         vm.drawBlue(point);
-    //     }
-    //     // var options = {
-    //     //   size: BMAP_POINT_SIZE_BIGGER,
-    //     //   shape: BMAP_POINT_SHAPE_CIRCLE,
-    //     //   color: "red"
-    //     // };
-    //     // console.log(polyList);
-    //     // var pointCollection = new BMap.PointCollection(polyList, options);
-    //     // window.baseMap.addOverlay(pointCollection);
-    //   });
-    // },
     changeChoose(val) {
       var vm = this;
       this.chosedArea = val.value;
@@ -682,13 +605,6 @@ export default {
               var polyList = [];
               resp.data.data.map(item => {
                 var path = [];
-                // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-                // newStr.split("],").map(v => {
-                //   path.push({
-                //     lng: v.substr(1).split(",")[0],
-                //     lat: v.substr(1).split(",")[1]
-                //   });
-                // });
                 path.push({
                   lng: item.bdx,
                   lat: item.bdy
@@ -699,10 +615,6 @@ export default {
                   path: path
                 });
               });
-              // var geolocation = new BMap.Geolocation();
-              // geolocation.getCurrentPosition(
-              //   function(r) {
-              //     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
               var lengthList = [];
               polyList.map(v => {
                 if (v) {
@@ -717,15 +629,6 @@ export default {
               });
 
               vm.sortList = lengthList.sort(compare("length"));
-              //     //   vm.isShowSort = true;
-              //     } else {
-              //       // alert("failed" + this.getStatus());
-              //     }
-              //   },
-              //   { enableHighAccuracy: true }
-              // );
-
-              // vm.isShowNearArea = !vm.isShowNearArea;
             });
           } else {
             alert("failed" + this.getStatus());
@@ -942,27 +845,10 @@ export default {
           if(allOverlay[i].getLabel) {
             console.log(allOverlay[i].getLabel());
             if(allOverlay[i].getLabel()&&allOverlay[i].getLabel().content == item.id.regionName){
-              // map.removeOverlay(allOverlay[i]);
               console.log(allOverlay[i].getLabel().content,'11111')
-              // var label = new BMap.Label(allOverlay[i].getLabel().content, opts); // 创建文本标注对象
-              // label.setStyle({
-              //   color: "blue",
-              //   fontSize: "14px",
-              //   padding: "0 8px",
-              //   height: "24px",
-              //   lineHeight: "24px",
-              //   borderRadius: "12px",
-              //   fontFamily: "微软雅黑"
-              // });
-              // allOverlay[i].setLabel(label);
               return false;
             }
           }
-        //   // if(allOverlay[i].getLabel().content == item.id.regionName){
-        //   //   // map.removeOverlay(allOverlay[i]);
-        //   //   console.log(allOverlay[i].getLabel().content)
-        //   //   return false;
-        //   // }
         }
       }
     },
@@ -974,12 +860,6 @@ export default {
     },
     keywordSearch() {
       var vm = this;
-      //   var myKeys = [this.keyword];
-      //   var local = new BMap.LocalSearch(window.baseMap, {
-      //     renderOptions: { map: window.baseMap, panel: "r-result" },
-      //     pageCapacity: 5
-      //   });
-      //   local.searchInBounds(myKeys, window.baseMap.getBounds());
       var options = {
         onSearchComplete: function(results) {
           // 判断状态是否正确
@@ -1028,13 +908,6 @@ export default {
         var polyList = [];
         resp.data.data.map(item => {
           var path = [];
-          // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-          // newStr.split("],").map(v => {
-          //   path.push({
-          //     lng: v.substr(1).split(",")[0],
-          //     lat: v.substr(1).split(",")[1]
-          //   });
-          // });
           path.push({
             lng: item.bdx,
             lat: item.bdy
@@ -1045,10 +918,6 @@ export default {
             path: path
           });
         });
-        // var geolocation = new BMap.Geolocation();
-        // geolocation.getCurrentPosition(
-        //   function(r) {
-        //     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
         var lengthList = [];
         polyList.map(v => {
           if (v) {
@@ -1063,13 +932,6 @@ export default {
         });
 
         vm.sortList = lengthList.sort(compare("length"));
-        //     //   vm.isShowSort = true;
-        //     } else {
-        //       // alert("failed" + this.getStatus());
-        //     }
-        //   },
-        //   { enableHighAccuracy: true }
-        // );
         console.log(polyList);
 
         vm.isShowNearArea = !vm.isShowNearArea;

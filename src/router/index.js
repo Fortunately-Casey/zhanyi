@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 
 const routes = [{
     path: "/register",
-    // name: "register",
+    name: "register",
     component: Register
   },
   {
