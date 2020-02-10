@@ -185,7 +185,7 @@ import wx from "weixin-js-sdk";
 import axios from "axios";
 import { getURL } from "@/common/tool/tool";
 import icon1 from "@/assets/image/v1.png"
-import icon2 from "@/assets/image/v2.png"
+import icon2 from "@/assets/image/v2.gif"
 
 export default {
   data() {
