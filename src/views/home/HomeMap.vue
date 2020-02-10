@@ -788,12 +788,54 @@ export default {
           getCenterPoint(item.path).lat
         );
         vm.pointTwo = point;
-        vm.drawBlue(point);
-        if(isSetView) {
-          window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
-            margins: [90, 30, 220, 30]
+        // vm.drawPloy();
+          getRegionData().then(resp => {
+          var polyList = [];
+          resp.data.data.map(item => {
+            var path = [];
+            path.push({
+              lng: item.bdx,
+              lat: item.bdy
+            });
+            var opts = {
+              position: new BMap.Point(
+                getCenterPoint(path).lng,
+                getCenterPoint(path).lat
+              ), // 指定文本标注所在的地理位置
+              offset: new BMap.Size(10, -30) //设置文本偏移量
+            };
+            var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
+            label.setStyle({
+              color: "red",
+              fontSize: "14px",
+              padding: "0 8px",
+              height: "24px",
+              lineHeight: "24px",
+              borderRadius: "12px",
+              fontFamily: "微软雅黑"
+            });
+            // window.baseMap.addOverlay(label);
+            polyList.push(getCenterPoint(path));
+            window.titleLabel = label;
           });
-        }
+          var options = {
+            size: BMAP_POINT_SIZE_BIGGER,
+            shape: BMAP_POINT_SHAPE_CIRCLE,
+            color: "red"
+          };
+          window.baseMap.setViewport(polyList, {
+              margins: [90, 30, 220, 30]
+          });
+  
+        });
+        vm.drawBlue(point);
+        // window.baseMap.setZoom(9);
+        // window.baseMap.panTo(point);
+        // if(isSetView) {
+        //   window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
+        //     margins: [90, 30, 220, 30]
+        //   });
+        // }
       }
     },
     closeSort() {
