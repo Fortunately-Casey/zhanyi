@@ -203,6 +203,7 @@ export default {
       //   isShowWindow:false,
       date: "",
       dateList: [],
+      markList:[],
       isShowSort: false,
       areaList: [
         {
@@ -385,23 +386,33 @@ export default {
     lostblur() {
       blur();
     },
+    openInfo:function(content,e){
+      var opts = {
+        width : 250,     // 信息窗口宽度
+        height: 80,     // 信息窗口高度
+        title : "信息窗口" , // 信息窗口标题
+        enableMessage:true//设置允许信息窗发送短息
+      };
+      var p = e.target;
+      var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+      var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+      window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
+    },
     drawPloy() {
       var vm = this; 
       getRegionData().then(resp => {
         console.log(resp);
         var data = resp.data.data;
-        var locPoint = new BMap.Icon(icon1, new BMap.Size(28, 28));
-        var opts = {
-          width : 250,     // 信息窗口宽度
-          height: 80,     // 信息窗口高度
-          title : "信息窗口" , // 信息窗口标题
-          enableMessage:true//设置允许信息窗发送短息
-        };
+        var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
+        var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
+
         for(var i = 0;i < data.length;i++){
           var pt = new BMap.Point(data[i].bdx, data[i].bdy);
           var mk = new BMap.Marker(pt,{
-            icon: locPoint
+            icon: locPoint1
           });
+          mk.id = data[i].id;
+          vm.markList.push(mk);
           window.baseMap.addOverlay(mk);
           addClickHandler("123",mk);
           var options = {
@@ -422,15 +433,25 @@ export default {
         }
         function addClickHandler(content,marker){
           marker.addEventListener("click",function(e){
-            openInfo(content,e)}
+            for(var i = 0;i<vm.markList.length;i++){
+              vm.markList[i].setIcon(locPoint1);
+            }
+            for(var j = 0;j<vm.sortList.length;j++){
+              if(vm.sortList[j].id.id == marker.id){
+                vm.clickIndex = j;
+                break;
+              }
+            }
+            marker.setIcon(locPoint2);
+            vm.openInfo(content,e)}
           );
         }
-        function openInfo(content,e){
+     /*   function openInfo(content,e){
           var p = e.target;
           var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
           var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
           window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
-        }
+        }*/
 
       /*
         var mk = new BMap.Marker(r.point, {
@@ -842,6 +863,18 @@ export default {
     locationTo(item,index,isSetView) {
       var vm = this;
       vm.clickIndex = index;
+      // var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
+      // var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
+      // for(var i = 0;i<this.markList.length;i++){
+      //   if(this.markList[i].id == item.id.id) {
+      //     for (var j = 0; j < vm.markList.length; j++) {
+      //       vm.markList[j].setIcon(locPoint1);
+      //     }
+      //     this.markList[i].setIcon(locPoint2);
+      //     vm.openInfo("123", e);
+      //     break;
+      //   }
+      // }
       if (vm.isShowSearchList) {
         vm.isShowSearchList = false;
       } else {
