@@ -416,6 +416,9 @@ export default {
           shape: BMAP_POINT_SHAPE_CIRCLE,
           color: "red"
         };
+        window.baseMap.setViewport(polyList, {
+            margins: [90, 30, 220, 30]
+        });
         var pointCollection = new BMap.PointCollection(polyList, options);
         window.baseMap.addOverlay(pointCollection);
         if(point) {
@@ -572,7 +575,7 @@ export default {
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
           //  window.baseMap.setZoom(17);
-            window.baseMap.panTo(r.point);
+            // window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
           }
@@ -582,12 +585,12 @@ export default {
     },
     clickMyLocation() {
        var vm = this;
-       vm.clickIndex = "";
+       vm.clickIndex = 0;
        window.baseMap.clearOverlays();
        vm.drawPloy();
        vm.keyword = "";
-      var geolocation = new BMap.Geolocation();
-      geolocation.getCurrentPosition(
+       var geolocation = new BMap.Geolocation();
+       geolocation.getCurrentPosition(
         function(r) {
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
             var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
@@ -599,8 +602,8 @@ export default {
             });
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
-            window.baseMap.setZoom(17);
-            window.baseMap.panTo(r.point);
+            // window.baseMap.setZoom(9);
+            // window.baseMap.panTo(r.point);
             getRegionData().then(resp => {
               //   console.log(resp.data.data);
               var polyList = [];
@@ -630,6 +633,11 @@ export default {
               });
 
               vm.sortList = lengthList.sort(compare("length"));
+              var bluePoint = new BMap.Point(
+                getCenterPoint(vm.sortList[0].path).lng,
+                getCenterPoint(vm.sortList[0].path).lat
+              );
+              vm.drawBlue(bluePoint);
             });
           } else {
             alert("failed" + this.getStatus());
@@ -695,55 +703,9 @@ export default {
                 vm.sortList = lengthList.sort(compare("length"));
                 vm.locationTo(vm.sortList[0],0);
                 vm.isShowSort = true;
-                // console.log(sortList);
-                // var max = lengthList.sort(function(a, b) {
-                //   return a.length < b.length;
-                // })[0];
-                // console.log(max);
-                // var maxList = [];
-                // // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-                // max.path.map(v => {
-                //   maxList.push(new BMap.Point(v.lng, v.lat));
-                // });
-                // var polygon = new BMap.Polygon(maxList, {
-                //   strokeColor: "#FE8E00",
-                //   strokeWeight: 2,
-                //   strokeOpacity: 1,
-                //   fillColor: "#FE8E00"
-                // }); //创建多边形
-                // var opts = {
-                //   position: getCenterPoint(maxList), // 指定文本标注所在的地理位置
-                //   offset: new BMap.Size(-60, -40) //设置文本偏移量
-                // };
-                // var label = new BMap.Label(max.id.regionName, opts); // 创建文本标注对象
-                // label.setStyle({
-                //   color: "red",
-                //   fontSize: "12px",
-                //   height: "20px",
-                //   lineHeight: "20px",
-                //   fontFamily: "微软雅黑"
-                // });
-                // polygon.regionID = item.id;
-
                 this.isShowArea = false;
-                // window.baseMap.addOverlay(label);
-                // window.baseMap.panTo(getCenterPoint(maxList));
-                // window.baseMap.setZoom(17);
-                // window.baseMap.addOverlay(polygon); //增加多边形
-                // var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
-                //   anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
-                //   imageSize: new BMap.Size(20, 20) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
-                //   // offset: new BMap.Size(-10, 45), // 指定定位位置
-                //   // imageOffset: new BMap.Size(0, 0 - 10 * 25) // 设置图片偏移
-                // });
-                // var marker = new BMap.Marker(new BMap.Point(max.bdx, max.bdy), {
-                //   icon: myIcon
-                // });
-                // window.baseMap.panTo(new BMap.Point(max.bdx, max.bdy));
-                // window.baseMap.addOverlay(marker);
-                // var allOverlay = window.baseMap.getOverlays();
               } else {
-                // alert("failed" + this.getStatus());
+                alert("failed" + this.getStatus());
               }
             },
             { enableHighAccuracy: true }
@@ -796,7 +758,7 @@ export default {
       //     console.log(resp)
       // })
     },
-    drawBlue(point,name) {
+    drawBlue(point) {
         var vm = this;
         window.baseMap.removeOverlay(vm.pointCollection2);
         var points2 = [point]; 
@@ -811,14 +773,6 @@ export default {
             shape: BMAP_POINT_SHAPE_CIRCLE,
             color: 'blue'
         }
-        var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-              anchor: new BMap.Size(20, 10),
-              imageSize: new BMap.Size(40, 40)
-            });
-        vm.blueMark = new BMap.Marker(point, {
-            icon: locPoint
-        });
-        vm.blueMark.name = "blueMark";
         vm.pointCollection2 = new BMap.PointCollection(points2, options2);
          //  pointCollection2.setTop(true);
         window.baseMap.addOverlay(vm.pointCollection2);
