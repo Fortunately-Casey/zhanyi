@@ -134,7 +134,7 @@
           @click="setTo(item)"
         >{{item.name}}</div>
       </div>
-      <div>
+      <div class="list-wrap">
         <div
           class="sort-item"
           v-for="(item,index) in sortList"
@@ -1342,7 +1342,9 @@ export default {
         line-height: 40px;
       }
     }
-
+    .list-wrap{
+      padding:0 10px;
+    }
     .sort-item {
       //   display: flex;
       height: 30px;
@@ -1399,11 +1401,15 @@ export default {
       }
     }
     .clickChosed {
-      background-color: rgb(39, 39, 253);
+      background-color:#b5b5f5;
       border-radius: 15px;
       .name {
         color: #fff;
+        .address{
+          color:#eee;
+        }
       }
+
       .length {
         color: #fff;
       }
