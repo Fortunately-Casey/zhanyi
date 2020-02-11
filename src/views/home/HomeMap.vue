@@ -891,13 +891,16 @@ export default {
       var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
       var values="";
       // var values = data[i].remarks.split("|").join("<br>");
-      item.id.remarks.split("|").map((v,i) => {
-          if(i = 0) {
-            values += `<div class='title'>${v}</div>`
-          }else {
-            values += `<div>${v}</div>`
-          }
-      })
+      if (item.id.remarks != null) {
+      	item.id.remarks.split("|").map((v,i) => {
+	          if(i = 0) {
+	            values += `<div class='title'>${v}</div>`
+	          }else {
+	            values += `<div>${v}</div>`
+	          }
+	      })
+      }
+      
       for (var i = 0; i < this.markList.length; i++) {
         if (this.markList[i].id == item.id.id) {
           for (var j = 0; j < vm.markList.length; j++) {
@@ -1006,6 +1009,11 @@ export default {
       vm.keyword = item.name;
       vm.isShowSearchList = false;
       window.baseMap.removeOverlay(vm.localPoint);
+      //周佳佳改，把之前一次的蓝色小标清除；
+      if (vm.smallPoint != null) {
+      	window.baseMap.removeOverlay(vm.smallPoint);
+      }
+      
       // vm.drawPloy();
       var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
         anchor: new BMap.Size(5, 5),
@@ -1050,6 +1058,41 @@ export default {
         });
 
         vm.sortList = lengthList.sort(compare("length"));
+        
+        //这个if里面是周佳佳加上去的，因为搜索了一个地址后，默认的气泡还是原来的没边
+        if (vm.sortList != null && vm.sortList.length > 0 && vm.sortList[0] != null && vm.sortList[0].id != null) {
+        	console.log(vm.sortList[0].id);
+        	
+        	var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
+		      var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
+		      var values="";
+		      // var values = data[i].remarks.split("|").join("<br>");
+		      if (vm.sortList[0].id.remarks != null) {
+		      	vm.sortList[0].id.remarks.split("|").map((v,i) => {
+			          if(i = 0) {
+			            values += `<div class='title'>${v}</div>`
+			          }else {
+			            values += `<div>${v}</div>`
+			          }
+			      })
+		      }
+        	
+        	for (var i = 0; i < this.markList.length; i++) {
+		        if (this.markList[i].id == vm.sortList[0].id.id) {
+		          for (var j = 0; j < vm.markList.length; j++) {
+		            vm.markList[j].setIcon(locPoint1);
+		          }
+		          this.markList[i].setIcon(locPoint2);
+		          this.openInfo(values, this.markList[i]);
+		          break;
+		        }
+		
+		      }
+        	
+        	var point = new BMap.Point(vm.sortList[0].id.bdx,vm.sortList[0].id.bdy);
+      		window.baseMap.panTo(point);
+      
+        }
 
         vm.isShowNearArea = !vm.isShowNearArea;
       });
