@@ -32,9 +32,9 @@
         <div class="header">
           <div class="area">区县</div>
           <div class="confirm-number">确诊人数</div>
-          <div class="quarters">疫情小区数</div>
+          <div class="quarters">疫情点数</div>
           <div class="people-number">昨日新增确诊总人数</div>
-          <div class="quarters-number">昨日新增疫情小区数</div>
+          <div class="quarters-number">昨日新增疫情点数</div>
           <!-- <div class="date">统计日期</div> -->
         </div>
         <ul>
@@ -82,7 +82,7 @@
     </div>
     <div class="area-infowindow" v-if="isShowArea">
       <div class="top">
-        疫情小区一览
+        疫情点一览
         <div class="select">
           <drop-down
             :dropList="areaList"
