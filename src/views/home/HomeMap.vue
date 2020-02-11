@@ -393,7 +393,8 @@ export default {
         width : 100,     // 信息窗口宽度
         height: 50,     // 信息窗口高度
         title : "详情" , // 信息窗口标题
-        enableMessage:true//设置允许信息窗发送短息
+        enableMessage:true,//设置允许信息窗发送短息,
+        enableAutoPan:false
       };
       var p = mk;
       var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
@@ -447,11 +448,12 @@ export default {
           marker.addEventListener("click",function(){
             for(var i = 0;i<vm.markList.length;i++){
               vm.markList[i].setIcon(locPoint1);
+              
             }
             for(var j = 0;j<vm.sortList.length;j++){
               if(vm.sortList[j].id.id == marker.id){
                 vm.clickIndex = j;
-                vm.scrollToText();
+                window.baseMap.panTo(new BMap.Point(vm.sortList[j].id.bdx, vm.sortList[j].id.bdy))
                 break;
               }
             }
@@ -556,7 +558,7 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
-        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病防控中心', '战疫图 • 南通（持续更新）');
+        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
       });
     },
     getDayStatisticsDetails() {
@@ -907,9 +909,11 @@ export default {
         }
 
       }
-      if (vm.isShowSearchList) {
-        vm.isShowSearchList = false;
-      } else {
+      var point = new BMap.Point(item.id.bdx,item.id.bdy);
+      window.baseMap.panTo(point);
+      // if (vm.isShowSearchList) {
+      //   vm.isShowSearchList = false;
+      // } else {
     /*    var point = new BMap.Point(
           getCenterPoint(item.path).lng,
           getCenterPoint(item.path).lat
@@ -963,7 +967,7 @@ export default {
         //     margins: [90, 30, 220, 30]
         //   });
         // }
-      }
+      // }
     },
     closeSort() {
       this.isShowNearArea = false;

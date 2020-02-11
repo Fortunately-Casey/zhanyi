@@ -88,6 +88,11 @@ input[type="text"]:focus {
   }
   div:first-child{
     color:red;
+    font-size:14px;
+    font-weight:bold;
+  }
+  div:nth-child(2){
+    text-align:left;
   }
 }
 // /* 内容 */
