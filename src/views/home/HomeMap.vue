@@ -11,7 +11,7 @@
         </div>
         <div class="item area">
           <div class="value">{{region}}</div>
-          <div class="text">疫情小区</div>
+          <div class="text">疫情点</div>
         </div>
         <div class="item add-people">
           <div class="value">
@@ -25,7 +25,7 @@
             <span>昨日</span>
             +{{regionGain}}
           </div>
-          <div class="text">新增小区</div>
+          <div class="text">新增疫情点</div>
         </div>
       </div>
       <div class="table" v-if="isShowMore">
@@ -111,7 +111,7 @@
     </div>
     <div :class="isShowSearchList?'sortList act':'sortList'" v-if="isShowSort">
       <div class="link">
-        <span>附近疫情小区</span>
+        <span>附近疫情点</span>
         <div class="search-input">
           <input
             type="text"
@@ -391,7 +391,7 @@ export default {
     openInfo:function(content,mk){
       var opts = {
         width : 100,     // 信息窗口宽度
-        height: 80,     // 信息窗口高度
+        height: 50,     // 信息窗口高度
         title : "详情" , // 信息窗口标题
         enableMessage:true//设置允许信息窗发送短息
       };
@@ -414,7 +414,16 @@ export default {
           });
           mk.id = data[i].id;
           vm.markList.push(mk);
-          var values = data[i].remarks.split("|").join("<br>");
+          var values="";
+          // var values = data[i].remarks.split("|").join("<br>");
+          data[i].remarks.split("|").map((v,i) => {
+             if(i = 0) {
+               values += `<div class='title'>${v}</div>`
+             }else {
+               values += `<div>${v}</div>`
+             }
+          })
+          // values.join("");
           window.baseMap.addOverlay(mk);
           addClickHandler(values,mk);
           var options = {
@@ -878,7 +887,15 @@ export default {
       // window.baseMap.removeOverlay(vm.localPoint);
       var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
       var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
-      var values = item.id.remarks.split("|").join("<br>");
+      var values="";
+      // var values = data[i].remarks.split("|").join("<br>");
+      item.id.remarks.split("|").map((v,i) => {
+          if(i = 0) {
+            values += `<div class='title'>${v}</div>`
+          }else {
+            values += `<div>${v}</div>`
+          }
+      })
       for (var i = 0; i < this.markList.length; i++) {
         if (this.markList[i].id == item.id.id) {
           for (var j = 0; j < vm.markList.length; j++) {
