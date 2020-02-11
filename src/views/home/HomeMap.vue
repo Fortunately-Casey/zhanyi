@@ -391,7 +391,7 @@ export default {
     openInfo:function(content,mk){
       var opts = {
         width : 100,     // 信息窗口宽度
-        height: 50,     // 信息窗口高度
+        height: 70,     // 信息窗口高度
         title : "详情" , // 信息窗口标题
         enableMessage:true,//设置允许信息窗发送短息,
         enableAutoPan:false
