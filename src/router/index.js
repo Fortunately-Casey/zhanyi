@@ -21,6 +21,21 @@ const routes = [{
     component: resolve => require(["../views/home/HomeMap.vue"], resolve),
   },
   {
+    path: "/login",
+    name: "login",
+    component: resolve => require(["../views/login/Login.vue"], resolve)
+  },
+  {
+    path: "/temp",
+    name: "temp",
+    component: resolve => require(["../views/temp/Temp.vue"], resolve)
+  },
+  {
+    path: "/punch",
+    name: "punch",
+    component: resolve => require(["../views/punch/Punch.vue"], resolve)
+  },
+  {
     path: "/index",
     name: "index",
     component: resolve => require(["../views/Content.vue"], resolve),
