@@ -49,7 +49,7 @@ body {
 
 input {
   border: none;
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid #f2f2f2;
   background-color: transparent;
   padding-left: 5px;
   margin-top: 5px;

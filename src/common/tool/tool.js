@@ -56,6 +56,13 @@ export function chinaDateTime(chinadatetime) {
     var datetime = d.getFullYear() + '-' + month + '-' + date + ' ' + hour + ':' + minutes;
     return datetime;
 }
+export function Totime(time) {
+    var d = new Date(time);
+    var hour = d.getHours() >= 10 ? d.getHours() : "0" + d.getHours();
+    var minutes = d.getMinutes() >= 10 ? d.getMinutes() : "0" + d.getMinutes();
+    var datetime =  hour + ':' + minutes;
+    return datetime;
+}
 
 // 设置轨迹起点
 export function addStartMarker(point, name, mapInit) {

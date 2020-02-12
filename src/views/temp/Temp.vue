@@ -1,8 +1,9 @@
 <template>
-    
+    <div class="temp"></div>
 </template>
 
 <script>
+
 export default {
     data() {
         return {
@@ -10,7 +11,10 @@ export default {
         }
     },
     created() {
+        // alert("空白页")
         window.localStorage.setItem('WXID',JSON.stringify(this.$route.query.WxId));
+    },
+    mounted() {
         this.$router.push({
             path:'/punch'
         })

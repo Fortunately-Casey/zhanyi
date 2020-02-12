@@ -6,16 +6,19 @@
 </template>
 
 <script>
+import { Toast } from "mint-ui";
 export default {
   name: "register",
   data() {
     return {
       center: { lng: 0, lat: 0 },
-      zoom: 9
+      zoom: 9,
+      mk:''
     };
   },
   methods: {
     handler({ BMap, map }) {
+      var vm = this;
       window.baseMap = map;
       map.addEventListener("zoomend", function (e) {
          var ZoomNum = map.getZoom();
@@ -55,6 +58,30 @@ export default {
                 }
             })
          } 
+      })
+      map.addEventListener("click", function (e) {
+          if(vm.$route.path === '/punch') {
+              map.removeOverlay(vm.mk);
+              var gc = new BMap.Geocoder();
+              gc.getLocation(e.point,(rs) => {
+                  if(rs.surroundingPois.length === 0) {
+                      Toast({
+                            message: "未获取到地点!",
+                            iconClass: "icon icon-success"
+                      })
+                      return;
+                  }
+                  vm.$emit('clickAddress', {
+                      address: rs.surroundingPois[0].title ,
+                      bdx : rs.surroundingPois[0].point.lng,
+                      bdy : rs.surroundingPois[0].point.lat
+                  });
+                  vm.mk = new BMap.Marker(e.point);
+                  map.addOverlay(vm.mk);
+                  map.panTo(e.point)
+              })
+             
+          }
       })
       let _this = this; 
       var geolocation = new BMap.Geolocation();
