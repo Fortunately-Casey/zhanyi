@@ -24,6 +24,9 @@ export default {
 
   },
   created(){
+    document.getElementsByTagName(
+      "title"
+    )[0].innerText = "战疫";
   	this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
   },
   methods: {
@@ -139,7 +142,7 @@ export default {
       background-size: 100% 100%;
       position: absolute;
       left: 50%;
-      top: 200px;
+      top: 230px;
       transform: translateX(-50%);
   }
   .health-button {
@@ -147,7 +150,7 @@ export default {
       background-size: 100% 100%;
       position: absolute;
       left: 50%;
-      top: 290px;
+      top: 320px;
       transform: translateX(-50%);
   }
   .nantong-chy {

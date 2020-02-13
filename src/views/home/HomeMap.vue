@@ -255,6 +255,12 @@ export default {
     };
   },
   created() {
+    var arr = chinaDateTime(new Date())
+      .split(" ")[0]
+      .split("-");
+    document.getElementsByTagName(
+      "title"
+    )[0].innerText = `南通市“战疫图”:${arr[1] + "-" + arr[2]}最新数据`;
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
     //  this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + this.date + ' 最新数据', '南通市“战疫图”:' + this.date + ' 最新数据');

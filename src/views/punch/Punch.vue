@@ -17,13 +17,13 @@
             <div class="item">
                 <div class="name">身份证号</div>
                 <div class="value">
-                    <input type="text" v-model="idCard" @blur="lostblur">
+                    <input type="text" v-model="idCard" @blur="lostblur('usernumber')">
                 </div>
             </div>
             <div class="item">
                 <div class="name">电话号码</div>
                 <div class="value">
-                    <input type="text" v-model="phoneNumber" @blur="lostblur">
+                    <input type="text" v-model="phoneNumber" @blur="lostblur('phone')">
                 </div>
             </div>
         </div>
@@ -153,7 +153,7 @@
                 <div class="health-icon"></div>
                 依据现有确诊人员数据及您的打卡信息，您非密切接触人员
             </div>
-            <div class="report-list" v-else>
+            <div class="report-list" v-if="epidemicArea&&reportList.length > 0">
                 <div class="bad"  v-for="(item,index) in reportList" :key="index">
                     <div class="bad-icon"></div>
                     {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
@@ -203,10 +203,10 @@ export default {
             ],
             crossList:[
                 {
-                    value:"是"
+                    value:"否"
                 },
                 {
-                    value:"否"
+                    value:"是"
                 }
             ],
             pickerValue:"",
@@ -231,10 +231,14 @@ export default {
             isShowReport:false,
             epidemicArea:"",
             isShowFunction:false,
-            reportList:[]
+            reportList:[],
+            handler:function(e){e.preventDefault();},
         }
     },
     created() {
+        document.getElementsByTagName(
+        "title"
+        )[0].innerText = "健康打卡";
     	this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
         var wxid = window.localStorage.getItem("WXID");
         this.weixin = wxid;
@@ -247,7 +251,7 @@ export default {
        
     },
     methods:{
-    shareList(imgUrl, link, desc, title) {
+        shareList(imgUrl, link, desc, title) {
       // var url = encodeURIComponent(link)
       var url = link;
       // 分享
@@ -367,7 +371,7 @@ export default {
                 healthy2:vm.isChosedCough,
                 healthy3:vm.isChosedHot,
                 temp:vm.temperature,
-                epidemicArea:vm.chosedCrossIndex === 0?true:false
+                epidemicArea:vm.chosedCrossIndex === 0?false:true
             }
             savePeriodPlace(params).then((resp) => {
                 if(resp.data.success) {
@@ -426,9 +430,11 @@ export default {
         },
         openPicker() {
             this.$refs.datepicker.open();
+            this.closeTouch();
         },
         choseTime() {
             this.$refs.timepicker.open();
+            this.closeTouch();
         },
         returnDate(value) {
             return Todate(value);
@@ -438,9 +444,11 @@ export default {
         },
         confirmDate(value) {
             this.dateValue = value;
+            this.openTouch();
         },
         confirmTime(value) {
             this.timeValue = value;
+            this.openTouch();
         },
         choseCross(index) {
             this.chosedCrossIndex = index;
@@ -510,7 +518,13 @@ export default {
                 { enableHighAccuracy: true }
             );
         },
-        lostblur() {
+        lostblur(value) {
+            var vm = this;
+            if (value === "phone") {
+                vm.phoneReg(vm.phone);
+            } else if (value === "usernumber") {
+                vm.userNumberReg(vm.usernumber);
+            }
             blur();
         },
         clickAddress(address) {
@@ -531,6 +545,32 @@ export default {
         },
         changeStr(str,index,changeStr) {
             return str.substr(0, index) + changeStr+ str.substr(index + changeStr.length);
+        },
+        phoneReg(value) {
+            var phoneReg = /^1[3456789]\d{9}$/;
+            if (!phoneReg.test(Number(value))) {
+                Toast({
+                message: "请输入合法手机号！",
+                iconClass: "icon icon-success"
+                });
+                return;
+            }
+            },
+        userNumberReg(value) {
+            var userNumberReg = /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+            if (!userNumberReg.test(Number(value))) {
+                Toast({
+                message: "请输入合法身份证号！",
+                iconClass: "icon icon-success"
+                });
+                return;
+            }
+        },
+        closeTouch () {
+            document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
+        },
+        openTouch () {
+            document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
         }
     },
     components:{
@@ -552,13 +592,13 @@ export default {
             top:0;
             z-index: 999;
             transform:translateX(-50%);
-            padding-top:40px;
+            margin-top:40px;
             box-sizing:border-box;
             border:1px solid #eee;
             .click-box {
                 position: absolute;
                 left: 0;
-                bottom:0;
+                bottom:40px;
                 z-index: 999;
                 height: 40px;
                 width: 100%;
@@ -625,21 +665,24 @@ export default {
                 font-weight: bold;
                 display: flex;
                 .name {
-                    width: 30%;
+                    font-size: 14px;
+                    width: 35%;
                     padding-left: 20px;
                     box-sizing: border-box;
                     text-align: left;
                     letter-spacing: 2px;
                 }
                 .value {
-                    width:70%;
+                    width:65%;
                     display:flex;
                     padding-right:15px;
                     justify-content:flex-end;
+                    font-size: 14px;
                     input {
                         transform:translateY(1px);
                         text-align: right;
                         text-align: end;
+                        font-size: 14px;
                     }
                 }
             }
@@ -658,6 +701,7 @@ export default {
                 line-height:40px;
                 padding:0 20px;
                 font-weight: bold;
+                font-size: 14px;
                 .cross-address{
                     border-bottom:1px solid #efefef;
                     position: relative;
@@ -692,6 +736,7 @@ export default {
                 .health-title,.cross-title {
                     border-bottom:1px solid #efefef;
                     span {
+                        font-size: 12px;
                         color: #c7c7c7;
                     }
                 } 
@@ -710,6 +755,7 @@ export default {
                 padding:0 20px;
                 font-weight: bold;
                 display: flex;
+                font-size: 14px;
                 .name {
                     width: 30%;
                 }
@@ -719,6 +765,8 @@ export default {
                     display: flex;
                     justify-content:flex-end;
                     input {
+                        text-align: right;
+                        text-align: end;
                         width: 55px;
                     }
                 }
