@@ -221,7 +221,7 @@
                 timeValue: this.returnTime(new Date()),
                 temperature: "",
                 chosedHealthIndex: 0,
-                chosedCrossIndex: 1,
+                chosedCrossIndex: 0,
                 isChosedHealth: true,
                 isChosedHot: false,
                 isChosedCough: false,
@@ -554,11 +554,11 @@
             },
             lostblur(value) {
                 var vm = this;
-                if (value === "phone") {
-                    vm.phoneReg(vm.phone);
-                } else if (value === "usernumber") {
-                    vm.userNumberReg(vm.usernumber);
-                }
+                // if (value === "phone") {
+                //     vm.phoneReg(vm.phone);
+                // } else if (value === "usernumber") {
+                //     vm.userNumberReg(vm.usernumber);
+                // }
                 blur();
             },
             clickAddress(address) {

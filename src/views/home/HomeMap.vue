@@ -177,7 +177,7 @@ import {
   getPatient,
   getPatientTrail
 } from "@/api/homeMap.js";
-import { getCenterPoint, compare, blur } from "@/common/tool/tool.js";
+import { getCenterPoint, compare, blur, chinaDateTime } from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
 import locIcon from "@/assets/image/blue-loc1.png";
 import blueIcon from "@/assets/image/shan.gif";
