@@ -415,7 +415,7 @@ export default {
             }
         ];
 
-      map.setMapStyle({ styleJson: styleJson });
+    //   map.setMapStyle({ styleJson: styleJson });
       // var geolocation = new BMap.Geolocation();
       // geolocation.getCurrentPosition(function(r){
       // 	if(this.getStatus() == BMAP_STATUS_SUCCESS){

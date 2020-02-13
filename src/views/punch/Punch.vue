@@ -142,11 +142,15 @@
                 <div class="result">
                     查看结果
                 </div>
-                <div class="health" v-if="!epidemicArea">
+                <div class="health" v-if="isShowHealthy()">
                     <div class="health-icon"></div>
                     依据现有确诊人员数据及您的打卡信息，您非密切接触人员
                 </div>
-                <div class="report-list" v-if="epidemicArea&&reportList.length > 0">
+                <div class="bad" v-if="periodPlace14">
+                    <div class="bad-icon"></div>
+                    您14天内经过疫区
+                </div>
+                <div class="report-list" v-if="reportList.length > 0">
                     <div class="bad" v-for="(item,index) in reportList" :key="index">
                         <div class="bad-icon"></div>
                         {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
@@ -154,7 +158,7 @@
                 </div>
                 <div class="tips">
                     <div class="tips-icon"></div>
-                    温馨提示:{{!epidemicArea?"减少外出，加强防护，关注体温":"需在家隔离14天，如有症状请及时就医"}}
+                    温馨提示:{{epidemicArea||periodPlace14?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
                 </div>
                 <div class="function">
                     <span class="left">分析方法</span>
@@ -236,6 +240,7 @@
                 epidemicArea: "",
                 isShowFunction: false,
                 reportList: [],
+                periodPlace14:"",
                 handler: function (e) {
                     e.preventDefault();
                 },
@@ -412,7 +417,8 @@
                     return;
                 }
                 healthAnalysis({
-                    idCard: vm.idCard
+                    // idCard: vm.idCard
+                    idCard: "test001001"
                 }).then((resp) => {
                     if (!resp.data.success) {
                         Toast({
@@ -423,8 +429,10 @@
                     } else {
                         vm.isShowReport = true;
                         vm.closeTouch();
-                        if (resp.data.data.epidemicArea) {
+                        console.log(resp.data.data)
                             vm.epidemicArea = resp.data.data.epidemicArea;
+                            vm.periodPlace14 = resp.data.data.periodPlace14;
+                            console.log(vm.epidemicArea,vm.periodPlace14)
                             if (resp.data.data.healthAnalysisList.length > 0) {
                                 var arr = []
                                 resp.data.data.healthAnalysisList.map((v) => {
@@ -441,8 +449,6 @@
                                 })
                                 vm.reportList = arr;
                             }
-
-                        }
                     }
                 })
             },
@@ -554,11 +560,11 @@
             },
             lostblur(value) {
                 var vm = this;
-                // if (value === "phone") {
-                //     vm.phoneReg(vm.phone);
-                // } else if (value === "usernumber") {
-                //     vm.userNumberReg(vm.usernumber);
-                // }
+                if (value === "phone") {
+                    vm.phoneReg(vm.phoneNumber);
+                } else if (value === "usernumber") {
+                    vm.userNumberReg(vm.idCard);
+                }
                 blur();
             },
             clickAddress(address) {
@@ -610,6 +616,14 @@
                 document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {
                     passive: false
                 }) //打开默认事件
+            },
+            isShowHealthy(){
+                console.log(this.epidemicArea,this.periodPlace14)
+                if(!this.epidemicArea&&!this.periodPlace14) {
+                    return true;
+                }else {
+                    return false;
+                }
             }
         },
         components: {
