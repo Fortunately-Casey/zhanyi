@@ -1,184 +1,190 @@
 <template>
-    <div class="punch" ref="punch">
-        <div class="header">
-            健康分析
-            <div class="back" @click="goBack">
-                首页
-                <div class="back-icon"></div>
-            </div>
-        </div>
-        <div class="top">
-            <div class="item">
-                <div class="name">日期</div>
-                <div class="value">
-                    <div class="date" @click="openPicker">{{returnDate(dateValue)}}</div>
+    <div class="punch-content">
+        <div class="punch" ref="punch" v-show="!isShowMap">
+            <div class="header">
+                健康分析
+                <div class="back" @click="goBack">
+                    首页
+                    <div class="back-icon"></div>
                 </div>
             </div>
-            <div class="item">
-                <div class="name">身份证号</div>
-                <div class="value">
-                    <input type="text" v-model="idCard" @blur="lostblur('usernumber')">
+            <div class="top">
+                <div class="item">
+                    <div class="name">日期</div>
+                    <div class="value">
+                        <div class="date" @click="openPicker">{{returnDate(dateValue)}}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="name">电话号码</div>
-                <div class="value">
-                    <input type="text" v-model="phoneNumber" @blur="lostblur('phone')">
+                <div class="item">
+                    <div class="name">身份证号</div>
+                    <div class="value">
+                        <input type="text" v-model="idCard" @blur="lostblur('usernumber')">
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="first">
-            <div class="item">
-                <div class="cross-address">1. 途径地点
-                    <div class="local-icon" @click="showMap"></div>
-                </div>
-            </div>
-            <div class="item">
-                <div class="address">
-                    {{addressValue}}
-                </div>
-            </div>
-        </div>
-        <div class="second">
-            <div class="item">
-                <div class="name">2. 途径时间</div>
-                <div class="value">
-                    <div class="date" @click="choseTime">{{timeValue}}</div>
-                </div>
-            </div>
-        </div>
-        <div class="third">
-            <div class="item">
-                <div class="name">3. 体温读数</div>
-                <div class="value">
-                    <input type="text" placeholder="输入体温" v-model="temperature" @blur="lostblur">
-                </div>
-            </div>
-        </div>
-        <div class="fourth">
-            <div class="item">
-                <div class="name">
-                    <div class="health-title">
-                        4. 健康症状
+                <div class="item">
+                    <div class="name">电话号码</div>
+                    <div class="value">
+                        <input type="text" v-model="phoneNumber" @blur="lostblur('phone')">
                     </div>
                 </div>
             </div>
-            <div class="item">
-                <div class="name">
-                    <div class="health-item" @click="choseHealth(0)">
-                        健康
-                        <div class="chosed-icon" v-if="isChosedHealth"></div>
+            <div class="first">
+                <div class="item">
+                    <div class="cross-address">1. 途径地点
+                        <div class="local-icon" @click="showMap"></div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="address">
+                        {{addressValue}}
                     </div>
                 </div>
             </div>
-            <div class="item">
-                <div class="name">
-                    <div class="health-item" @click="choseHealth(1)">
-                        咳嗽
-                        <div class="chosed-icon" v-if="isChosedCough"></div>
+            <div class="second">
+                <div class="item">
+                    <div class="name">2. 途径时间</div>
+                    <div class="value">
+                        <div class="date" @click="choseTime">{{timeValue}}</div>
                     </div>
                 </div>
             </div>
-            <div class="item">
-                <div class="name">
-                    <div class="health-item" @click="choseHealth(2)">
-                        发热
-                        <div class="chosed-icon" v-if="isChosedHot"></div>
+            <div class="third">
+                <div class="item">
+                    <div class="name">3. 体温读数</div>
+                    <div class="value">
+                        <input type="text" placeholder="输入体温" v-model="temperature" @blur="lostblur">
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="fifth">
-            <div class="item">
-                <div class="name">
-                    <div class="cross-title">
-                        5. 14天内是否经过疫区？<span>（湖北省、武汉市、温州市等）</span>
-                    </div>
-                </div>
-            </div>
-            <div class="item" v-for="(item,index) in crossList" :key="index" @click="choseCross(index)">
-                <div class="name">
-                    <div class="cross-item">
-                        {{item.value}}
-                        <div class="chosed-icon" v-if="chosedCrossIndex === index?true:false"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bottom">
-            <div class="look-button" @click="searchReport">查询报告</div>
-            <div class="punch-button" @click="punchTo">打卡</div>
-        </div>
-        <mt-datetime-picker ref="datepicker" v-model="pickerValue" type="date" year-format="{value} 年"
-            month-format="{value} 月" date-format="{value} 日" @confirm="confirmDate" @cancel="closeDate">
-        </mt-datetime-picker>
-        <mt-datetime-picker ref="timepicker" type="time" v-model="timepicker" @confirm="confirmTime"
-            @cancel="closeTime">
-        </mt-datetime-picker>
-        <div class="map" v-show="isShowMap">
-            <div class="click-box">
-                <div class="map-title">
-                    {{clickValue}}
-                </div>
-                <div class="confirm" @click="confirmAddress">确认</div>
-            </div>
-            <m-map @clickAddress="clickAddress">
-            </m-map>
-        </div>
-        <div class="modal" v-if="isShowSuccess">
-            <div class="punch-success" >
-                <div class="icon-close" @click="closeSuccess"></div>
-                <div class="red-message">
-                    恭喜您，打卡成功!
-                </div>
-                <div class="message">
-                    勤打卡有助于您获取更加精准的健康分析结果
-                </div>
-            </div>
-        </div>
-        <div class="modal" v-if="isShowReport">
-            <div class="search-report" >
-                <div class="icon-close" @click="closeReport"></div>
-                <div class="result">
-                    查看结果
-                </div>
-                <div v-if="periodPlace14">
-                    <div class="health" v-if="isShowHealthy()">
-                        <div class="health-icon"></div>
-                        依据现有确诊人员数据及您的打卡信息，您非密切接触人员
-                    </div>
-                    <div class="bad" v-if="epidemicArea">
-                        <div class="bad-icon"></div>
-                        您14天内经过疫区
-                    </div>
-                    <div class="report-list" v-if="reportList.length > 0">
-                        <div class="bad" v-for="(item,index) in reportList" :key="index">
-                            <div class="bad-icon"></div>
-                            {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
+            <div class="fourth">
+                <div class="item">
+                    <div class="name">
+                        <div class="health-title">
+                            4. 健康症状
                         </div>
                     </div>
                 </div>
-                <div class="tips" v-if="!periodPlace14">
-                    <div class="tips-icon"></div>
-                    温馨提示:您14天内并未进行打卡，无法分析数据
+                <div class="item">
+                    <div class="name">
+                        <div class="health-item" @click="choseHealth(0)">
+                            健康
+                            <div class="chosed-icon" v-if="isChosedHealth"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="tips" v-else>
-                    <div class="tips-icon"></div>
-                    温馨提示:{{epidemicArea||reportList.length > 0?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
+                <div class="item">
+                    <div class="name">
+                        <div class="health-item" @click="choseHealth(1)">
+                            咳嗽
+                            <div class="chosed-icon" v-if="isChosedCough"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="function">
-                    <span class="left">分析方法</span>
-                    <div class="plus" v-if="!isShowFunction"></div>
-                    <div class="minus" v-else></div>
-                    <span class="right" @click="isShowFunction = !isShowFunction">（点击查看详情）</span>
-                    <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您14天打卡数据进行对比分析</div>
-                </div>
-                <div class="bottom-message">
-                    确诊轨迹来源于南通市疾病预防控制中心
+                <div class="item">
+                    <div class="name">
+                        <div class="health-item" @click="choseHealth(2)">
+                            发热
+                            <div class="chosed-icon" v-if="isChosedHot"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="fifth">
+                <div class="item">
+                    <div class="name">
+                        <div class="cross-title">
+                            5. 14天内是否经过疫区？<span>（湖北省、武汉市、温州市等）</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" v-for="(item,index) in crossList" :key="index" @click="choseCross(index)">
+                    <div class="name">
+                        <div class="cross-item">
+                            {{item.value}}
+                            <div class="chosed-icon" v-if="chosedCrossIndex === index?true:false"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="look-button" @click="searchReport">查询报告</div>
+                <div class="punch-button" @click="punchTo">打卡</div>
+            </div>
+            <mt-datetime-picker ref="datepicker" v-model="pickerValue" type="date" year-format="{value} 年"
+                month-format="{value} 月" date-format="{value} 日" @confirm="confirmDate" @cancel="closeDate">
+            </mt-datetime-picker>
+            <mt-datetime-picker ref="timepicker" type="time" v-model="timepicker" @confirm="confirmTime"
+                @cancel="closeTime">
+            </mt-datetime-picker>
+            <!-- <div class="map" v-show="isShowMap">
+
+            </div> -->
+            <div class="modal" v-if="isShowSuccess">
+                <div class="punch-success" >
+                    <div class="icon-close" @click="closeSuccess"></div>
+                    <div class="red-message">
+                        恭喜您，打卡成功!
+                    </div>
+                    <div class="message">
+                        勤打卡有助于您获取更加精准的健康分析结果
+                    </div>
+                </div>
+            </div>
+            <div class="modal" v-if="isShowReport">
+                <div class="search-report" >
+                    <div class="icon-close" @click="closeReport"></div>
+                    <div class="result">
+                        查看结果
+                    </div>
+                    <div v-if="periodPlace14">
+                        <div class="health" v-if="isShowHealthy()">
+                            <div class="health-icon"></div>
+                            依据现有确诊人员数据及您的打卡信息，您非密切接触人员
+                        </div>
+                        <div class="bad" v-if="epidemicArea">
+                            <div class="bad-icon"></div>
+                            您14天内经过疫区
+                        </div>
+                        <div class="report-list" v-if="reportList.length > 0">
+                            <div class="bad" v-for="(item,index) in reportList" :key="index">
+                                <div class="bad-icon"></div>
+                                {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tips" v-if="!periodPlace14">
+                        <div class="tips-icon"></div>
+                        温馨提示:您14天内并未进行打卡，无法分析数据
+                    </div>
+                    <div class="tips" v-else>
+                        <div class="tips-icon"></div>
+                        温馨提示:{{epidemicArea||reportList.length > 0?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
+                    </div>
+                    <div class="function">
+                        <span class="left">分析方法</span>
+                        <div class="plus" v-if="!isShowFunction"></div>
+                        <div class="minus" v-else></div>
+                        <span class="right" @click="isShowFunction = !isShowFunction">（点击查看详情）</span>
+                        <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您14天打卡数据进行对比分析</div>
+                    </div>
+                    <div class="bottom-message">
+                        确诊轨迹来源于南通市疾病预防控制中心
+                    </div>
+                </div>
+            </div>
+            
         </div>
+        <div class="click-box" v-if="isShowMap">
+            <div class="map-title">
+                {{clickValue}}
+            </div>
+            <div class="confirm" @click="confirmAddress">确认</div>
+        </div>
+        <m-map @clickAddress="clickAddress">
+
+        </m-map>
     </div>
+
 </template>
 <script>
     import {
@@ -638,11 +644,18 @@
 </script>
 
 <style lang="less" scoped>
-    .punch {
+    .punch-content {
+        height: 100%;
+        position: relative;
+        .punch {
+        width: 100%;
         height: 100%;
         background-color: #eee;
-        position: relative;
-
+        position: fixed;
+        overflow-y:auto;
+         left:0;
+         top:0;
+         z-index:999;   
         .map {
             width: 100%;
             height: 100%;
@@ -651,45 +664,9 @@
             top: 0;
             z-index: 999;
             transform: translateX(-50%);
-            margin-top: 40px;
             box-sizing: border-box;
             border: 1px solid #eee;
-
-            .click-box {
-                position: absolute;
-                left: 0;
-                bottom: 40px;
-                z-index: 999;
-                height: 40px;
-                width: 100%;
-                background-color: #fff;
-
-                .map-title {
-                    position: absolute;
-                    left: 10%;
-                    top: 50%;
-                    z-index: 999;
-                    transform: translateY(-50%);
-                }
-
-                .confirm {
-                    width: 60px;
-                    height: 20px;
-                    text-align: center;
-                    line-height: 20px;
-                    border-radius: 10px;
-                    background-color: rgb(235, 56, 39);
-                    color: #fff;
-                    letter-spacing: 4px;
-                    position: absolute;
-                    right: 40px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                }
-            }
-
         }
-
         .header {
             height: 40px;
             background-color: #D22D2D;
@@ -1058,5 +1035,38 @@
             }
         }
 
+    }
+    .click-box {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                z-index: 999;
+                height: 40px;
+                width: 100%;
+                background-color: #fff;
+
+                .map-title {
+                    position: absolute;
+                    left: 10%;
+                    top: 50%;
+                    z-index: 999;
+                    transform: translateY(-50%);
+                }
+
+                .confirm {
+                    width: 60px;
+                    height: 20px;
+                    text-align: center;
+                    line-height: 20px;
+                    border-radius: 10px;
+                    background-color: rgb(235, 56, 39);
+                    color: #fff;
+                    letter-spacing: 4px;
+                    position: absolute;
+                    right: 40px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
     }
 </style>
