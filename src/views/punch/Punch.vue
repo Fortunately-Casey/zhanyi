@@ -117,12 +117,15 @@
             month-format="{value} 月"
             date-format="{value} 日"
             @confirm="confirmDate"
-        ></mt-datetime-picker>
+            @cancel="closeDate"
+        >
+        </mt-datetime-picker>
         <mt-datetime-picker
             ref="timepicker"
             type="time"
             v-model="timepicker"
             @confirm="confirmTime"
+            @cancel="closeTime"
             >
         </mt-datetime-picker>
         <div class="map"v-show="isShowMap">
@@ -432,9 +435,15 @@ export default {
             this.$refs.datepicker.open();
             this.closeTouch();
         },
+        closeDate() {
+            this.openTouch();
+        },
         choseTime() {
             this.$refs.timepicker.open();
             this.closeTouch();
+        },
+        closeTime() {
+            this.openTouch();
         },
         returnDate(value) {
             return Todate(value);
@@ -555,7 +564,7 @@ export default {
                 });
                 return;
             }
-            },
+        },
         userNumberReg(value) {
             var userNumberReg = /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
             if (!userNumberReg.test(Number(value))) {
@@ -765,6 +774,7 @@ export default {
                     display: flex;
                     justify-content:flex-end;
                     input {
+                        font-size: 13px;
                         text-align: right;
                         text-align: end;
                         width: 55px;

@@ -8,13 +8,7 @@ import { chinaDateTime } from "@/common/tool/tool.js";
 import $ from 'jquery'
 export default {
   created() {
-    var arr = chinaDateTime(new Date())
-      .split(" ")[0]
-      .split("-");
-    console.log();
-    document.getElementsByTagName(
-      "title"
-    )[0].innerText = `南通市“战疫图”:${arr[1] + "-" + arr[2]}最新数据`;
+
   },
   mounted() {
     console.log($(".BMap_pop img"))
