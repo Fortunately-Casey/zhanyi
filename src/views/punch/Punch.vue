@@ -142,23 +142,29 @@
                 <div class="result">
                     查看结果
                 </div>
-                <div class="health" v-if="isShowHealthy()">
-                    <div class="health-icon"></div>
-                    依据现有确诊人员数据及您的打卡信息，您非密切接触人员
-                </div>
-                <div class="bad" v-if="periodPlace14">
-                    <div class="bad-icon"></div>
-                    您14天内经过疫区
-                </div>
-                <div class="report-list" v-if="reportList.length > 0">
-                    <div class="bad" v-for="(item,index) in reportList" :key="index">
+                <div v-if="periodPlace14">
+                    <div class="health" v-if="isShowHealthy()">
+                        <div class="health-icon"></div>
+                        依据现有确诊人员数据及您的打卡信息，您非密切接触人员
+                    </div>
+                    <div class="bad" v-if="epidemicArea">
                         <div class="bad-icon"></div>
-                        {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
+                        您14天内经过疫区
+                    </div>
+                    <div class="report-list" v-if="reportList.length > 0">
+                        <div class="bad" v-for="(item,index) in reportList" :key="index">
+                            <div class="bad-icon"></div>
+                            {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
+                        </div>
                     </div>
                 </div>
-                <div class="tips">
+                <div class="tips" v-if="!periodPlace14">
                     <div class="tips-icon"></div>
-                    温馨提示:{{epidemicArea||periodPlace14?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
+                    温馨提示:您14天内并未进行打卡，无法分析数据
+                </div>
+                <div class="tips" v-else>
+                    <div class="tips-icon"></div>
+                    温馨提示:{{epidemicArea||reportList.length > 0?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
                 </div>
                 <div class="function">
                     <span class="left">分析方法</span>
@@ -417,8 +423,7 @@
                     return;
                 }
                 healthAnalysis({
-                    // idCard: vm.idCard
-                    idCard: "test001001"
+                    idCard: vm.idCard
                 }).then((resp) => {
                     if (!resp.data.success) {
                         Toast({
@@ -619,7 +624,7 @@
             },
             isShowHealthy(){
                 console.log(this.epidemicArea,this.periodPlace14)
-                if(!this.epidemicArea&&!this.periodPlace14) {
+                if(!this.epidemicArea&&this.periodPlace14) {
                     return true;
                 }else {
                     return false;
