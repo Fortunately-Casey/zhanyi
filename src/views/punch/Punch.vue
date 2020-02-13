@@ -182,6 +182,9 @@ import locIcon from "@/assets/image/blue-loc1.png";
 import MMap from "../map/Map.vue";
 import { Toast } from "mint-ui";
 import { getHistoryIDCardMobile, savePeriodPlace, healthAnalysis } from "@/api/punch.js";
+import wx from "weixin-js-sdk";
+import axios from "axios";
+import { getURL } from "@/common/tool/tool";
 export default {
     data() {
         return {
@@ -232,6 +235,7 @@ export default {
         }
     },
     created() {
+    	this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
         var wxid = window.localStorage.getItem("WXID");
         this.weixin = wxid;
         this.getHistoryIDCardMobile();
@@ -325,7 +329,6 @@ export default {
                     vm.idCard = resp.data.data[0].idCard;
                     vm.phoneNumber = resp.data.data[0].mobile;
                 }
-                this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
             })
         },
         // 打卡
