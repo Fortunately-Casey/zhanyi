@@ -429,7 +429,7 @@
                     return;
                 }
                 healthAnalysis({
-                    idCard: vm.idCard
+                    idCard: "320683199002280019"
                 }).then((resp) => {
                     if (!resp.data.success) {
                         Toast({
@@ -439,7 +439,7 @@
                         vm.isShowReport = false;
                     } else {
                         vm.isShowReport = true;
-                        vm.closeTouch();
+                        // vm.closeTouch();
                         console.log(resp.data.data)
                             vm.epidemicArea = resp.data.data.epidemicArea;
                             vm.periodPlace14 = resp.data.data.periodPlace14;
@@ -929,6 +929,7 @@
                     line-height: 25px;
                     box-sizing: border-box;
                     margin-bottom: 5px;
+                    margin-top: 5px;
                     border-radius: 5px;
                     font-size: 12px;
                     color: #fff;

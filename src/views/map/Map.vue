@@ -59,7 +59,7 @@ export default {
             })
          } 
       })
-      map.addEventListener("touchstart", function (e) {
+      map.addEventListener("click", function (e) {
           if(vm.$route.path === '/punch') {
               map.removeOverlay(vm.mk);
               var gc = new BMap.Geocoder();
