@@ -93,7 +93,7 @@
                 <div class="item">
                     <div class="name">
                         <div class="cross-title">
-                            5. 14天内是否经过疫区？<span>（湖北省、武汉市、温州市等）</span>
+                            5. 14天内是否经过疫区？<span>(湖北省、武汉市、温州市等)</span>
                         </div>
                     </div>
                 </div>
@@ -429,7 +429,7 @@
                     return;
                 }
                 healthAnalysis({
-                    idCard: "320683199002280019"
+                    idCard:vm.idCard
                 }).then((resp) => {
                     if (!resp.data.success) {
                         Toast({
@@ -796,7 +796,7 @@
                     border-bottom: 1px solid #efefef;
 
                     span {
-                        font-size: 12px;
+                        font-size: 11px;
                         color: #c7c7c7;
                     }
                 }
@@ -966,7 +966,7 @@
                 }
 
                 .report-list {
-                    height: 105px;
+                    max-height: 105px;
                     overflow-y: auto;
                 }
 
