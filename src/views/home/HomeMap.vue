@@ -733,11 +733,12 @@ export default {
               });
               vm.sortList = lengthList.sort(compare("length"));
                vm.locationTo(vm.sortList[0],0);
+               $(".sortList").scrollTop(0);
               var bluePoint = new BMap.Point(
                 getCenterPoint(vm.sortList[0].path).lng,
                 getCenterPoint(vm.sortList[0].path).lat
               );
-              vm.setMapArea();
+              // vm.setMapArea();
               // vm.drawBlue(bluePoint);
             });
           } else {
@@ -919,7 +920,12 @@ export default {
 
       }
       var point = new BMap.Point(item.id.bdx,item.id.bdy);
+      if(isSetView) {
+        window.baseMap.setZoom(16);
+      }
       window.baseMap.panTo(point);
+      
+      
       // if (vm.isShowSearchList) {
       //   vm.isShowSearchList = false;
       // } else {

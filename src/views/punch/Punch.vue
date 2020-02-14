@@ -30,7 +30,7 @@
             </div>
             <div class="first">
                 <div class="item">
-                    <div class="cross-address">1. 途径地点
+                    <div class="cross-address">1. 途经地点
                         <div class="local-icon" @click="showMap"></div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
             </div>
             <div class="second">
                 <div class="item">
-                    <div class="name">2. 途径时间</div>
+                    <div class="name">2. 途经时间</div>
                     <div class="value">
                         <div class="date" @click="choseTime">{{timeValue}}</div>
                     </div>
@@ -52,7 +52,7 @@
                 <div class="item">
                     <div class="name">3. 体温读数</div>
                     <div class="value">
-                        <input type="text" placeholder="输入体温" v-model="temperature" @blur="lostblur">
+                        <input type="number" oninput="if (value.length>4) value=value.slice(0,4)" length="4" placeholder="输入体温" v-model="temperature" @blur="lostblur">
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <div class="punch-button" @click="punchTo">打卡</div>
             </div>
             <mt-datetime-picker ref="datepicker" v-model="pickerValue" type="date" year-format="{value} 年"
-                month-format="{value} 月" date-format="{value} 日" @confirm="confirmDate" @cancel="closeDate">
+                month-format="{value} 月" date-format="{value} 日" :endDate="new Date()" :startDate="new Date('2020/1/1')" @confirm="confirmDate" @cancel="closeDate">
             </mt-datetime-picker>
             <mt-datetime-picker ref="timepicker" type="time" v-model="timepicker" @confirm="confirmTime"
                 @cancel="closeTime">
@@ -137,15 +137,15 @@
                         查看结果
                     </div>
                     <div v-if="periodPlace14">
-                        <div class="health" v-if="isShowHealthy()">
-                            <div class="health-icon"></div>
-                            依据现有确诊人员数据及您的打卡信息，您非密切接触人员
-                        </div>
-                        <div class="bad" v-if="epidemicArea">
-                            <div class="bad-icon"></div>
-                            您14天内经过疫区
-                        </div>
                         <div class="report-list" v-if="reportList.length > 0">
+                            <div class="health" v-if="isShowHealthy()">
+                                <div class="health-icon"></div>
+                                依据现有确诊人员数据及您的打卡信息，您非密切接触人员
+                            </div>
+                            <div class="bad" v-if="epidemicArea">
+                                <div class="bad-icon"></div>
+                                您14天内经过疫区
+                            </div>
                             <div class="bad" v-for="(item,index) in reportList" :key="index">
                                 <div class="bad-icon"></div>
                                 {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
@@ -160,11 +160,11 @@
                         <div class="tips-icon"></div>
                         温馨提示:{{epidemicArea||reportList.length > 0?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
                     </div>
-                    <div class="function">
+                    <div class="function" @click="isShowFunction = !isShowFunction">
                         <span class="left">分析方法</span>
                         <div class="plus" v-if="!isShowFunction"></div>
                         <div class="minus" v-else></div>
-                        <span class="right" @click="isShowFunction = !isShowFunction">（点击查看详情）</span>
+                        <span class="right">（点击查看详情）</span>
                         <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您14天打卡数据进行对比分析</div>
                     </div>
                     <div class="bottom-message">
@@ -172,17 +172,20 @@
                     </div>
                 </div>
             </div>
-            
         </div>
         <div class="click-box" v-if="isShowMap">
             <div class="map-title">
-                {{clickValue}}
+                <input type="text" v-model="clickValue" placeholder="点击地图或手动输入兴趣点">
             </div>
             <div class="confirm" @click="confirmAddress">确认</div>
         </div>
-        <m-map @clickAddress="clickAddress">
-
-        </m-map>
+        <div class="search-box" v-show="isShowMap">
+            <input type="text" placeholder="请输入兴趣点名称查询" @input="keywordSearch" v-model="keyword">
+            <div class="search-list" v-if="isShowSearchList">
+                <div class="item" v-for="(item,index) in searchList" :key="index" @click="sendTo(item)">{{item.name}}</div>
+            </div>
+        </div>
+        <m-map @clickAddress="clickAddress"></m-map>
     </div>
 
 </template>
@@ -243,7 +246,7 @@
                 isChosedCough: false,
                 isShowMap: false,
                 localPoint: "",
-                clickValue: "点击地图选择位置",
+                clickValue: "",
                 addressValue: "",
                 bdx: "",
                 bdy: "",
@@ -253,15 +256,18 @@
                 isShowFunction: false,
                 reportList: [],
                 periodPlace14:"",
+                keyword:"",
+                searchList:[],
                 handler: function (e) {
                     e.preventDefault();
                 },
+                isShowSearchList:false
             }
         },
         created() {
             document.getElementsByTagName(
                 "title"
-            )[0].innerText = "健康打卡";
+            )[0].innerText = "战役图·南通";
             this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href,
                 '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
             var wxid = window.localStorage.getItem("WXID");
@@ -430,6 +436,7 @@
                 }
                 healthAnalysis({
                     idCard:vm.idCard
+                    // idCard:"320683199002280019"
                 }).then((resp) => {
                     if (!resp.data.success) {
                         Toast({
@@ -579,15 +586,23 @@
                 blur();
             },
             clickAddress(address) {
+                console.log(address)
                 this.clickValue = address.address;
                 this.bdx = address.bdx;
                 this.bdy = address.bdy;
             },
             confirmAddress() {
+                if(this.clickValue === "") {
+                    Toast({
+                            message: "请选择兴趣点!",
+                            iconClass: "icon icon-success"
+                    })
+                    return;
+                }
                 this.$refs.punch.style.overflowY = "auto";
                 this.addressValue = this.clickValue;
                 this.isShowMap = false;
-                this.clickValue = "点击地图选择位置";
+                this.clickValue = "";
             },
             goBack() {
                 this.$router.push({
@@ -629,11 +644,61 @@
                 }) //打开默认事件
             },
             isShowHealthy(){
-                console.log(this.epidemicArea,this.periodPlace14)
-                if(!this.epidemicArea&&this.periodPlace14) {
+                if(!this.epidemicArea&&this.reportList.length === 0) {
                     return true;
                 }else {
                     return false;
+                }
+            },
+            keywordSearch() {
+                var vm = this;
+                var options = {
+                    onSearchComplete: function(results) {
+                    // 判断状态是否正确
+                    if (local.getStatus() == BMAP_STATUS_SUCCESS) {
+                        var s = [];
+                        for (var i = 0; i < results.getCurrentNumPois(); i++) {
+                        s.push({
+                            name: results.getPoi(i).title,
+                            address: results.getPoi(i).address,
+                            lng: results.getPoi(i).point.lng,
+                            lat: results.getPoi(i).point.lat
+                        });
+                        }
+                        // console.log(s);
+                        vm.searchList = s;
+                        // document.getElementById("r-result").innerHTML = s.join("<br/>");
+                    }
+                    }
+                };
+                var local = new BMap.LocalSearch(window.baseMap, options);
+                local.search(this.keyword);
+                vm.isShowSearchList = true;
+            },
+            sendTo(item) {
+                window.baseMap.clearOverlays();
+                var vm = this;
+                vm.keyword = item.name;
+                vm.clickValue = item.name;
+                vm.isShowSearchList = false;
+                vm.bdx = item.lng;
+                vm.bdy = item.lat;
+                var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
+                    anchor: new BMap.Size(20, 32),
+                    imageSize: new BMap.Size(40, 40)
+                });
+                var point = new BMap.Point(item.lng,item.lat)
+                var mk = new BMap.Marker(point, {
+                      icon:locPoint
+                });
+                window.baseMap.addOverlay(mk);
+                window.baseMap.panTo(point)
+            }
+        },
+        watch: {
+            keyword() {
+                if(this.keyword === "") {
+                    this.isShowSearchList = false;
                 }
             }
         },
@@ -881,8 +946,8 @@
                 border-radius: 5px;
                 position: absolute;
                 left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
+                top: 30%;
+                transform: translateX(-50%);
                 z-index: 999;
 
                 .icon-close {
@@ -896,8 +961,9 @@
                 }
 
                 .red-message {
-                    width: 150px;
-                    padding-left: 20px;
+                    width: 100%;
+                    text-align: center;
+                    /* padding-left: 20px; */
                     height: 40px;
                     line-height: 40px;
                     font-size: 14px;
@@ -906,7 +972,7 @@
                 }
 
                 .message {
-                    padding: 20px;
+                    padding: 0 15px 15px 15px;
                     font-size: 14px;
                 }
 
@@ -988,8 +1054,8 @@
 
                 .function {
                     padding: 0 15px;
-                    margin-top: 10px;
-
+                    margin-top: 20px;
+                    margin-bottom: 15px;
                     .left {
                         color: #E56969;
                         font-weight: bold;
@@ -1068,6 +1134,34 @@
                     top: 50%;
                     transform: translateY(-50%);
                 }
+      }
+      .search-box {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 999;
+            height: 40px;
+            width: 100%;
+            border-bottom: 1px solid rgb(230, 224, 224);
+            background-color: #fff;
+            input {
+                margin-top: 15px;
+                margin-left:10px;
+                width: 250px;
             }
+            .search-list {
+                width: 254px;
+                max-height: 250px;
+                margin-left: 10px;
+                background-color: #fff;
+                border: 1px solid rgb(230, 224, 224);
+                overflow-y: auto;
+                .item {
+                    height: 30px;
+                    line-height: 30px;
+                    padding-left:10px;
+                }
+            }
+      }
     }
 </style>

@@ -26,7 +26,7 @@ export default {
   created(){
     document.getElementsByTagName(
       "title"
-    )[0].innerText = "战疫";
+    )[0].innerText = "战役图·南通"
   	this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
   },
   methods: {

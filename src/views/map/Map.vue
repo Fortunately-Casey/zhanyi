@@ -7,6 +7,7 @@
 
 <script>
 import { Toast } from "mint-ui";
+import locIcon from "@/assets/image/blue-loc1.png";
 export default {
   name: "register",
   data() {
@@ -61,24 +62,36 @@ export default {
       })
       map.addEventListener("click", function (e) {
           if(vm.$route.path === '/punch') {
-              map.removeOverlay(vm.mk);
+              var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
+                 anchor: new BMap.Size(20, 32),
+                 imageSize: new BMap.Size(40, 40)
+              });
+              map.clearOverlays();
               var gc = new BMap.Geocoder();
               gc.getLocation(e.point,(rs) => {
-                  if(rs.surroundingPois.length === 0) {
-                      Toast({
-                            message: "未获取到地点!",
-                            iconClass: "icon icon-success"
-                      })
-                      return;
-                  }
-                  vm.$emit('clickAddress', {
-                      address: rs.surroundingPois[0].title ,
-                      bdx : rs.surroundingPois[0].point.lng,
-                      bdy : rs.surroundingPois[0].point.lat
+                  vm.mk = new BMap.Marker(e.point, {
+                      icon:locPoint
                   });
-                  vm.mk = new BMap.Marker(e.point);
                   map.addOverlay(vm.mk);
                   map.panTo(e.point)
+                  if(rs.surroundingPois.length === 0) {
+                      Toast({
+                            message: "未获取到地点,请重新点击或手动输入兴趣点!",
+                            iconClass: "icon icon-success"
+                      })
+                    vm.$emit('clickAddress', {
+                        address: "",
+                        bdx : e.point.lng,
+                        bdy : e.point.lat
+                    });
+                    //   return;
+                  }else {
+                    vm.$emit('clickAddress', {
+                        address: rs.surroundingPois[0].title ,
+                        bdx : rs.surroundingPois[0].point.lng,
+                        bdy : rs.surroundingPois[0].point.lat
+                    });
+                  }
               })
           }
       })
