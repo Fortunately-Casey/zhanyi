@@ -664,7 +664,7 @@ export default {
         function(r) {
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
             var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-              anchor: new BMap.Size(5, 5),
+              anchor: new BMap.Size(25, 25),
               imageSize: new BMap.Size(40, 40)
             });
             var mk = new BMap.Marker(r.point, {
@@ -688,22 +688,24 @@ export default {
       //  window.baseMap.clearOverlays();
       //  vm.drawPloy();
        window.baseMap.removeOverlay(vm.smallPoint);
+       window.baseMap.removeOverlay(vm.localPoint);
        vm.keyword = "";
        var geolocation = new BMap.Geolocation();
        geolocation.getCurrentPosition(
         function(r) {
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
             var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-              anchor: new BMap.Size(5, 5),
+              anchor: new BMap.Size(25, 25),
               imageSize: new BMap.Size(40, 40)
             });
             var mk = new BMap.Marker(r.point, {
               icon: locPoint
             });
             vm.pointOne = r.point;
+             window.baseMap.panTo(r.point);
             window.baseMap.addOverlay(mk);
             // window.baseMap.setZoom(9);
-            // window.baseMap.panTo(r.point);
+           
             getRegionData().then(resp => {
               //   console.log(resp.data.data);
               var polyList = [];
@@ -732,7 +734,8 @@ export default {
                 }
               });
               vm.sortList = lengthList.sort(compare("length"));
-               vm.locationTo(vm.sortList[0],0);
+              //  vm.locationTo(vm.sortList[0],0);
+
                $(".sortList").scrollTop(0);
               var bluePoint = new BMap.Point(
                 getCenterPoint(vm.sortList[0].path).lng,
