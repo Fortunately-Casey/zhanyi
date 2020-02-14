@@ -640,7 +640,7 @@
                 }
             },
             tempReg(value) {
-                var tempReg = /^[0-9]*$/;
+                var tempReg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
                 if (!tempReg.test(Number(value))) {
                     Toast({
                         message: "请输入合法体温！",
