@@ -454,27 +454,26 @@
                         vm.isShowReport = false;
                     } else {
                         vm.isShowReport = true;
-                        // vm.closeTouch();
-                        console.log(resp.data.data)
-                            vm.epidemicArea = resp.data.data.epidemicArea;
-                            vm.periodPlace14 = resp.data.data.periodPlace14;
-                            console.log(vm.epidemicArea,vm.periodPlace14)
-                            if (resp.data.data.healthAnalysisList.length > 0) {
-                                var arr = []
-                                resp.data.data.healthAnalysisList.map((v) => {
-                                    var date = v.selfPeriodPlaceTime.split(" ")[0];
-                                    var time = v.selfPeriodPlaceTime.split(" ")[1];
-                                    date = vm.changeStr(date, 4, '年');
-                                    date = vm.changeStr(date, 7, '月');
-                                    date = date + "日"
-                                    arr.push({
-                                        placeName: v.selfPlaceName,
-                                        time: time.substring(0, time.length - 5),
-                                        date: date
-                                    })
+                        vm.epidemicArea = resp.data.data.epidemicArea;
+                        vm.periodPlace14 = resp.data.data.periodPlace14;
+                        if (resp.data.data.healthAnalysisList.length > 0) {
+                            var arr = []
+                            resp.data.data.healthAnalysisList.map((v) => {
+                                var date = v.selfPeriodPlaceTime.split(" ")[0];
+                                var time = v.selfPeriodPlaceTime.split(" ")[1];
+                                date = vm.changeStr(date, 4, '年');
+                                date = vm.changeStr(date, 7, '月');
+                                date = date + "日"
+                                arr.push({
+                                    placeName: v.selfPlaceName,
+                                    time: time.substring(0, time.length - 5),
+                                    date: date
                                 })
-                                vm.reportList = arr;
-                            }
+                            })
+                            vm.reportList = arr;
+                        }else {
+                            vm.reportList = [];
+                        }
                     }
                 })
             },
