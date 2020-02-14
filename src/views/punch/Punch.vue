@@ -272,7 +272,12 @@
             this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href,
                 '关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
             var wxid = window.localStorage.getItem("WXID");
-            this.weixin = wxid;
+            if(wxid) {
+                this.weixin = wxid;
+            }else {
+                window.location.href = "https://yqfk.ntschy.com/main";
+            }
+            
             this.getHistoryIDCardMobile();
             setTimeout(() => {
                 this.getLocalAddress();
