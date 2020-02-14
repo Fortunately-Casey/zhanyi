@@ -1208,6 +1208,9 @@
                 background-color: #fff;
                 border: 1px solid rgb(230, 224, 224);
                 overflow-y: auto;
+                position: absolute;
+                left: 20px;
+                top: 42px;
                 .item {
                     height: 30px;
                     line-height: 30px;
