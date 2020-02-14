@@ -391,6 +391,13 @@
                     })
                     return;
                 }
+                if (!vm.addressValue) {
+                    Toast({
+                        message: "请选取途径地点！",
+                        iconClass: "icon icon-success"
+                    })
+                    return;
+                }
                 if(!vm.isChosedHealth && !vm.isChosedCough && !vm.isChosedHot) {
                     Toast({
                         message: "请填写健康症状!",

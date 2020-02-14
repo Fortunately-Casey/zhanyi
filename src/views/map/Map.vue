@@ -60,41 +60,104 @@ export default {
             })
          } 
       })
-      map.addEventListener("click", function (e) {
-          if(vm.$route.path === '/punch') {
-              var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-                 anchor: new BMap.Size(20, 32),
-                 imageSize: new BMap.Size(40, 40)
-              });
-              map.clearOverlays();
-              var gc = new BMap.Geocoder();
-              gc.getLocation(e.point,(rs) => {
-                  vm.mk = new BMap.Marker(e.point, {
-                      icon:locPoint
-                  });
-                  map.addOverlay(vm.mk);
-                  map.panTo(e.point)
-                  if(rs.surroundingPois.length === 0) {
-                      Toast({
-                            message: "未获取到地点,请重新点击或手动输入兴趣点!",
-                            iconClass: "icon icon-success"
-                      })
-                    vm.$emit('clickAddress', {
-                        address: "",
-                        bdx : e.point.lng,
-                        bdy : e.point.lat
+    //   map.addEventListener("click", function (e) {
+    //       if(vm.$route.path === '/punch') {
+    //           var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
+    //              anchor: new BMap.Size(20, 32),
+    //              imageSize: new BMap.Size(40, 40)
+    //           });
+    //           map.clearOverlays();
+    //           var gc = new BMap.Geocoder();
+    //           gc.getLocation(e.point,(rs) => {
+    //               vm.mk = new BMap.Marker(e.point, {
+    //                   icon:locPoint
+    //               });
+    //               map.addOverlay(vm.mk);
+    //               map.panTo(e.point)
+    //               if(rs.surroundingPois.length === 0) {
+    //                   Toast({
+    //                         message: "未获取到地点,请重新点击或手动输入兴趣点!",
+    //                         iconClass: "icon icon-success"
+    //                   })
+    //                 vm.$emit('clickAddress', {
+    //                     address: "",
+    //                     bdx : e.point.lng,
+    //                     bdy : e.point.lat
+    //                 });
+    //                 //   return;
+    //               }else {
+    //                 vm.$emit('clickAddress', {
+    //                     address: rs.surroundingPois[0].title ,
+    //                     bdx : rs.surroundingPois[0].point.lng,
+    //                     bdy : rs.surroundingPois[0].point.lat
+    //                 });
+    //               }
+    //           })
+    //       }
+    //   })
+      var xArr = [];//存放横坐标
+      var yArr = [];//存放纵坐标
+      
+       map.addEventListener("touchstart", function(e){ 
+        //手指触摸屏幕的时候清空两个数组
+            xArr.length = 0;
+            yArr.length = 0;
+      });
+       
+       map.addEventListener("touchmove",function(e){
+        //如果滑动了屏幕，xArr和yArr将各存入两个坐标值，即始末坐标值
+            xArr.push(e.targetTouches[0].pageX);
+            yArr.push(e.targetTouches[0].pageY);
+      });
+
+      map.addEventListener('touchend',function(e){
+            var far;
+            var flag = true;
+            //计算平移距离，区分滑动事件和点击事件
+            if((xArr.length > 1) && (yArr.length > 1)){
+                far = (Math.abs(xArr[0]-xArr[1]))^2 + (Math.abs(yArr[0]-yArr[1]))^2;
+                if(far > 0){
+                    flag = false;
+                }
+            }
+            if(flag){
+              if(vm.$route.path === '/punch') {
+                    var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
+                        anchor: new BMap.Size(20, 32),
+                        imageSize: new BMap.Size(40, 40)
                     });
-                    //   return;
-                  }else {
-                    vm.$emit('clickAddress', {
-                        address: rs.surroundingPois[0].title ,
-                        bdx : rs.surroundingPois[0].point.lng,
-                        bdy : rs.surroundingPois[0].point.lat
-                    });
-                  }
-              })
-          }
-      })
+                    map.clearOverlays();
+                    var gc = new BMap.Geocoder();
+                    gc.getLocation(e.point,(rs) => {
+                        vm.mk = new BMap.Marker(e.point, {
+                            icon:locPoint
+                        });
+                        map.addOverlay(vm.mk);
+                        map.panTo(e.point)
+                        if(rs.surroundingPois.length === 0) {
+                            Toast({
+                                    message: "未获取到地点,请重新点击或手动输入兴趣点!",
+                                    iconClass: "icon icon-success"
+                            })
+                            vm.$emit('clickAddress', {
+                                address: "",
+                                bdx : e.point.lng,
+                                bdy : e.point.lat
+                            });
+                            //   return;
+                        }else {
+                            vm.$emit('clickAddress', {
+                                address: rs.surroundingPois[0].title ,
+                                bdx : rs.surroundingPois[0].point.lng,
+                                bdy : rs.surroundingPois[0].point.lat
+                            });
+                        }
+                    })
+                }
+            }
+      });
+
+
       let _this = this; 
       var geolocation = new BMap.Geolocation();
       geolocation.getCurrentPosition(
