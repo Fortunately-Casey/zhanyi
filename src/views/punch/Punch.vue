@@ -1182,8 +1182,8 @@
             background-color: #fff;
             transform: translateX(-50%);
             .icon {
-                width: 14px;
-                height: 14px;
+                width: 18px;
+                height: 18px;
                 background:url("../../assets/image/search-icon.png") no-repeat;
                 background-size:100% 100%;
                 position: absolute;
@@ -1192,12 +1192,15 @@
                 transform:translateY(-50%);
             }
             input {
-                margin-top: 6px;
-                margin-left:30px;
+                margin: 0;
                 font-size: 14px;
                 width: 250px;
                 height: 30px;
                 border:none;
+                position: absolute;
+                left: 35px;
+                top: 50%;
+                transform: translateY(-50%);
             }
             .search-list {
                 width: 254px;
