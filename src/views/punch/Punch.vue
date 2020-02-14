@@ -52,7 +52,7 @@
                 <div class="item">
                     <div class="name">3. 体温读数</div>
                     <div class="value">
-                        <input type="number" oninput="if (value.length>4) value=value.slice(0,4)" length="4" placeholder="输入体温" v-model="temperature" @blur="lostblur">
+                        <input type="text" oninput="if (value.length>4) value=value.slice(0,4)"  placeholder="输入体温" v-model="temperature" @blur="lostblur('temp')">
                     </div>
                 </div>
             </div>
@@ -137,8 +137,8 @@
                         查看结果
                     </div>
                     <div v-if="periodPlace14">
-                        <div class="report-list" v-if="reportList.length > 0">
-                            <div class="health" v-if="isShowHealthy()">
+                        <div class="report-list" >
+                            <div class="health" v-if="!this.epidemicArea&&this.reportList.length === 0?true:false">
                                 <div class="health-icon"></div>
                                 依据现有确诊人员数据及您的打卡信息，您非密切接触人员
                             </div>
@@ -165,7 +165,7 @@
                         <div class="plus" v-if="!isShowFunction"></div>
                         <div class="minus" v-else></div>
                         <span class="right">（点击查看详情）</span>
-                        <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您14天打卡数据进行对比分析</div>
+                        <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您前14天打卡数据进行对比分析</div>
                     </div>
                     <div class="bottom-message">
                         确诊轨迹来源于南通市疾病预防控制中心
@@ -175,12 +175,13 @@
         </div>
         <div class="click-box" v-if="isShowMap">
             <div class="map-title">
-                <input type="text" v-model="clickValue" placeholder="点击地图或手动输入兴趣点">
+                <input type="text" v-model="clickValue" placeholder="图中没有想找的点?手动输入添加地点" @blur="lostblur" oninput="if (value.length>4) value=value.slice(0,10)">
             </div>
-            <div class="confirm" @click="confirmAddress">确认</div>
+            <div class="confirm" @click="confirmAddress">确 认</div>
         </div>
         <div class="search-box" v-show="isShowMap">
-            <input type="text" placeholder="请输入兴趣点名称查询" @input="keywordSearch" v-model="keyword">
+            <div class="icon"></div>
+            <input type="text" placeholder="输入地点查询或点击地图自动识别" @input="keywordSearch" v-model="keyword" @blur="lostblur">
             <div class="search-list" v-if="isShowSearchList">
                 <div class="item" v-for="(item,index) in searchList" :key="index" @click="sendTo(item)">{{item.name}}</div>
             </div>
@@ -532,10 +533,10 @@
                 this.openTouch();
             },
             showMap() {
-                window.baseMap.removeOverlay();
+                window.baseMap.clearOverlays();
                 this.location();
                 this.isShowMap = true;
-                this.$refs.punch.style.overflowY = "hidden";
+                // this.$refs.punch.style.overflowY = "hidden";
             },
             location() {
                 var vm = this;
@@ -589,6 +590,8 @@
                     vm.phoneReg(vm.phoneNumber);
                 } else if (value === "usernumber") {
                     vm.userNumberReg(vm.idCard);
+                } else if (value === "temp") {
+                    vm.tempReg(vm.temperature);
                 }
                 blur();
             },
@@ -606,7 +609,7 @@
                     })
                     return;
                 }
-                this.$refs.punch.style.overflowY = "auto";
+                // this.$refs.punch.style.overflowY = "auto";
                 this.addressValue = this.clickValue;
                 this.isShowMap = false;
                 this.clickValue = "";
@@ -624,6 +627,16 @@
                 if (!phoneReg.test(Number(value))) {
                     Toast({
                         message: "请输入合法手机号！",
+                        iconClass: "icon icon-success"
+                    });
+                    return;
+                }
+            },
+            tempReg(value) {
+                var tempReg = /^[0-9]*$/;
+                if (!tempReg.test(Number(value))) {
+                    Toast({
+                        message: "请输入合法体温！",
                         iconClass: "icon icon-success"
                     });
                     return;
@@ -650,13 +663,15 @@
                     passive: false
                 }) //打开默认事件
             },
-            isShowHealthy(){
-                if(!this.epidemicArea&&this.reportList.length === 0) {
-                    return true;
-                }else {
-                    return false;
-                }
-            },
+            // isShowHealthy(){
+            //     alert("2222")
+            //     console.log(this.epidemicArea,this.reportList.length);
+            //     if() {
+            //         return true;
+            //     }else {
+            //         return false;
+            //     }
+            // },
             keywordSearch() {
                 var vm = this;
                 var options = {
@@ -908,6 +923,7 @@
                         text-align: right;
                         text-align: end;
                         width: 55px;
+                        padding-right:5px;
                     }
                 }
             }
@@ -1039,7 +1055,7 @@
                 }
 
                 .report-list {
-                    max-height: 105px;
+                    max-height: 160px;
                     overflow-y: auto;
                 }
 
@@ -1115,46 +1131,65 @@
                 left: 0;
                 bottom: 0;
                 z-index: 999;
-                height: 40px;
+                height: 42px;
                 width: 100%;
                 background-color: #fff;
 
                 .map-title {
                     position: absolute;
-                    left: 10%;
+                    left: 5%;
                     top: 50%;
                     z-index: 999;
                     transform: translateY(-50%);
+                    input {
+                        font-size: 14px;
+                        width: 260px;
+                    }
                 }
 
                 .confirm {
-                    width: 60px;
-                    height: 20px;
+                    width: 65px;
+                    height: 25px;
                     text-align: center;
-                    line-height: 20px;
+                    line-height: 25px;
                     border-radius: 10px;
+                    font-size: 14px;
                     background-color: rgb(235, 56, 39);
                     color: #fff;
                     letter-spacing: 4px;
                     position: absolute;
-                    right: 40px;
+                    right: 10px;
                     top: 50%;
                     transform: translateY(-50%);
                 }
       }
       .search-box {
             position: absolute;
-            left: 0;
-            top: 0;
+            left: 50%;
+            top: 10px;
             z-index: 999;
-            height: 40px;
-            width: 100%;
-            border-bottom: 1px solid rgb(230, 224, 224);
+            height: 42px;
+            width: 345px;
+            border: 1px solid red;
+            border-radius: 20px;
             background-color: #fff;
+            transform: translateX(-50%);
+            .icon {
+                width: 14px;
+                height: 14px;
+                background:url("../../assets/image/search-icon.png") no-repeat;
+                background-size:100% 100%;
+                position: absolute;
+                left:15px;
+                top:50%;
+                transform:translateY(-50%);
+            }
             input {
-                margin-top: 15px;
-                margin-left:10px;
+                margin-top: 6px;
+                margin-left:30px;
                 width: 250px;
+                height: 30px;
+                border:none;
             }
             .search-list {
                 width: 254px;
