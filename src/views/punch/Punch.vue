@@ -270,7 +270,7 @@
                 "title"
             )[0].innerText = "战役图·南通";
             this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href,
-                '关注南通疫情，定位离你最近的疫区。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
+                '关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
             var wxid = window.localStorage.getItem("WXID");
             this.weixin = wxid;
             this.getHistoryIDCardMobile();
