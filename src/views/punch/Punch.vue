@@ -175,7 +175,7 @@
         </div>
         <div class="click-box" v-if="isShowMap">
             <div class="map-title">
-                <input type="text" v-model="clickValue" placeholder="图中没有想找的点?手动输入添加地点" @blur="lostblur" oninput="if (value.length>4) value=value.slice(0,10)">
+                <input type="text" v-model="clickValue" placeholder="图中没有想找的点?手动输入添加地点" @blur="lostblur" >
             </div>
             <div class="confirm" @click="confirmAddress">确 认</div>
         </div>
@@ -605,6 +605,13 @@
                 if(this.clickValue === "") {
                     Toast({
                             message: "请选择兴趣点!",
+                            iconClass: "icon icon-success"
+                    })
+                    return;
+                }
+                if(this.clickValue.length > 15) {
+                    Toast({
+                            message: "兴趣点名称不能超过15个字符!",
                             iconClass: "icon icon-success"
                     })
                     return;
@@ -1187,6 +1194,7 @@
             input {
                 margin-top: 6px;
                 margin-left:30px;
+                font-size: 14px;
                 width: 250px;
                 height: 30px;
                 border:none;
