@@ -3,8 +3,9 @@
     <div class="logo"></div>
     <div class="search-button" @click="toSearchMap"></div>
     <div class="health-button" @click="toWeiXin"></div>
-    <div class="nantong-chy"></div>
+    
     <div class="company-name">
+      <div class="nantong-chy"></div>
       <div>技术合作：南通市测绘院有限公司</div>
       <div>数据来源：南通市疾病预防控制中心</div>
     </div>
@@ -26,7 +27,7 @@ export default {
   created(){
     document.getElementsByTagName(
       "title"
-    )[0].innerText = "战役图·南通"
+    )[0].innerText = "战疫图·南通"
   	this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
   },
   methods: {
@@ -158,13 +159,14 @@ export default {
     height: 29px;
     background: url("../../assets/image/chy-logo2.png") no-repeat;
     background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 60px;
+    margin-bottom: 5px;
+    // position: absolute;
+    // left: 50%;
+    // transform: translateX(-50%);
+    // bottom: 10%;
   }
   .company-name {
-    width: 200px;
+    width: 220px;
     position: absolute;
     left: 50%;
     bottom: 20px;

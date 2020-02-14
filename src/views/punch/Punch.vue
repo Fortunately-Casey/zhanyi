@@ -126,7 +126,7 @@
                         恭喜您，打卡成功!
                     </div>
                     <div class="message">
-                        勤打卡有助于您获取更加精准的健康分析结果
+                        勤打卡有助于您获取更加精准的健康分析结果<span>(此前有途经点未打卡，可补打哦！)</span>
                     </div>
                 </div>
             </div>
@@ -268,7 +268,7 @@
         created() {
             document.getElementsByTagName(
                 "title"
-            )[0].innerText = "战役图·南通";
+            )[0].innerText = "战疫图·南通";
             this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href,
                 '关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
             var wxid = window.localStorage.getItem("WXID");
@@ -284,7 +284,7 @@
             }, 1000);
         },
         mounted() {
-
+            
         },
         methods: {
             shareList(imgUrl, link, desc, title) {
@@ -1008,6 +1008,10 @@
                 .message {
                     padding: 0 15px 15px 15px;
                     font-size: 14px;
+                    span {
+                        font-size: 13px;
+                        color:rgb(172, 169, 169);
+                    }
                 }
 
                 .result {
