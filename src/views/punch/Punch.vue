@@ -654,9 +654,10 @@
                 }
             },
             userNumberReg(value) {
-                var userNumberReg =
-                    /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
-                if (!userNumberReg.test(Number(value))) {
+                var userNumberReg = 
+                    // /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+                    /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                if (!userNumberReg.test(value)) {
                     Toast({
                         message: "请输入合法身份证号！",
                         iconClass: "icon icon-success"
@@ -982,6 +983,8 @@
                 left: 50%;
                 top: 30%;
                 transform: translateX(-50%);
+
+                
                 z-index: 999;
 
                 .icon-close {
