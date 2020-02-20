@@ -21,7 +21,7 @@ module.exports = {
     host: '0.0.0.0',
     port: 8066,
     https: true,
-    hotOnly: false,
+    hotOnly: true,
     /* 使用代理 */
     proxy: {
       "/api": {

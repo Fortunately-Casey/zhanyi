@@ -60,7 +60,7 @@ export function Totime(time) {
     var d = new Date(time);
     var hour = d.getHours() >= 10 ? d.getHours() : "0" + d.getHours();
     var minutes = d.getMinutes() >= 10 ? d.getMinutes() : "0" + d.getMinutes();
-    var datetime =  hour + ':' + minutes;
+    var datetime = hour + ':' + minutes;
     return datetime;
 }
 
@@ -192,10 +192,24 @@ export function getCenterPoint(path) {
     //return path[0];
 }
 
-export function compare(property){
-    return function(a,b){
+export function compare(property) {
+    return function (a, b) {
         var value1 = a[property];
         var value2 = b[property];
         return value1 - value2;
+    }
+}
+
+export default class AddressName {
+    constructor({
+        id,
+        name,
+        short_name,
+        key
+    }) {
+        this.id = id;
+        this.name = name;
+        this.short_name = short_name;
+        this.key = key
     }
 }

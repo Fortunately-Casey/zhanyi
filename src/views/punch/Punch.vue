@@ -40,7 +40,7 @@
             <span class="getVerification" @click="getVerification" v-if="isShowGetMessage">获取验证码</span>
             <span class="timeValue" v-else>{{timer}}</span>
           </div>
-        </div> -->
+        </div>-->
       </div>
       <div class="first">
         <div class="item">
@@ -106,7 +106,7 @@
           </div>
         </div>
       </div>
-      <div class="fifth">
+      <!-- <div class="fifth">
         <div class="item">
           <div class="name">
             <div class="cross-title">
@@ -122,6 +122,30 @@
               <div class="chosed-icon" v-if="chosedCrossIndex === index?true:false"></div>
             </div>
           </div>
+        </div>
+      </div>-->
+      <div class="fifth">
+        <div class="item" @click="showArea">
+          <div class="name">
+            <div class="cross-title">
+              5. 您来自的地区
+              <div class="chosedValue" v-if="isShowSelectValue">
+                <div class="value">{{chosedValues.province}}</div>
+                <div class="value">{{chosedValues.city}}</div>
+                <div class="value">{{chosedValues.area}}</div>
+              </div>
+            </div>
+
+            <div class="icon-cross" v-if="isShowCrossIcon">></div>
+          </div>
+        </div>
+        <div class="item">
+          <input
+            type="text"
+            v-model="addressDetail"
+            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+            class="addressDetail"
+          />
         </div>
       </div>
       <div class="bottom">
@@ -198,6 +222,62 @@
           <div class="bottom-message">确诊轨迹来源于南通市疾病预防控制中心</div>
         </div>
       </div>
+      <div class="modal" v-if="isShowAddressList">
+        <div class="city-list">
+          <div class="city-top">
+            选择地区
+            <div class="icon-close" @click="closeAddress"></div>
+          </div>
+          <div class="select-province" v-if="isShowProvinceList">
+            <div class="select-title">选择省份/地区</div>
+            <div v-for="(item,index) in provinceList" :key="index">
+              <div
+                class="province"
+                v-for="(v,i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
+                <div class="label">{{i === 0?v.key:''}}</div>
+                <div class="name">{{v.name}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="selected" v-if="!isShowProvinceList">
+            <span class="seleted-province" @click="selectProvince">{{chosedProvinceName}}</span>
+            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
+            <span class="selectedCityButton" v-else @click="selectCity">{{chosedCityName}}</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+          </div>
+          <div class="select-city" v-if="isShowCityList">
+            <div v-for="(item,index) in cityList" :key="index">
+              <div
+                class="city"
+                v-for="(v,i) in item.items"
+                :key="i"
+                @click="choseCity(v)"
+                v-if="v.name !== '直辖县'"
+              >
+                <div class="label">{{i === 0?v.key:''}}</div>
+                <div class="name">{{v.short_name + '市'}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="select-area" v-if="isShowAreaList">
+            <div v-for="(item,index) in areaList" :key="index">
+              <div
+                class="area"
+                v-for="(v,i) in item.items"
+                :key="i"
+                @click="choseArea(v)"
+                v-if="v.name !== '市辖区'"
+              >
+                <div class="label">{{i === 0?v.key:''}}</div>
+                <div class="name">{{v.name}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="click-box" v-if="isShowMap">
       <div class="map-title">
@@ -239,6 +319,8 @@ import {
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { getURL } from "@/common/tool/tool";
+import AddressName from "@/common/tool/tool";
+import { getCityList, getProvinceList } from "@/api/aliApi";
 export default {
   data() {
     return {
@@ -294,9 +376,28 @@ export default {
       },
       isShowSearchList: false,
       messageNumber: "",
-      isShowGetMessage:true,
-      timer:""
-    }
+      isShowGetMessage: true,
+      timer: "",
+      isShowAreaList: false,
+      isShowProvinceList: true,
+      chosedProvinceName: "",
+      isShowCityList: false,
+      chosedCityName: "",
+      isShowAreaList: false,
+      isShowAreaSelect: false,
+      provinceList: [],
+      cityList: [],
+      areaList: [],
+      isShowCrossIcon: true,
+      isShowSelectValue: false,
+      isShowAddressList: false,
+      chosedValues: {
+        province: "",
+        city: "",
+        area: ""
+      },
+      addressDetail: ""
+    };
   },
   created() {
     document.getElementsByTagName("title")[0].innerText = "战疫图·南通";
@@ -317,6 +418,8 @@ export default {
     setTimeout(() => {
       this.getLocalAddress();
     }, 1000);
+    //获取省会列表
+    this.getProvinceList();
   },
   mounted() {},
   methods: {
@@ -517,15 +620,15 @@ export default {
     },
     // 获取短信验证码
     getVerification() {
-        this.isShowGetMessage = false;
-        this.timer  = 60;
-        var timer = setInterval(() => {
-            if(this.timer === 0) {
-                clearInterval(timer);
-                this.isShowGetMessage = true;
-            }
-            this.timer--;
-        },1000)
+      this.isShowGetMessage = false;
+      this.timer = 60;
+      var timer = setInterval(() => {
+        if (this.timer === 0) {
+          clearInterval(timer);
+          this.isShowGetMessage = true;
+        }
+        this.timer--;
+      }, 1000);
     },
     openPicker() {
       this.$refs.datepicker.open();
@@ -780,6 +883,110 @@ export default {
       });
       window.baseMap.addOverlay(mk);
       window.baseMap.panTo(point);
+    },
+    showArea() {
+      this.isShowAddressList = true;
+      this.isShowProvinceList = true;
+      this.isShowCityList = false;
+      this.isShowAreaList = false;
+      this.chosedProvinceName = "";
+      this.chosedCityName = "";
+      this.isShowAreaSelect = false;
+    },
+    getProvinceList() {
+      var vm = this;
+      getProvinceList({
+        level: 0,
+        page: 1,
+        size: 50
+      }).then(resp => {
+        if (resp.status === 200) {
+          vm.provinceList = vm._normalizeCity(resp.data.data);
+        }
+      });
+    },
+    // 选择省份
+    choseProvince(item) {
+      var vm = this;
+      vm.chosedProvinceName = item.name;
+      getCityList({
+        parent_id: item.id
+      }).then(resp => {
+        if (resp.status === 200) {
+          vm.cityList = vm._normalizeCity(resp.data.data);
+        }
+      });
+      this.isShowProvinceList = false;
+      this.isShowCityList = true;
+    },
+    // 选择城市
+    choseCity(item) {
+      this.chosedCityName = item.short_name + "市";
+      var vm = this;
+      getCityList({
+        parent_id: item.id
+      }).then(resp => {
+        if (resp.status === 200) {
+          vm.areaList = vm._normalizeCity(resp.data.data);
+        }
+      });
+      this.isShowProvinceList = false;
+      this.isShowCityList = false;
+      this.isShowAreaList = true;
+      this.isShowAreaSelect = true;
+    },
+    choseArea(item) {
+      this.chosedAreaName = item.name;
+      this.chosedValues.province = this.chosedProvinceName;
+      this.chosedValues.city = this.chosedCityName;
+      this.chosedValues.area = item.name;
+      this.isShowSelectValue = true;
+      this.isShowAddressList = false;
+      this.isShowCrossIcon = false;
+    },
+    closeAddress() {
+      this.isShowAddressList = false;
+    },
+    selectProvince() {
+      this.isShowProvinceList = true;
+      this.isShowCityList = false;
+      this.isShowAreaList = false;
+      this.chosedCityName = "";
+      this.isShowAreaSelect = false;
+    },
+    selectCity() {
+      this.isShowCityList = true;
+      this.isShowProvinceList = false;
+      this.isShowAreaList = false;
+      this.chosedCityName = "";
+      this.isShowAreaSelect = false;
+    },
+    // 城市字母排序处理
+    _normalizeCity(list) {
+      let map = {};
+      list.forEach((item, index) => {
+        const key = item.pinyin.substr(0,1);
+        if(!map[key]) {
+          map[key] = {
+            title:key,
+            items:[]
+          }
+        }
+        map[key].items.push(new AddressName({
+          id:item.id,
+          name:item.name,
+          short_name:item.short_name,
+          key:key
+        }))
+      });
+      let ret = [];
+      for(let key in map) {
+        ret.push(map[key])
+      }
+      ret.sort((a,b) => {
+        return a.title.charCodeAt(0) - b.title.charCodeAt(0)
+      })
+      return ret;
     }
   },
   watch: {
@@ -889,13 +1096,13 @@ export default {
             padding-left: 5px;
             // line-height: 40px;
             padding-top: 2px;
-            width:75px;
-            text-align:center;
+            width: 75px;
+            text-align: center;
           }
           .timeValue {
-            width:75px;
-            text-align:center;  
-            color:gray;
+            width: 75px;
+            text-align: center;
+            color: gray;
             font-weight: 200;
             padding-left: 5px;
             // line-height: 40px;
@@ -918,12 +1125,14 @@ export default {
       background-color: #fff;
 
       .item {
-        height: 40px;
+        min-height: 40px;
         line-height: 40px;
         padding: 0 20px;
         font-weight: bold;
         font-size: 14px;
-
+        .name {
+          position: relative;
+        }
         .cross-address {
           border-bottom: 1px solid #efefef;
           position: relative;
@@ -963,16 +1172,39 @@ export default {
         .health-title,
         .cross-title {
           border-bottom: 1px solid #efefef;
-
           span {
             font-size: 11px;
             color: #c7c7c7;
           }
+          .chosedValue {
+            height: 75px;
+            .value {
+              text-align: right;
+              height: 25px;
+              line-height: 25px;
+              font-weight: 100;
+            }
+          }
+        }
+
+        .icon-cross {
+          width: 20px;
+          height: 20px;
+          text-align: center;
+          line-height: 20px;
+          float: right;
+          position: absolute;
+          right: 0;
+          top: 15px;
         }
 
         .address {
           color: #585858;
           padding-left: 10px;
+        }
+        .addressDetail {
+          width: 250px;
+          font-size: 13px;
         }
       }
     }
@@ -1208,6 +1440,101 @@ export default {
           color: rgb(161, 156, 156);
           text-align: center;
           margin: 10px 0 5px 0;
+        }
+      }
+      .city-list {
+        width: 100%;
+        height: 70%;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        background-color: #fff;
+        border-radius: 8px 8px 0 0;
+        .city-top {
+          height: 45px;
+          width: 100%;
+          text-align: center;
+          font-size: 15px;
+          line-height: 45px;
+          position: absolute;
+          background-color: #fff;
+          left: 0;
+          top: 0;
+          .icon-close {
+            width: 20px;
+            height: 20px;
+            background: url("../../assets/image/icon-close.png") no-repeat;
+            background-size: 100% 100%;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+        .select-province,
+        .select-city,
+        .select-area {
+          height: 100%;
+          overflow-y: auto;
+          box-sizing: border-box;
+          .select-title {
+            height: 25px;
+            line-height: 25px;
+            font-size: 12px;
+            padding-left: 20px;
+            color: rgb(199, 197, 197);
+          }
+          .province,
+          .city,
+          .area {
+            height: 30px;
+            line-height: 30px;
+            display: flex;
+            .label {
+              width: 20px;
+              text-align: center;
+              margin-left: 15px;
+              font-size: 14px;
+              color: rgb(199, 197, 197);
+            }
+            .name {
+              font-size: 14px;
+              padding-left: 15px;
+            }
+          }
+        }
+        .select-province {
+          padding-top: 45px;
+        }
+        .select-city,
+        .select-area {
+          padding-top: 75px;
+        }
+        .selected {
+          height: 30px;
+          width: 100%;
+          line-height: 35px;
+          position: absolute;
+          background-color: #fff;
+          left: 0;
+          top: 45px;
+          .seleted-province,
+          .selectCityButton,
+          .selectedCityButton {
+            display: inline-block;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 12.5px;
+            background-color: #eee;
+            font-size: 12px;
+            padding: 1px 10px;
+            margin-left: 20px;
+            letter-spacing: 1px;
+          }
+          .selectCityButton {
+            color: #d22d2d;
+          }
         }
       }
     }
