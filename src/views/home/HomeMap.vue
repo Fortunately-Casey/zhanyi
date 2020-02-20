@@ -134,7 +134,7 @@
           @click="setTo(item)"
         >{{item.name}}</div>
       </div>
-      <div class="list-wrap" >
+      <div class="list-wrap">
         <div
           class="sort-item"
           v-for="(item,index) in sortList"
@@ -177,16 +177,21 @@ import {
   getPatient,
   getPatientTrail
 } from "@/api/homeMap.js";
-import { getCenterPoint, compare, blur, chinaDateTime } from "@/common/tool/tool.js";
+import {
+  getCenterPoint,
+  compare,
+  blur,
+  chinaDateTime
+} from "@/common/tool/tool.js";
 import startIcon from "@/assets/image/startIcon.png";
 import locIcon from "@/assets/image/blue-loc1.png";
 import blueIcon from "@/assets/image/shan.gif";
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { getURL } from "@/common/tool/tool";
-import icon1 from "@/assets/image/v1.png"
-import icon2 from "@/assets/image/v2.gif"
-import $ from 'jquery'
+import icon1 from "@/assets/image/v1.png";
+import icon2 from "@/assets/image/v2.gif";
+import $ from "jquery";
 
 export default {
   data() {
@@ -204,7 +209,7 @@ export default {
       //   isShowWindow:false,
       date: "",
       dateList: [],
-      markList:[],
+      markList: [],
       isShowSort: false,
       areaList: [
         {
@@ -238,7 +243,7 @@ export default {
       chosedArea: {
         name: "崇川区"
       },
-      
+
       patientList: [],
       sortList: [],
       keyword: "",
@@ -248,10 +253,10 @@ export default {
       pointOne: {},
       pointTwo: {},
       clickIndex: "",
-      bluePoint:"",
-      pointCollection2:"",
-      smallPoint:"",
-      localPoint:""
+      bluePoint: "",
+      pointCollection2: "",
+      smallPoint: "",
+      localPoint: ""
     };
   },
   created() {
@@ -349,44 +354,6 @@ export default {
           console.log(err);
         });
     },
-    drawPoint() {
-      getPatientTrail().then(resp => {
-        var points = [];
-        var myIcon = new BMap.Icon(startIcon, new BMap.Size(45, 45), {
-          anchor: new BMap.Size(0, 0), //这句表示图片相对于所加的点的位置mapStart
-          imageSize: new BMap.Size(30, 30) //图标所用的图片的大小，此功能的作用等同于CSS中的background-size属性。可用于实现高清屏的高清效果
-          // offset: new BMap.Size(-10, 45), // 指定定位位置
-          // imageOffset: new BMap.Size(0, 0 - 10 * 25) // 设置图片偏移
-        });
-        // console.log(resp.data.data);
-        resp.data.data.map(v => {
-          if (v) {
-            var pt = new BMap.Point(v.bdx, v.bdy);
-            points.push(pt);
-            var opts = {
-              position: new BMap.Point(v.bdx, v.bdy), // 指定文本标注所在的地理位置
-              offset: new BMap.Size(10, -30) //设置文本偏移量
-            };
-            var label = new BMap.Label(v.placeName, opts); // 创建文本标注对象
-            label.setStyle({
-              color: "#D22D2D",
-              fontSize: "12px",
-              height: "20px",
-              lineHeight: "20px",
-              fontFamily: "微软雅黑"
-            });
-            window.baseMap.addOverlay(label);
-          }
-        });
-        var options = {
-          size: BMAP_POINT_SIZE_BIG,
-          shape: BMAP_POINT_SHAPE_CIRCLE,
-          color: "#D22D2D"
-        };
-        var pointCollection = new BMap.PointCollection(points, options);
-        window.baseMap.addOverlay(pointCollection);
-      });
-    },
     onblur() {
       var vm = this;
       vm.isShowSearchList = false;
@@ -394,45 +361,51 @@ export default {
     lostblur() {
       blur();
     },
-    openInfo:function(content,mk){
+    openInfo: function(content, mk) {
       var opts = {
-        width : 100,     // 信息窗口宽度
-        height: 70,     // 信息窗口高度
-        title : "详情" , // 信息窗口标题
-        enableMessage:true,//设置允许信息窗发送短息,
-        enableAutoPan:false
+        width: 100, // 信息窗口宽度
+        height: 70, // 信息窗口高度
+        title: "详情", // 信息窗口标题
+        enableMessage: true, //设置允许信息窗发送短息,
+        enableAutoPan: false
       };
       var p = mk;
       var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-      var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
-      window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
+      var infoWindow = new BMap.InfoWindow(content, opts); // 创建信息窗口对象
+      window.baseMap.openInfoWindow(infoWindow, point); //开启信息窗口
     },
     drawPloy() {
-      var vm = this; 
+      var vm = this;
       getRegionData().then(resp => {
         var data = resp.data.data;
-        var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
-        var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
+        var locPoint1 = new BMap.Icon(icon1, new BMap.Size(15, 15), {
+          // anchor: new BMap.Size(0, 0),
+          imageSize: new BMap.Size(15, 15)
+        });
+        var locPoint2 = new BMap.Icon(icon2, new BMap.Size(15, 15), {
+          // anchor: new BMap.Size(25, 25),
+          imageSize: new BMap.Size(15, 15)
+        });
 
-        for(var i = 0;i < data.length;i++){
+        for (var i = 0; i < data.length; i++) {
           var pt = new BMap.Point(data[i].bdx, data[i].bdy);
-          var mk = new BMap.Marker(pt,{
+          var mk = new BMap.Marker(pt, {
             icon: locPoint1
           });
           mk.id = data[i].id;
           vm.markList.push(mk);
-          var values="";
+          var values = "";
           // var values = data[i].remarks.split("|").join("<br>");
-          data[i].remarks.split("|").map((v,i) => {
-             if(i = 0) {
-               values += `<div class='title'>${v}</div>`
-             }else {
-               values += `<div>${v}</div>`
-             }
-          })
+          data[i].remarks.split("|").map((v, i) => {
+            if ((i = 0)) {
+              values += `<div class='title'>${v}</div>`;
+            } else {
+              values += `<div>${v}</div>`;
+            }
+          });
           // values.join("");
           window.baseMap.addOverlay(mk);
-          addClickHandler(values,mk);
+          addClickHandler(values, mk);
           var options = {
             position: pt,
             offset: new BMap.Size(10, -30) //设置文本偏移量
@@ -450,31 +423,32 @@ export default {
           label.hide();
           window.baseMap.addOverlay(label);
         }
-        function addClickHandler(content,marker){
-          marker.addEventListener("click",function(){
-            for(var i = 0;i<vm.markList.length;i++){
+        function addClickHandler(content, marker) {
+          marker.addEventListener("click", function() {
+            for (var i = 0; i < vm.markList.length; i++) {
               vm.markList[i].setIcon(locPoint1);
-              
             }
-            for(var j = 0;j<vm.sortList.length;j++){
-              if(vm.sortList[j].id.id == marker.id){
+            for (var j = 0; j < vm.sortList.length; j++) {
+              if (vm.sortList[j].id.id == marker.id) {
                 vm.clickIndex = j;
-                window.baseMap.panTo(new BMap.Point(vm.sortList[j].id.bdx, vm.sortList[j].id.bdy))
+                window.baseMap.panTo(
+                  new BMap.Point(vm.sortList[j].id.bdx, vm.sortList[j].id.bdy)
+                );
                 break;
               }
             }
             marker.setIcon(locPoint2);
-            vm.openInfo(content,marker)}
-          );
+            vm.openInfo(content, marker);
+          });
         }
-     /*   function openInfo(content,e){
+        /*   function openInfo(content,e){
           var p = e.target;
           var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
           var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
           window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
         }*/
 
-      /*
+        /*
         var mk = new BMap.Marker(r.point, {
           icon: locPoint
         });
@@ -520,13 +494,12 @@ export default {
         });
         var pointCollection = new BMap.PointCollection(polyList, options);
         window.baseMap.addOverlay(pointCollection);*/
-
       });
     },
-    scrollToText:function(){
+    scrollToText: function() {
       var st = $(".sort-item").height() * this.clickIndex;
       console.log(st);
-     $(".sortList").scrollTop(st);
+      $(".sortList").scrollTop(st);
     },
     changeChoose(val) {
       var vm = this;
@@ -564,7 +537,12 @@ export default {
         vm.patientGain = resp.data.data.patientGain;
         vm.region = resp.data.data.region;
         vm.regionGain = resp.data.data.regionGain;
-        this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
+        this.shareList(
+          "https://yqfk.ntschy.com/swnt.png",
+          window.location.href,
+          "关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心",
+          "战疫图 • 南通（持续更新）"
+        );
       });
     },
     getDayStatisticsDetails() {
@@ -673,7 +651,7 @@ export default {
             vm.localPoint = mk;
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
-          //  window.baseMap.setZoom(17);
+            //  window.baseMap.setZoom(17);
             // window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
@@ -683,15 +661,15 @@ export default {
       );
     },
     clickMyLocation() {
-       var vm = this;
-       vm.clickIndex = 0;
+      var vm = this;
+      vm.clickIndex = 0;
       //  window.baseMap.clearOverlays();
       //  vm.drawPloy();
-       window.baseMap.removeOverlay(vm.smallPoint);
-       window.baseMap.removeOverlay(vm.localPoint);
-       vm.keyword = "";
-       var geolocation = new BMap.Geolocation();
-       geolocation.getCurrentPosition(
+      window.baseMap.removeOverlay(vm.smallPoint);
+      window.baseMap.removeOverlay(vm.localPoint);
+      vm.keyword = "";
+      var geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(
         function(r) {
           if (this.getStatus() == BMAP_STATUS_SUCCESS) {
             var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
@@ -702,10 +680,10 @@ export default {
               icon: locPoint
             });
             vm.pointOne = r.point;
-             window.baseMap.panTo(r.point);
+            window.baseMap.panTo(r.point);
             window.baseMap.addOverlay(mk);
             // window.baseMap.setZoom(9);
-           
+
             getRegionData().then(resp => {
               //   console.log(resp.data.data);
               var polyList = [];
@@ -725,10 +703,15 @@ export default {
               polyList.map(v => {
                 if (v) {
                   var pointA = r.point;
-                  var pointB = new BMap.Point(v.centerPoint.lng, v.centerPoint.lat);
+                  var pointB = new BMap.Point(
+                    v.centerPoint.lng,
+                    v.centerPoint.lat
+                  );
                   lengthList.push({
                     id: v.value,
-                    length: window.baseMap.getDistance(pointA, pointB).toFixed(2),
+                    length: window.baseMap
+                      .getDistance(pointA, pointB)
+                      .toFixed(2),
                     path: v.path
                   });
                 }
@@ -736,7 +719,7 @@ export default {
               vm.sortList = lengthList.sort(compare("length"));
               //  vm.locationTo(vm.sortList[0],0);
 
-               $(".sortList").scrollTop(0);
+              $(".sortList").scrollTop(0);
               var bluePoint = new BMap.Point(
                 getCenterPoint(vm.sortList[0].path).lng,
                 getCenterPoint(vm.sortList[0].path).lat
@@ -806,7 +789,7 @@ export default {
                 });
 
                 vm.sortList = lengthList.sort(compare("length"));
-                vm.locationTo(vm.sortList[0],0);
+                vm.locationTo(vm.sortList[0], 0);
                 vm.isShowSort = true;
                 this.isShowArea = false;
               } else {
@@ -863,54 +846,60 @@ export default {
       // })
     },
     drawBlue(point) {
-        var vm = this;
-        // window.baseMap.removeOverlay(vm.pointCollection2);
-        window.baseMap.removeOverlay(vm.bluePoint);
-        // var points2 = [point]; 
-        // window.baseMap.removeOverlay(vm.blueMaker);
-        // var allOverlay = window.baseMap.getOverlays();
-        var opts = {
-            position: point, // 指定文本标注所在的地理位置
-            offset: new BMap.Size(10, -30) //设置文本偏移量
-        };
-        var locPoint = new BMap.Icon(blueIcon, new BMap.Size(20, 20), {
-          anchor: new BMap.Size(10, 10),
-          imageSize: new BMap.Size(20, 20)
-        });
-        var mk = new BMap.Marker(point, {
-          icon: locPoint
-        });
-        vm.bluePoint = mk;
-        window.baseMap.addOverlay(mk);
-        // var options2 = {
-            
-        //     size: BMAP_POINT_SIZE_BIGGER,
-        //     shape: BMAP_POINT_SHAPE_CIRCLE,
-        //     color: 'blue'
-        // }
-        // vm.pointCollection2 = new BMap.PointCollection(points2, options2);
-        //  //  pointCollection2.setTop(true);
-        // window.baseMap.addOverlay(vm.pointCollection2);
+      var vm = this;
+      // window.baseMap.removeOverlay(vm.pointCollection2);
+      window.baseMap.removeOverlay(vm.bluePoint);
+      // var points2 = [point];
+      // window.baseMap.removeOverlay(vm.blueMaker);
+      // var allOverlay = window.baseMap.getOverlays();
+      var opts = {
+        position: point, // 指定文本标注所在的地理位置
+        offset: new BMap.Size(10, -30) //设置文本偏移量
+      };
+      var locPoint = new BMap.Icon(blueIcon, new BMap.Size(20, 20), {
+        anchor: new BMap.Size(10, 10),
+        imageSize: new BMap.Size(20, 20)
+      });
+      var mk = new BMap.Marker(point, {
+        icon: locPoint
+      });
+      vm.bluePoint = mk;
+      window.baseMap.addOverlay(mk);
+      // var options2 = {
+
+      //     size: BMAP_POINT_SIZE_BIGGER,
+      //     shape: BMAP_POINT_SHAPE_CIRCLE,
+      //     color: 'blue'
+      // }
+      // vm.pointCollection2 = new BMap.PointCollection(points2, options2);
+      //  //  pointCollection2.setTop(true);
+      // window.baseMap.addOverlay(vm.pointCollection2);
     },
-    locationTo(item,index,isSetView) {
+    locationTo(item, index, isSetView) {
       console.log(item);
       var vm = this;
       vm.clickIndex = index;
       // window.baseMap.removeOverlay(vm.localPoint);
-      var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
-      var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
-      var values="";
+      var locPoint1 = new BMap.Icon(icon1, new BMap.Size(15, 15), {
+        // anchor: new BMap.Size(25, 25),
+        imageSize: new BMap.Size(15, 15)
+      });
+      var locPoint2 = new BMap.Icon(icon2, new BMap.Size(15, 15), {
+        // anchor: new BMap.Size(25, 25),
+        imageSize: new BMap.Size(15, 15)
+      });
+      var values = "";
       // var values = data[i].remarks.split("|").join("<br>");
       if (item.id.remarks != null) {
-      	item.id.remarks.split("|").map((v,i) => {
-	          if(i = 0) {
-	            values += `<div class='title'>${v}</div>`
-	          }else {
-	            values += `<div>${v}</div>`
-	          }
-	      })
+        item.id.remarks.split("|").map((v, i) => {
+          if ((i = 0)) {
+            values += `<div class='title'>${v}</div>`;
+          } else {
+            values += `<div>${v}</div>`;
+          }
+        });
       }
-      
+
       for (var i = 0; i < this.markList.length; i++) {
         if (this.markList[i].id == item.id.id) {
           for (var j = 0; j < vm.markList.length; j++) {
@@ -920,19 +909,17 @@ export default {
           this.openInfo(values, this.markList[i]);
           break;
         }
-
       }
-      var point = new BMap.Point(item.id.bdx,item.id.bdy);
-      if(isSetView) {
+      var point = new BMap.Point(item.id.bdx, item.id.bdy);
+      if (isSetView) {
         window.baseMap.setZoom(16);
       }
       window.baseMap.panTo(point);
-      
-      
+
       // if (vm.isShowSearchList) {
       //   vm.isShowSearchList = false;
       // } else {
-    /*    var point = new BMap.Point(
+      /*    var point = new BMap.Point(
           getCenterPoint(item.path).lng,
           getCenterPoint(item.path).lat
         );
@@ -978,13 +965,13 @@ export default {
   
         });
         vm.drawBlue(point);*/
-        // window.baseMap.setZoom(9);
-        // window.baseMap.panTo(point);
-        // if(isSetView) {
-        //   window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
-        //     margins: [90, 30, 220, 30]
-        //   });
-        // }
+      // window.baseMap.setZoom(9);
+      // window.baseMap.panTo(point);
+      // if(isSetView) {
+      //   window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
+      //     margins: [90, 30, 220, 30]
+      //   });
+      // }
       // }
     },
     closeSort() {
@@ -1026,9 +1013,9 @@ export default {
       window.baseMap.removeOverlay(vm.localPoint);
       //周佳佳改，把之前一次的蓝色小标清除；
       if (vm.smallPoint != null) {
-      	window.baseMap.removeOverlay(vm.smallPoint);
+        window.baseMap.removeOverlay(vm.smallPoint);
       }
-      
+
       // vm.drawPloy();
       var locPoint = new BMap.Icon(locIcon, new BMap.Size(25, 25), {
         anchor: new BMap.Size(5, 5),
@@ -1073,40 +1060,46 @@ export default {
         });
 
         vm.sortList = lengthList.sort(compare("length"));
-        
+
         //这个if里面是周佳佳加上去的，因为搜索了一个地址后，默认的气泡还是原来的没边
-        if (vm.sortList != null && vm.sortList.length > 0 && vm.sortList[0] != null && vm.sortList[0].id != null) {
-        	console.log(vm.sortList[0].id);
-        	
-        	var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
-		      var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
-		      var values="";
-		      // var values = data[i].remarks.split("|").join("<br>");
-		      if (vm.sortList[0].id.remarks != null) {
-		      	vm.sortList[0].id.remarks.split("|").map((v,i) => {
-			          if(i = 0) {
-			            values += `<div class='title'>${v}</div>`
-			          }else {
-			            values += `<div>${v}</div>`
-			          }
-			      })
-		      }
-        	
-        	for (var i = 0; i < this.markList.length; i++) {
-		        if (this.markList[i].id == vm.sortList[0].id.id) {
-		          for (var j = 0; j < vm.markList.length; j++) {
-		            vm.markList[j].setIcon(locPoint1);
-		          }
-		          this.markList[i].setIcon(locPoint2);
-		          this.openInfo(values, this.markList[i]);
-		          break;
-		        }
-		
-		      }
-        	
-        	var point = new BMap.Point(vm.sortList[0].id.bdx,vm.sortList[0].id.bdy);
-      		window.baseMap.panTo(point);
-      
+        if (
+          vm.sortList != null &&
+          vm.sortList.length > 0 &&
+          vm.sortList[0] != null &&
+          vm.sortList[0].id != null
+        ) {
+          console.log(vm.sortList[0].id);
+
+          var locPoint1 = new BMap.Icon(icon1, new BMap.Size(28, 28));
+          var locPoint2 = new BMap.Icon(icon2, new BMap.Size(48, 48));
+          var values = "";
+          // var values = data[i].remarks.split("|").join("<br>");
+          if (vm.sortList[0].id.remarks != null) {
+            vm.sortList[0].id.remarks.split("|").map((v, i) => {
+              if ((i = 0)) {
+                values += `<div class='title'>${v}</div>`;
+              } else {
+                values += `<div>${v}</div>`;
+              }
+            });
+          }
+
+          for (var i = 0; i < this.markList.length; i++) {
+            if (this.markList[i].id == vm.sortList[0].id.id) {
+              for (var j = 0; j < vm.markList.length; j++) {
+                vm.markList[j].setIcon(locPoint1);
+              }
+              this.markList[i].setIcon(locPoint2);
+              this.openInfo(values, this.markList[i]);
+              break;
+            }
+          }
+
+          var point = new BMap.Point(
+            vm.sortList[0].id.bdx,
+            vm.sortList[0].id.bdy
+          );
+          window.baseMap.panTo(point);
         }
 
         vm.isShowNearArea = !vm.isShowNearArea;
@@ -1130,7 +1123,7 @@ export default {
           polyList.push(getCenterPoint(path));
         });
         window.baseMap.setViewport(polyList, {
-            margins: [90, 30, 220, 30]
+          margins: [90, 30, 220, 30]
         });
       });
     }
@@ -1139,9 +1132,9 @@ export default {
     MMap,
     DropDown
   },
-  watch:{
+  watch: {
     keyword() {
-      if(this.keyword === "") {
+      if (this.keyword === "") {
         this.isShowSearchList = false;
       }
     }
@@ -1198,7 +1191,7 @@ export default {
         height: 45px;
         text-align: center;
         .value {
-          height:27px;
+          height: 27px;
           line-height: 25px;
           font-size: 24px;
           border-right: 1px solid rgba(216, 214, 214, 0.712);
@@ -1409,7 +1402,7 @@ export default {
     top: 100px;
     z-index: 999;
     background-color: #fff;
-    border:1px solid #3579f8;
+    border: 1px solid #3579f8;
     color: #3579f8;
     .location-icon {
       width: 15px;
@@ -1548,13 +1541,13 @@ export default {
       span {
         width: 35%;
         color: #d22c2c;
-        font-size:14px;
+        font-size: 14px;
         padding-left: 10px;
         line-height: 40px;
       }
     }
-    .list-wrap{
-      padding:0 10px;
+    .list-wrap {
+      padding: 0 10px;
     }
     .sort-item {
       //   display: flex;
@@ -1612,12 +1605,12 @@ export default {
       }
     }
     .clickChosed {
-      background-color:#3579f8;
+      background-color: #3579f8;
       border-radius: 15px;
       .name {
         color: #fff;
-        .address{
-          color:#eee;
+        .address {
+          color: #eee;
         }
       }
 
@@ -1686,7 +1679,7 @@ export default {
         margin-top: 12px;
         margin-left: 20px;
         width: 85%;
-        font-size:14px;
+        font-size: 14px;
         // width: calc(100% - 85px);
       }
       .search-icon {

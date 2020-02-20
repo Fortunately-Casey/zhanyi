@@ -5,13 +5,11 @@
 </template>
 <script>
 import { chinaDateTime } from "@/common/tool/tool.js";
-import $ from 'jquery'
+import $ from "jquery";
 export default {
-  created() {
-
-  },
+  created() {},
   mounted() {
-    console.log($(".BMap_pop img"))
+    console.log($(".BMap_pop img"));
   }
 };
 </script>
@@ -57,36 +55,36 @@ input[type="text"]:focus {
 
 /*地图标题*/
 .BMap_bubble_title {
-	color:white;
-	font-size:13px;
-	font-weight:bold;
-	text-align:left;
-	padding-left:5px;
-	padding-top:5px;
-	// border-bottom:1px solid gray;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: left;
+  padding-left: 5px;
+  padding-top: 5px;
+  // border-bottom:1px solid gray;
   background-color: #fff;
-  display:none;
+  display: none;
 }
 /* 消息内容 */
 .BMap_bubble_content {
-	background-color:white;
-	padding-left:5px;
-	padding-top:5px;
-  padding-bottom:10px;
+  background-color: white;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 10px;
   // border:1px solid red;
-  border-radius:8px;
+  border-radius: 8px;
   // height:60px!important;
-  overflow-Y:auto;
+  overflow-y: auto;
   div {
-    text-align:center;
+    text-align: center;
   }
-  div:first-child{
-    color:red;
-    font-size:14px;
-    font-weight:bold;
+  div:first-child {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
   }
-  div:nth-child(2){
-    text-align:left;
+  div:nth-child(2) {
+    text-align: left;
   }
 }
 // /* 内容 */
@@ -124,7 +122,7 @@ input[type="text"]:focus {
 // 	display:none;
 // }
 .BMap_pop div:nth-child(8) {
-  height:50px!important;
-  overflow-Y:auto!important;
+  height: 50px !important;
+  overflow-y: auto !important;
 }
 </style>

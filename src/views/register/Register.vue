@@ -149,7 +149,7 @@ export default {
       usernumber: "",
       specificAddress: "",
       crossCity: "",
-      isOther: false,
+      isOther: false
     };
   },
   computed: {},

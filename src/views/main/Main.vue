@@ -3,11 +3,11 @@
     <div class="logo"></div>
     <div class="search-button" @click="toSearchMap"></div>
     <div class="health-button" @click="toWeiXin"></div>
-    
+
     <div class="company-name">
       <div class="nantong-chy"></div>
-      <div>技术合作：南通市测绘院有限公司</div>
-      <div>数据来源：南通市疾病预防控制中心</div>
+      <div>技术支持：南通市测绘院有限公司</div>
+      <!-- <div>数据来源：南通市疾病预防控制中心</div> -->
     </div>
   </div>
 </template>
@@ -17,21 +17,20 @@ import axios from "axios";
 import { getURL } from "@/common/tool/tool";
 export default {
   data() {
-    return {
-
-    };
+    return {};
   },
-  computed: {
-
-  },
-  created(){
-    document.getElementsByTagName(
-      "title"
-    )[0].innerText = "战疫图·南通"
-  	this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心', '战疫图 • 南通（持续更新）');
+  computed: {},
+  created() {
+    document.getElementsByTagName("title")[0].innerText = "战疫图·南通";
+    this.shareList(
+      "https://yqfk.ntschy.com/swnt.png",
+      window.location.href,
+      "关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心",
+      "战疫图 • 南通（持续更新）"
+    );
   },
   methods: {
-  	shareList(imgUrl, link, desc, title) {
+    shareList(imgUrl, link, desc, title) {
       // var url = encodeURIComponent(link)
       var url = link;
       // 分享
@@ -105,16 +104,15 @@ export default {
     },
     toSearchMap() {
       this.$router.push({
-        path:"/homeMap"
-      })
+        path: "/homeMap"
+      });
     },
     toWeiXin() {
-      window.location.href = "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlace"
+      window.location.href =
+        "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlace";
     }
   },
-  components: {
-    
-  },
+  components: {},
   watch: {}
 };
 </script>
@@ -134,30 +132,31 @@ export default {
     transform: translateX(-50%);
     background: url("../../assets/image/logo.png") no-repeat;
   }
-  .search-button,.health-button {
-      width:280px;
-      height:70px;
+  .search-button,
+  .health-button {
+    width: 280px;
+    height: 70px;
   }
   .search-button {
-      background: url("../../assets/image/searchButton.png") no-repeat;
-      background-size: 100% 100%;
-      position: absolute;
-      left: 50%;
-      top: 230px;
-      transform: translateX(-50%);
+    background: url("../../assets/image/searchButton.png") no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    left: 50%;
+    top: 230px;
+    transform: translateX(-50%);
   }
   .health-button {
-      background: url("../../assets/image/healthButton.png") no-repeat;
-      background-size: 100% 100%;
-      position: absolute;
-      left: 50%;
-      top: 320px;
-      transform: translateX(-50%);
+    background: url("../../assets/image/healthButton.png") no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    left: 50%;
+    top: 320px;
+    transform: translateX(-50%);
   }
   .nantong-chy {
     width: 223px;
     height: 29px;
-    background: url("../../assets/image/chy-logo2.png") no-repeat;
+    background: url("../../assets/image/jkzx-logo.png") no-repeat;
     background-size: 100% 100%;
     margin-bottom: 5px;
     // position: absolute;
@@ -171,8 +170,10 @@ export default {
     left: 50%;
     bottom: 20px;
     transform: translateX(-50%);
-    >div {
-      color:gray;
+    font-size:12px;
+    text-align:center;
+    > div {
+      color: gray;
     }
   }
 }
