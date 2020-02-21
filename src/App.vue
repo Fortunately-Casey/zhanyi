@@ -125,4 +125,12 @@ input[type="text"]:focus {
   height: 50px !important;
   overflow-y: auto !important;
 }
+
+.mint-indicator-wrapper {
+	z-index: 1000 !important;
+}
+ 
+.mint-indicator-mask {
+  z-index: 1000 !important;
+}
 </style>

@@ -145,6 +145,7 @@
             v-model="addressDetail"
             placeholder="详细地址：道路、门牌号、楼栋号、单元号"
             class="addressDetail"
+             @blur="lostblur"
           />
         </div>
       </div>
@@ -305,7 +306,7 @@
 import { Todate, blur, Totime } from "@/common/tool/tool.js";
 import locIcon from "@/assets/image/blue-loc1.png";
 import MMap from "../map/Map.vue";
-import { Toast } from "mint-ui";
+import { Toast, Indicator } from "mint-ui";
 import {
   getHistoryIDCardMobile,
   savePeriodPlace,
@@ -566,7 +567,9 @@ export default {
         fromCounty:vm.chosedValues.area,
         fromAddress:vm.addressDetail
       };
+      Indicator.open();
       savePeriodPlace(params).then(resp => {
+        Indicator.close();
         if (resp.data.success) {
           vm.closeTouch();
           vm.isShowSuccess = true;
@@ -588,10 +591,12 @@ export default {
         });
         return;
       }
+      Indicator.open();
       healthAnalysis({
         idCard: vm.idCard
         // idCard:"320683199002280019"
       }).then(resp => {
+        Indicator.close();
         if (!resp.data.success) {
           Toast({
             message: "查询失败!",
