@@ -231,12 +231,7 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item,index) in provinceList" :key="index">
-              <div
-                class="province"
-                v-for="(v,i) in item.items"
-                :key="i"
-                @click="choseProvince(v)"
-              >
+              <div class="province" v-for="(v,i) in item.items" :key="i" @click="choseProvince(v)">
                 <div class="label">{{i === 0?v.key:''}}</div>
                 <div class="name">{{v.name}}</div>
               </div>
@@ -325,7 +320,6 @@ export default {
   data() {
     return {
       weixin: "",
-      date: "2020/02/11",
       healthList: [
         {
           value: "健康"
@@ -547,6 +541,13 @@ export default {
         });
         return;
       }
+      if( !vm.chosedValues.province || !vm.chosedValues.city || !vm.chosedValues.area || !vm.addressDetail) {
+        Toast({
+          message: "请填写完整的来自地区!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       var params = {
         wxID: vm.weixin,
         idCard: vm.idCard,
@@ -559,7 +560,11 @@ export default {
         healthy2: vm.isChosedCough,
         healthy3: vm.isChosedHot,
         temp: vm.temperature,
-        epidemicArea: vm.chosedCrossIndex === 0 ? false : true
+        epidemicArea: false,
+        fromProvince:vm.chosedValues.province,
+        fromCity:vm.chosedValues.city,
+        fromCounty:vm.chosedValues.area,
+        fromAddress:vm.addressDetail
       };
       savePeriodPlace(params).then(resp => {
         if (resp.data.success) {
@@ -965,27 +970,29 @@ export default {
     _normalizeCity(list) {
       let map = {};
       list.forEach((item, index) => {
-        const key = item.pinyin.substr(0,1);
-        if(!map[key]) {
+        const key = item.pinyin.substr(0, 1);
+        if (!map[key]) {
           map[key] = {
-            title:key,
-            items:[]
-          }
+            title: key,
+            items: []
+          };
         }
-        map[key].items.push(new AddressName({
-          id:item.id,
-          name:item.name,
-          short_name:item.short_name,
-          key:key
-        }))
+        map[key].items.push(
+          new AddressName({
+            id: item.id,
+            name: item.name,
+            short_name: item.short_name,
+            key: key
+          })
+        );
       });
       let ret = [];
-      for(let key in map) {
-        ret.push(map[key])
+      for (let key in map) {
+        ret.push(map[key]);
       }
-      ret.sort((a,b) => {
-        return a.title.charCodeAt(0) - b.title.charCodeAt(0)
-      })
+      ret.sort((a, b) => {
+        return a.title.charCodeAt(0) - b.title.charCodeAt(0);
+      });
       return ret;
     }
   },
