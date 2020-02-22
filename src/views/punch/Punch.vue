@@ -27,6 +27,26 @@
             <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
           </div>
         </div>
+        <div class="now-address">
+          <div class="name" @click="showArea(0)">
+            现居住地
+            <div class="icon-cross" v-if="isShowNowIcon">></div>
+            <div class="chosedValue" v-if="isShowSelectedNow">
+              <div class="value">{{chosedNowAddress.province}}</div>
+              <div class="value">{{chosedNowAddress.city}}</div>
+              <div class="value">{{chosedNowAddress.area}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <input
+            type="text"
+            v-model="nowAddress"
+            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+            class="addressDetail"
+            @blur="lostblur"
+          />
+        </div>
         <!-- <div class="item">
           <div class="name">短信验证</div>
           <div class="value">
@@ -125,7 +145,7 @@
         </div>
       </div>-->
       <div class="fifth">
-        <div class="item" @click="showArea">
+        <div class="item" @click="showArea(1)">
           <div class="name">
             <div class="cross-title">
               5. 您来自的地区
@@ -145,7 +165,7 @@
             v-model="addressDetail"
             placeholder="详细地址：道路、门牌号、楼栋号、单元号"
             class="addressDetail"
-             @blur="lostblur"
+            @blur="lostblur"
           />
         </div>
       </div>
@@ -172,9 +192,6 @@
         @confirm="confirmTime"
         @cancel="closeTime"
       ></mt-datetime-picker>
-      <!-- <div class="map" v-show="isShowMap">
-
-      </div>-->
       <div class="modal" v-if="isShowSuccess">
         <div class="punch-success">
           <div class="icon-close" @click="closeSuccess"></div>
@@ -391,7 +408,17 @@ export default {
         city: "",
         area: ""
       },
-      addressDetail: ""
+      addressDetail: "",
+      nowAddress: "",
+      chosedNowAddress:{
+        province: "",
+        city: "",
+        area: ""
+      },
+      isShowSelectedNow:false,
+      // 地址类型flag
+      addressType:0,
+      isShowNowIcon:true
     };
   },
   created() {
@@ -542,9 +569,26 @@ export default {
         });
         return;
       }
-      if( !vm.chosedValues.province || !vm.chosedValues.city || !vm.chosedValues.area || !vm.addressDetail) {
+      if (
+        !vm.chosedValues.province ||
+        !vm.chosedValues.city ||
+        !vm.chosedValues.area ||
+        !vm.addressDetail
+      ) {
         Toast({
           message: "请填写完整的来自地区!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (
+        !vm.chosedNowAddress.province ||
+        !vm.chosedNowAddress.city ||
+        !vm.chosedNowAddress.area ||
+        !vm.nowAddress
+      ) {
+        Toast({
+          message: "请填写完整的现居住地!",
           iconClass: "icon icon-success"
         });
         return;
@@ -562,10 +606,14 @@ export default {
         healthy3: vm.isChosedHot,
         temp: vm.temperature,
         epidemicArea: false,
-        fromProvince:vm.chosedValues.province,
-        fromCity:vm.chosedValues.city,
-        fromCounty:vm.chosedValues.area,
-        fromAddress:vm.addressDetail
+        fromProvince: vm.chosedValues.province,
+        fromCity: vm.chosedValues.city,
+        fromCounty: vm.chosedValues.area,
+        fromAddress: vm.addressDetail,
+        currLiveProvince:vm.chosedNowAddress.province,
+        currLiveCity:vm.chosedNowAddress.city,
+        currLiveCounty:vm.chosedNowAddress.area,
+        currLiveAddress:vm.nowAddress,
       };
       Indicator.open();
       savePeriodPlace(params).then(resp => {
@@ -760,7 +808,6 @@ export default {
       blur();
     },
     clickAddress(address) {
-      console.log(address);
       this.clickValue = address.address;
       this.bdx = address.bdx;
       this.bdy = address.bdy;
@@ -894,7 +941,8 @@ export default {
       window.baseMap.addOverlay(mk);
       window.baseMap.panTo(point);
     },
-    showArea() {
+    showArea(index) {
+      this.addressType = index;
       this.isShowAddressList = true;
       this.isShowProvinceList = true;
       this.isShowCityList = false;
@@ -947,12 +995,20 @@ export default {
     },
     choseArea(item) {
       this.chosedAreaName = item.name;
-      this.chosedValues.province = this.chosedProvinceName;
-      this.chosedValues.city = this.chosedCityName;
-      this.chosedValues.area = item.name;
-      this.isShowSelectValue = true;
+      if(this.addressType === 0) {
+        this.chosedNowAddress.province = this.chosedProvinceName;
+        this.chosedNowAddress.city = this.chosedCityName;
+        this.chosedNowAddress.area = item.name;
+        this.isShowSelectedNow = true;
+        this.isShowNowIcon = false;
+      }else {
+        this.chosedValues.province = this.chosedProvinceName;
+        this.chosedValues.city = this.chosedCityName;
+        this.chosedValues.area = item.name;
+        this.isShowSelectValue = true;
+        this.isShowCrossIcon = false;
+      }
       this.isShowAddressList = false;
-      this.isShowCrossIcon = false;
     },
     closeAddress() {
       this.isShowAddressList = false;
@@ -1121,11 +1177,52 @@ export default {
             padding-top: 2px;
           }
         }
+        .addressDetail {
+          width: 250px;
+          height:25px;
+          font-size: 13px;
+          margin-left: 18px;
+        }
       }
 
       .item:first-child {
         .name {
           letter-spacing: 28px;
+        }
+      }
+      .now-address {
+        min-height: 40px;
+        line-height: 40px;
+        border-bottom: 1px solid #f2f2f2;
+        font-weight: bold;
+        display: flex;
+        .name {
+          font-size: 14px;
+          width: 95%;
+          padding-left: 20px;
+          box-sizing: border-box;
+          text-align: left;
+          letter-spacing: 2px;
+          position: relative;
+          .icon-cross {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            float: right;
+            position: absolute;
+            right: 0;
+            top: 15px;
+          }
+          .chosedValue {
+            height: 75px;
+            .value {
+              text-align: right;
+              height: 25px;
+              line-height: 25px;
+              font-weight: 100;
+            }
+          }
         }
       }
     }
@@ -1216,6 +1313,7 @@ export default {
         }
         .addressDetail {
           width: 250px;
+          height:25px;
           font-size: 13px;
         }
       }
