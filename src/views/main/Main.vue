@@ -184,7 +184,7 @@ export default {
     transform: translateX(-50%);
   }
   .nantong-chy {
-    width: 223px;
+    width: 230px;
     height: 29px;
     background: url("../../assets/image/jkzx-logo.png") no-repeat;
     background-size: 100% 100%;
