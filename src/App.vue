@@ -52,6 +52,10 @@ input[type="text"]:focus {
   outline: none;
   border-bottom: 1px solid #d6362e;
 }
+input[type="password"]:focus {
+  outline: none;
+  border-bottom: 1px solid #d6362e;
+}
 
 /*地图标题*/
 .BMap_bubble_title {
@@ -132,5 +136,12 @@ input[type="text"]:focus {
  
 .mint-indicator-mask {
   z-index: 1000 !important;
+}
+.mint-radiolist-title {
+  display: none!important;
+}
+.mint-radio-label {
+  font-size: 13px!important;
+  font-weight: 40!important;
 }
 </style>

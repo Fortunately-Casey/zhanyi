@@ -1,14 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Register from "../views/register/Register.vue";
 
 Vue.use(VueRouter);
 
-const routes = [{
-    path: "/register",
-    name: "register",
-    component: Register
-  },
+const routes = [
   // {
   //   path: "/index",
   //   redirect: {
@@ -31,10 +26,40 @@ const routes = [{
     component: resolve => require(["../views/temp/Temp.vue"], resolve)
   },
   {
+    path: "/tempEnterpriseRegister",
+    name: "tempEnterpriseRegister",
+    component: resolve => require(["../views/temp/Register.vue"], resolve)
+  },
+  {
+    path: "/tempEnterpriseQuery",
+    name: "tempEnterpriseQuery",
+    component: resolve => require(["../views/temp/Query.vue"], resolve)
+  },
+  {
     path: "/punch",
     name: "punch",
     component: resolve => require(["../views/punch/Punch.vue"], resolve)
   },
+  {
+    path: "/enterprisePunch",
+    name: "enterprisePunch",
+    component: resolve => require(["../views/enterprisePunch/EnterprisePunch.vue"], resolve)
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: resolve => require(["../views/register/Register.vue"], resolve)
+  },
+  {
+    path:"/login",
+    name:"login",
+    component: resolve => require(["../views/login/Login.vue"], resolve)
+  },
+  {
+    path:"/manage",
+    name:"manage",
+    component: resolve => require(["../views/manage/Manage.vue"], resolve)
+  }
   // {
   //   path: "/index",
   //   name: "index",

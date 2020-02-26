@@ -1,24 +1,30 @@
 <template>
   <div class="register">
     <div class="logo"></div>
-    <!-- <div class="search-button" @click="toSearchMap"></div>
-    <div class="health-button" @click="toWeiXin"></div> -->
-    <div class="registration-button" @click="toRegister"></div>
-    <div class="infoManage-button" @click="toQuery"></div>
-    <div class="company-name">
+    <div class="title">欢迎您，请登录</div>
+    <div class="register-box">
+      <input type="text" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
+      <input type="password" placeholder="密码" v-model="password" @blur="lostblur" />
+    </div>
+    <div class="register-button" @click="login">进入</div>
+    <!-- <div class="company-name">
       <div class="nantong-chy"></div>
       <div>技术支持：南通市测绘院有限公司</div>
-      <!-- <div>数据来源：南通市疾病预防控制中心</div> -->
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
 import wx from "weixin-js-sdk";
 import axios from "axios";
-import { getURL } from "@/common/tool/tool";
+import { Toast } from "mint-ui";
+import { saveEnterprise, loginEnterprise } from "@/api/register";
+import { getURL, blur } from "@/common/tool/tool";
 export default {
   data() {
-    return {};
+    return {
+      phoneNumber: "",
+      password: ""
+    };
   },
   computed: {},
   created() {
@@ -103,28 +109,57 @@ export default {
           console.log(err);
         });
     },
-    toSearchMap() {
-      this.$router.push({
-        path: "/homeMap"
-      });
+    login() {
+      var vm = this;
+      if (vm.password && vm.phoneNumber) {
+        loginEnterprise({
+          mobile: vm.phoneNumber,
+          password: vm.password
+        }).then(resp => {
+          if (resp.data.success) {
+            Toast({
+              message: "登录成功",
+              iconClass: "icon icon-success"
+            });
+            vm.$router.push({
+              path: "/manage",
+              query: {
+                enterpriseID: resp.data.data.enterpriseID,
+                // WXID: vm.$route.query.
+              }
+            });
+          } else {
+            Toast({
+              message: "登录失败",
+              iconClass: "icon icon-success"
+            });
+          }
+        });
+      } else {
+        Toast({
+          message: "手机号和密码不能为空",
+          iconClass: "icon icon-success"
+        });
+      }
     },
-    toWeiXin() {
-      window.location.href =
-        "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlace";
+    lostblur(value) {
+      var vm = this;
+      if (value === "phone") {
+        vm.phoneReg(vm.phoneNumber);
+      }
+      blur();
     },
-    toRegister() {
-      window.location.href =
-        "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterpriseRegister";
-    },
-    toQuery() {
-      this.$router.push({
-        path:"/login"
-      })
-      // window.location.href =
-      //   "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterpriseQuery";
+    phoneReg(value) {
+      var phoneReg = /^1[3456789]\d{9}$/;
+      if (!phoneReg.test(Number(value))) {
+        Toast({
+          message: "请输入合法手机号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
     }
   },
-  components: {},
   watch: {}
 };
 </script>
@@ -144,44 +179,42 @@ export default {
     transform: translateX(-50%);
     background: url("../../assets/image/logo.png") no-repeat;
   }
-  .search-button,
-  .health-button,
-  .registration-button,
-  .infoManage-button {
-    width: 280px;
-    height: 70px;
+  .title {
+    position: absolute;
+    left: 50px;
+    top: 160px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #e75a4f;
   }
-  .search-button {
-    background: url("../../assets/image/searchButton.png") no-repeat;
-    background-size: 100% 100%;
+  .register-box {
+    position: absolute;
+    left: 0;
+    top: 190px;
+    width: 100%;
+    padding: 10px 50px;
+    box-sizing: border-box;
+    input {
+      margin-top: 20px;
+      width: 100%;
+      border-bottom: 1px solid rgb(214, 211, 211);
+      font-size: 13px;
+    }
+  }
+  .register-button {
+    width: 250px;
+    height: 45px;
+    text-align: center;
+    line-height: 45px;
+    color: #fff;
+    background-color: #e75a4f;
+    border-radius: 22.5px;
     position: absolute;
     left: 50%;
-    top: 200px;
+    bottom: 150px;
     transform: translateX(-50%);
-  }
-  .health-button {
-    background: url("../../assets/image/healthButton.png") no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    top: 290px;
-    transform: translateX(-50%);
-  }
-  .registration-button {
-    background: url("../../assets/image/registration.png") no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    top: 200px;
-    transform: translateX(-50%);
-  }
-  .infoManage-button {
-    background: url("../../assets/image/infoManage.png") no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    top: 290px; 
-    transform: translateX(-50%);
+    font-size: 15px;
+    letter-spacing: 10px;
   }
   .nantong-chy {
     width: 223px;
@@ -204,6 +237,52 @@ export default {
     text-align: center;
     > div {
       color: gray;
+    }
+  }
+  .modal {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(59, 58, 58, 0.623);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    .punch-success {
+      width: 75%;
+      /* height: 20%; */
+      background-color: #fff;
+      border: 1px solid rgb(196, 193, 193);
+      border-radius: 5px;
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      transform: translateX(-50%);
+      z-index: 999;
+      .icon-close {
+        width: 20px;
+        height: 20px;
+        background: url("../../assets/image/icon-close.png") no-repeat;
+        background-size: 100% 100%;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+      .red-message {
+        width: 100%;
+        text-align: center;
+        /* padding-left: 20px; */
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        color: red;
+        margin-top: 15px;
+      }
+      .qrcode {
+        margin: 0 auto;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import startIcon from '@/assets/image/startIcon.png';
 import locationIcon from "@/assets/image/location.png";
 import endIcon from "@/assets/image/record1.png";
@@ -16,7 +17,7 @@ export function blur() {
     setTimeout(function () {
         var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0;
         window.scrollTo(0, Math.max(scrollHeight - 1, 0));
-    }, 50);
+    }, 5);
 }
 
 export function getURL(url) {

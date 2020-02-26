@@ -1,5 +1,7 @@
 <template>
-  <div class="temp"></div>
+  <div class="register">
+    <h1>222</h1>
+  </div>
 </template>
 
 <script>
@@ -8,13 +10,14 @@ export default {
     return {};
   },
   created() {
-    // alert("空白页")
-    window.localStorage.setItem("WXID", JSON.stringify(this.$route.query.WxId));
     console.log(this.$route.query);
   },
   mounted() {
     this.$router.push({
-      path: "/punch"
+      path: "/register",
+      query: {
+        WXID: this.$route.query.WxId
+      }
     });
   }
 };

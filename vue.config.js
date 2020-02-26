@@ -20,7 +20,7 @@ module.exports = {
     // eslint-disable-next-line prettier/prettier
     host: '0.0.0.0',
     port: 8066,
-    https: true,
+    // https: true,
     hotOnly: true,
     /* 使用代理 */
     proxy: {

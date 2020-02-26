@@ -2,7 +2,7 @@
   <div class="punch-content">
     <div class="punch" ref="punch" v-show="!isShowMap">
       <div class="header">
-        健康分析
+        企业员工复工信息填写
         <div class="back" @click="goBack">
           首页
           <div class="back-icon"></div>
@@ -10,9 +10,15 @@
       </div>
       <div class="top">
         <div class="item">
-          <div class="name">日期</div>
+          <div class="name">姓名</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{returnDate(dateValue)}}</div>
+            <input type="text" v-model="username" @blur="lostblur()" />
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">联系电话</div>
+          <div class="value">
+            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
           </div>
         </div>
         <div class="item">
@@ -22,68 +28,29 @@
           </div>
         </div>
         <div class="item">
-          <div class="name">电话号码</div>
+          <div class="name">年龄</div>
           <div class="value">
-            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input type="text" v-model="age" @blur="lostblur('temp')" />
           </div>
         </div>
-        <div class="now-address">
-          <div class="name" @click="showArea(0)">
-            现居住地
-            <div class="icon-cross" v-if="isShowNowIcon">></div>
-            <div class="chosedValue" v-if="isShowSelectedNow">
-              <div class="value">{{chosedNowAddress.province}}</div>
-              <div class="value">{{chosedNowAddress.city}}</div>
-              <div class="value">{{chosedNowAddress.area}}</div>
-            </div>
-          </div>
+        <div class="item">
+          <div class="name">所在企业</div>
+          <div class="value"></div>
         </div>
         <div class="item">
           <input
             type="text"
-            v-model="nowAddress"
-            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
-            class="addressDetail"
+            v-model="enterpriseName"
+            disabled="disabled"
+            placeholder="输入企业名称"
             @blur="lostblur"
+            class="addressDetail"
           />
         </div>
-        <!-- <div class="item">
-          <div class="name">短信验证</div>
-          <div class="value">
-            <input
-              type="text"
-              style="width:100px"
-              v-model="messageNumber"
-              placeholder="请输入验证码"
-              @blur="lostblur('phone')"
-            />
-            <span class="getVerification" @click="getVerification" v-if="isShowGetMessage">获取验证码</span>
-            <span class="timeValue" v-else>{{timer}}</span>
-          </div>
-        </div>-->
       </div>
       <div class="first">
-        <div class="item">
-          <div class="cross-address">
-            1. 途经地点
-            <div class="local-icon" @click="showMap"></div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="address">{{addressValue}}</div>
-        </div>
-      </div>
-      <div class="second">
-        <div class="item">
-          <div class="name">2. 途经时间</div>
-          <div class="value">
-            <div class="date" @click="choseTime">{{timeValue}}</div>
-          </div>
-        </div>
-      </div>
-      <div class="third">
-        <div class="item">
-          <div class="name">3. 体温读数</div>
+        <div class="item temp">
+          <div class="name">体温</div>
           <div class="value">
             <input
               type="text"
@@ -94,61 +61,40 @@
             />
           </div>
         </div>
-      </div>
-      <div class="fourth">
         <div class="item">
           <div class="name">
-            <div class="health-title">4. 健康症状</div>
+            <div class="cross-title">有无咳嗽状况</div>
           </div>
         </div>
-        <div class="item">
-          <div class="name">
-            <div class="health-item" @click="choseHealth(0)">
-              健康
-              <div class="chosed-icon" v-if="isChosedHealth"></div>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="name">
-            <div class="health-item" @click="choseHealth(1)">
-              咳嗽
-              <div class="chosed-icon" v-if="isChosedCough"></div>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="name">
-            <div class="health-item" @click="choseHealth(2)">
-              发热
-              <div class="chosed-icon" v-if="isChosedHot"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- <div class="fifth">
-        <div class="item">
-          <div class="name">
-            <div class="cross-title">
-              5. 14天内是否经过疫区？
-              <span>(湖北省、武汉市、温州市等)</span>
-            </div>
-          </div>
-        </div>
-        <div class="item" v-for="(item,index) in crossList" :key="index" @click="choseCross(index)">
+        <div class="item" v-for="(item,index) in coughList" :key="index" @click="choseCough(index)">
           <div class="name">
             <div class="cross-item">
               {{item.value}}
-              <div class="chosed-icon" v-if="chosedCrossIndex === index?true:false"></div>
+              <div class="chosed-icon" v-if="chosedCough === index?true:false"></div>
             </div>
           </div>
         </div>
-      </div>-->
-      <div class="fifth">
-        <div class="item" @click="showArea(1)">
+      </div>
+      <div class="second">
+        <div class="item">
+          <div class="name">
+            <div class="cross-title">1月23日至今是否离开过南通</div>
+          </div>
+        </div>
+        <div class="item" v-for="(item,index) in crossList" :key="index" @click="choseLeave(index)">
+          <div class="name">
+            <div class="cross-item">
+              {{item.value}}
+              <div class="chosed-icon" v-if="chosedLeaveIndex === index?true:false"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="third" v-if="chosedLeaveIndex === 1">
+        <div class="item" @click="showArea()">
           <div class="name">
             <div class="cross-title">
-              5. 您来自的地区
+              返通前地址
               <div class="chosedValue" v-if="isShowSelectValue">
                 <div class="value">{{chosedValues.province}}</div>
                 <div class="value">{{chosedValues.city}}</div>
@@ -162,16 +108,176 @@
         <div class="item">
           <input
             type="text"
-            v-model="addressDetail"
+            v-model="beforeBackAddress"
             placeholder="详细地址：道路、门牌号、楼栋号、单元号"
             class="addressDetail"
             @blur="lostblur"
           />
         </div>
       </div>
+      <div class="fourth">
+        <div class="item" v-if="chosedLeaveIndex === 1">
+          <div class="name">返通日期</div>
+          <div class="value">
+            <div class="date" @click="openPicker">{{returnDate(dateValue)}}</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">{{chosedLeaveIndex === 0?'现居住地':'返通居住地'}}</div>
+          <div class="value"></div>
+        </div>
+        <div class="item">
+          <input
+            type="text"
+            v-model="nantongAddress"
+            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+            class="addressDetail"
+            @blur="lostblur"
+          />
+        </div>
+      </div>
+      <div class="fifth">
+        <div class="item">
+          <div class="name">
+            <div class="cross-title">是否复工</div>
+          </div>
+        </div>
+        <div
+          class="item"
+          v-for="(item,index) in crossList"
+          :key="index"
+          @click="choseRework(index)"
+        >
+          <div class="name">
+            <div class="cross-item">
+              {{item.value}}
+              <div class="chosed-icon" v-if="choseReworkIndex === index?true:false"></div>
+            </div>
+          </div>
+        </div>
+        <div class="item reworkTime" v-if="choseReworkIndex === 1">
+          <div class="name">复工日期</div>
+          <div class="value">
+            <div class="date" @click="openRework">{{returnDate(reworkDate)}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="seventh">
+        <div class="item">
+          <div class="name">
+            <div class="cross-title">目前状态</div>
+          </div>
+        </div>
+        <div
+          class="item"
+          v-for="(item,index) in seekMedicalList"
+          :key="index"
+          @click="choseSeeMedical(index)"
+        >
+          <div class="name">
+            <div class="cross-item">
+              {{item.value}}
+              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index?true:false"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sixth" v-if="chosedSeeMedicalIndex === 1">
+        <div class="item">
+          <div class="name">
+            <div class="cross-title">隔离方式</div>
+          </div>
+        </div>
+        <div class="item" @click="choseQuarantine(0)">
+          <div class="name">
+            <div class="cross-item">
+              {{quarantineList[0].value}}
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0?true:false"></div>
+            </div>
+          </div>
+        </div>
+        <div class="item" v-show="chosedQuarantineIndex===0">
+          <input
+            type="text"
+            v-model="enterpriseAddress"
+            placeholder="企业地址：道路、门牌号、楼栋号、单元号"
+            class="addressDetail"
+            @blur="lostblur"
+          />
+        </div>
+        <div class="item" @click="choseQuarantine(1)">
+          <div class="name">
+            <div class="cross-item">
+              {{quarantineList[1].value}}
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1?true:false"></div>
+            </div>
+          </div>
+        </div>
+        <div class="item" v-if="chosedQuarantineIndex === 1">
+          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
+        </div>
+        <div class="item" @click="choseQuarantine(2)">
+          <div class="name">
+            <div class="cross-item">
+              {{quarantineList[2].value}}
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2?true:false"></div>
+            </div>
+          </div>
+        </div>
+        <div class="item" v-show="chosedQuarantineIndex===2">
+          <input
+            type="text"
+            v-model="nantongAddress"
+            placeholder="家庭地址：道路、门牌号、楼栋号、单元号"
+            class="addressDetail"
+            @blur="lostblur"
+          />
+        </div>
+      </div>
+      <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
+        <div class="item" @click="isShowOutpatient = true">
+          <div class="name">
+            <div class="cross-title">
+              发热门诊
+              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
+                <div class="value">{{chosedOutpatient.value}}</div>
+              </div>
+            </div>
+            <div class="icon-cross" v-if="isShowMedicaIcon">></div>
+          </div>
+        </div>
+      </div>
+      <div class="sixth" v-if="chosedSeeMedicalIndex === 3">
+        <div class="item" @click="isShowHospital = true">
+          <div class="name">
+            <div class="cross-title">
+              定点医院
+              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
+                <div class="value">{{chosedHospital.value}}</div>
+              </div>
+            </div>
+            <div class="icon-cross" v-if="isShowHospitalIcon">></div>
+          </div>
+        </div>
+      </div>
+      <div class="sixth" v-if="chosedSeeMedicalIndex === 4">
+        <div class="item">
+          <div class="name">
+            <div class="cross-title">其他</div>
+          </div>
+        </div>
+        <div class="item">
+          <input
+            type="text"
+            v-model="otherInfo"
+            placeholder="请输入其他信息"
+            class="addressDetail"
+            @blur="lostblur"
+          />
+        </div>
+      </div>
       <div class="bottom">
-        <div class="look-button" @click="searchReport">查询报告</div>
-        <div class="punch-button" @click="punchTo">打卡</div>
+        <div class="punch-button" @click="saveEnterprisePeriodPlace">提交</div>
       </div>
       <mt-datetime-picker
         ref="datepicker"
@@ -186,60 +292,17 @@
         @cancel="closeDate"
       ></mt-datetime-picker>
       <mt-datetime-picker
-        ref="timepicker"
-        type="time"
-        v-model="timepicker"
-        @confirm="confirmTime"
-        @cancel="closeTime"
+        ref="reworkPicker"
+        v-model="reworkValue"
+        type="date"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        :endDate="new Date()"
+        :startDate="new Date('2020/1/1')"
+        @confirm="confirmRework"
+        @cancel="closeRework"
       ></mt-datetime-picker>
-      <div class="modal" v-if="isShowSuccess">
-        <div class="punch-success">
-          <div class="icon-close" @click="closeSuccess"></div>
-          <div class="red-message">恭喜您，打卡成功!</div>
-          <div class="message">
-            勤打卡有助于您获取更加精准的健康分析结果
-            <span>(此前有途经点未打卡，可补打哦！)</span>
-          </div>
-        </div>
-      </div>
-      <div class="modal" v-if="isShowReport">
-        <div class="search-report">
-          <div class="icon-close" @click="closeReport"></div>
-          <div class="result">查看结果</div>
-          <div v-if="periodPlace14">
-            <div class="report-list">
-              <div
-                class="health"
-                v-if="!this.epidemicArea&&this.reportList.length === 0?true:false"
-              >
-                <div class="health-icon"></div>依据现有确诊人员数据及您的打卡信息，您非密切接触人员
-              </div>
-              <div class="bad" v-if="epidemicArea">
-                <div class="bad-icon"></div>您14天内经过疫区
-              </div>
-              <div class="bad" v-for="(item,index) in reportList" :key="index">
-                <div class="bad-icon"></div>
-                {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
-              </div>
-            </div>
-          </div>
-          <div class="tips" v-if="!periodPlace14">
-            <div class="tips-icon"></div>温馨提示:您14天内并未进行打卡，无法分析数据
-          </div>
-          <div class="tips" v-else>
-            <div class="tips-icon"></div>
-            温馨提示:{{epidemicArea||reportList.length > 0?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
-          </div>
-          <div class="function" @click="isShowFunction = !isShowFunction">
-            <span class="left">分析方法</span>
-            <div class="plus" v-if="!isShowFunction"></div>
-            <div class="minus" v-else></div>
-            <span class="right">（点击查看详情）</span>
-            <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您前14天打卡数据进行对比分析</div>
-          </div>
-          <div class="bottom-message">确诊轨迹来源于南通市疾病预防控制中心</div>
-        </div>
-      </div>
       <div class="modal" v-if="isShowAddressList">
         <div class="city-list">
           <div class="city-top">
@@ -291,44 +354,47 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="click-box" v-if="isShowMap">
-      <div class="map-title">
-        <input type="text" v-model="clickValue" placeholder="图中没有想找的点?手动输入添加地点" @blur="lostblur" />
+      <div class="modal" v-if="isShowOutpatient">
+        <div class="city-list">
+          <div class="city-top">
+            选择门诊
+            <div class="icon-close" @click="closeOutpatient"></div>
+          </div>
+          <div class="select-city">
+            <div v-for="(item,index) in outpatientList" :key="index">
+              <div class="city" @click="choseOutPatient(item)">
+                <div class="name">{{item.value}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="confirm" @click="confirmAddress">确 认</div>
-    </div>
-    <div class="search-box" v-show="isShowMap">
-      <div class="icon"></div>
-      <input
-        type="text"
-        placeholder="输入地点查询或点击地图自动识别"
-        @input="keywordSearch"
-        v-model="keyword"
-        @blur="lostblur"
-      />
-      <div class="search-list" v-if="isShowSearchList">
-        <div
-          class="item"
-          v-for="(item,index) in searchList"
-          :key="index"
-          @click="sendTo(item)"
-        >{{item.name}}</div>
+      <div class="modal" v-if="isShowHospital">
+        <div class="city-list">
+          <div class="city-top">
+            选择医院
+            <div class="icon-close" @click="closeHospital"></div>
+          </div>
+          <div class="select-city">
+            <div v-for="(item,index) in hospitalList" :key="index">
+              <div class="city" @click="choseHospital(item)">
+                <div class="name">{{item.value}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <m-map @clickAddress="clickAddress"></m-map>
   </div>
 </template>
 <script>
 import { Todate, blur, Totime } from "@/common/tool/tool.js";
-import locIcon from "@/assets/image/blue-loc1.png";
-import MMap from "../map/Map.vue";
-import { Toast, Indicator } from "mint-ui";
+import { Toast, Indicator, Radio } from "mint-ui";
 import {
-  getHistoryIDCardMobile,
-  savePeriodPlace,
-  healthAnalysis
-} from "@/api/punch.js";
+  saveEnterprisePeriodPlace,
+  getEnterprise,
+  getEnterpriseUser
+} from "@/api/enterprisePunch.js";
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { getURL } from "@/common/tool/tool";
@@ -338,6 +404,53 @@ export default {
   data() {
     return {
       weixin: "",
+      username: "",
+      idCard: "",
+      age: "",
+      enterpriseName: "",
+      temperature: "",
+      chosedCough: 0,
+      chosedLeaveIndex: 0,
+      beforeBackAddress: "",
+      nantongAddress: "",
+      choseReworkIndex: 0,
+      chosedQuarantineIndex: 0,
+      chosedSeeMedicalIndex: 0,
+      enterpriseAddress: "",
+      reworkDate: new Date(),
+      otherInfo: "",
+      isShowOutpatient: false,
+      isShowHospital: false,
+      chosedQuarant: "",
+      isShowHospitalIcon: true,
+      isShowMedicaIcon: true,
+      outpatientList: [
+        {
+          value: "南通瑞慈医院"
+        }
+      ],
+      hospitalList: [
+        {
+          value: "南通市第三人民医院"
+        },
+        {
+          value: "南通大学附属医院"
+        }
+      ],
+      options: [
+        {
+          label: "嘉福宾馆",
+          value: "嘉福宾馆"
+        },
+        {
+          label: "工业博览城格林豪泰酒店",
+          value: "工业博览城格林豪泰酒店"
+        },
+        {
+          label: "金桥公寓",
+          value: "金桥公寓"
+        }
+      ],
       healthList: [
         {
           value: "健康"
@@ -357,13 +470,49 @@ export default {
           value: "是"
         }
       ],
+      coughList: [
+        {
+          value: "无"
+        },
+        {
+          value: "有"
+        }
+      ],
+      quarantineList: [
+        {
+          value: "企业隔离"
+        },
+        {
+          value: "集中隔离"
+        },
+        {
+          value: "居家隔离"
+        }
+      ],
+      seekMedicalList: [
+        {
+          value: "正常"
+        },
+        {
+          value: "隔离中"
+        },
+        {
+          value: "发热门诊留观"
+        },
+        {
+          value: "定点医院就诊"
+        },
+        {
+          value: "其他"
+        }
+      ],
+      chosedOutpatient: {},
+      chosedHospital: {},
       pickerValue: new Date(),
-      timepicker: "",
-      idCard: "",
+      reworkValue: new Date(),
       phoneNumber: "",
       dateValue: new Date(),
       timeValue: this.returnTime(new Date()),
-      temperature: "",
       chosedHealthIndex: 0,
       chosedCrossIndex: 0,
       isChosedHealth: true,
@@ -410,40 +559,58 @@ export default {
       },
       addressDetail: "",
       nowAddress: "",
-      chosedNowAddress:{
+      chosedNowAddress: {
         province: "",
         city: "",
         area: ""
       },
-      isShowSelectedNow:false,
+      isShowSelectedNow: false,
       // 地址类型flag
-      addressType:0,
-      isShowNowIcon:true
+      addressType: 0,
+      isShowNowIcon: true
     };
   },
   created() {
-    document.getElementsByTagName("title")[0].innerText = "战疫图·南通";
+    var vm = this;
+    document.getElementsByTagName("title")[0].innerText = "战疫图·员工打卡";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
       "关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心",
       "战疫图 • 南通（持续更新）"
     );
-    var wxid = window.localStorage.getItem("WXID");
-    if (wxid) {
-      this.weixin = wxid;
-    } else {
-      window.location.href = "https://yqfk.ntschy.com/main";
-    }
+    getEnterprise({
+      enterpriseID: vm.$route.query.enterpriseID
+    }).then(resp => {
+      if (resp.data.success) {
+        vm.enterpriseName = resp.data.data.enterpriseName;
+        // vm.phoneNumber = resp.data.data.mobile;
+        // vm.createWxID = resp.data.data.createWxID;
+      } else {
+        Toast({
+          message: "获取信息失败!",
+          iconClass: "icon icon-success"
+        });
+      }
+    });
+    // 获取用户信息
+    getEnterpriseUser({
+      wxID:vm.$route.query.WxId
 
-    this.getHistoryIDCardMobile();
-    setTimeout(() => {
-      this.getLocalAddress();
-    }, 1000);
+    }).then((resp) => {
+      if(resp.data.success&&resp.data.data) {
+        vm.username = resp.data.data.name;
+        vm.phoneNumber = resp.data.data.mobile;
+        vm.idCard = resp.data.data.idCard;
+        vm.age = resp.data.data.age;
+      }
+    })
     //获取省会列表
     this.getProvinceList();
   },
-  mounted() {},
+  mounted() {
+    // alert(this.$route.query)
+  },
   methods: {
     shareList(imgUrl, link, desc, title) {
       // var url = encodeURIComponent(link)
@@ -519,17 +686,8 @@ export default {
           console.log(err);
         });
     },
-    // 获取是否有打卡记录
-    getHistoryIDCardMobile() {
-      var vm = this;
-      getHistoryIDCardMobile({
-        wxID: vm.weixin
-      }).then(resp => {
-        if (resp.data.data.length > 0) {
-          vm.idCard = resp.data.data[0].idCard;
-          vm.phoneNumber = resp.data.data[0].mobile;
-        }
-      });
+    check() {
+      console.log(this.chosedQuarant);
     },
     // 打卡
     punchTo() {
@@ -610,10 +768,10 @@ export default {
         fromCity: vm.chosedValues.city,
         fromCounty: vm.chosedValues.area,
         fromAddress: vm.addressDetail,
-        currLiveProvince:vm.chosedNowAddress.province,
-        currLiveCity:vm.chosedNowAddress.city,
-        currLiveCounty:vm.chosedNowAddress.area,
-        currLiveAddress:vm.nowAddress,
+        currLiveProvince: vm.chosedNowAddress.province,
+        currLiveCity: vm.chosedNowAddress.city,
+        currLiveCounty: vm.chosedNowAddress.area,
+        currLiveAddress: vm.nowAddress
       };
       Indicator.open();
       savePeriodPlace(params).then(resp => {
@@ -629,50 +787,203 @@ export default {
         }
       });
     },
-    // 健康报告
-    searchReport() {
+    // 企业打卡
+    saveEnterprisePeriodPlace() {
       var vm = this;
-      if (!vm.idCard) {
+      var isolationAddress, seekMedicalAddress;
+      if (vm.chosedSeeMedicalIndex !== 1) {
+        isolationAddress = "";
+      } else {
+        if (vm.chosedQuarantineIndex === 0) {
+          isolationAddress = vm.enterpriseAddress;
+        } else if (vm.chosedQuarantineIndex === 1) {
+          isolationAddress = vm.chosedQuarant;
+        } else if (vm.chosedQuarantineIndex === 2) {
+          isolationAddress = vm.nantongAddress;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex !== 2 || vm.chosedSeeMedicalIndex !== 3) {
+        seekMedicalAddress = "";
+      } else {
+        if (vm.chosedSeeMedicalIndex === 2) {
+          seekMedicalAddress = vm.chosedOutpatient.value;
+        } else if (vm.chosedSeeMedicalIndex === 3) {
+          seekMedicalAddress = vm.chosedHospital.value;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex !== 4) {
+        vm.otherInfo = "";
+      }
+      if (!vm.username) {
         Toast({
-          message: "当前账号并未打卡!",
+          message: "姓名不能为空！",
           iconClass: "icon icon-success"
         });
         return;
       }
-      Indicator.open();
-      healthAnalysis({
-        idCard: vm.idCard
-        // idCard:"320683199002280019"
-      }).then(resp => {
-        Indicator.close();
-        if (!resp.data.success) {
+      if (!vm.idCard) {
+        Toast({
+          message: "身份证不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.age) {
+        Toast({
+          message: "年龄不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+
+      if (!vm.age) {
+        Toast({
+          message: "年龄不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+
+      if (!vm.enterpriseName) {
+        Toast({
+          message: "企业名称不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+
+      if (!vm.temperature) {
+        Toast({
+          message: "体温不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+
+      if (!vm.nantongAddress) {
+        Toast({
+          message: "居住地不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+
+      if (!vm.nantongAddress) {
+        Toast({
+          message: "居住地不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (vm.chosedLeaveIndex === 1) {
+        if (
+          !vm.chosedValues.province ||
+          !vm.chosedValues.city ||
+          !vm.chosedValues.area ||
+          !vm.beforeBackAddress
+        ) {
           Toast({
-            message: "查询失败!",
+            message: "请填写完整的返通前地区!",
             iconClass: "icon icon-success"
           });
-          vm.isShowReport = false;
+          return;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 0) {
+        if (!vm.enterpriseAddress) {
+          Toast({
+            message: "请填写完整的隔离地址!",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 1) {
+        if (!vm.chosedQuarant) {
+          Toast({
+            message: "请填写完整的隔离地址!",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 2) {
+        if (!vm.nantongAddress) {
+          Toast({
+            message: "请填写完整的隔离地址!",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex === 2) {
+        if (!vm.chosedOutpatient.value) {
+          Toast({
+            message: "请填写完整的就诊地址!",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+
+      if (vm.chosedSeeMedicalIndex === 3) {
+        if (!vm.chosedHospital.value) {
+          Toast({
+            message: "请填写完整的就诊地址!",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+
+      if (vm.chosedSeeMedicalIndex === 4) {
+        if (!vm.otherInfo) {
+          Toast({
+            message: "请填写完整的其他信息!",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+
+      var params = {
+        name: vm.username,
+        mobile: vm.phoneNumber,
+        idCard: vm.idCard,
+        age: vm.age,
+        wxID: vm.$route.query.WxId,
+        enterpriseID: vm.$route.query.enterpriseID,
+        enterpriseName: vm.enterpriseName,
+        temp: vm.temperature,
+        cough: vm.chosedCough === 0 ? false : true,
+        leaveNT: vm.chosedLeaveIndex === 0 ? false : true,
+        ntAddress: vm.nantongAddress,
+        returnNTDate: vm.returnDate(vm.dateValue),
+        beforeReturnNtProvince: vm.chosedValues.province,
+        beforeReturnNtCity: vm.chosedValues.city,
+        beforeReturnNtCounty: vm.chosedValues.area,
+        beforeReturnNtAddress: vm.beforeBackAddress,
+        recoveryWork: vm.choseReworkIndex === 0 ? false : true,
+        recoveryWorkDate: vm.returnDate(vm.reworkDate),
+        isolationType: vm.quarantineList[vm.chosedQuarantineIndex].value,
+        isolationAddress: isolationAddress,
+        seekMedicalAddress: seekMedicalAddress,
+        other: vm.otherInfo,
+        CurrStatus:vm.seekMedicalList[vm.chosedSeeMedicalIndex].value
+      };
+      Indicator.open();
+      saveEnterprisePeriodPlace(params).then(resp => {
+        Indicator.close();
+        if (resp.data.success) {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
         } else {
-          vm.isShowReport = true;
-          vm.epidemicArea = resp.data.data.epidemicArea;
-          vm.periodPlace14 = resp.data.data.periodPlace14;
-          if (resp.data.data.healthAnalysisList.length > 0) {
-            var arr = [];
-            resp.data.data.healthAnalysisList.map(v => {
-              var date = v.selfPeriodPlaceTime.split(" ")[0];
-              var time = v.selfPeriodPlaceTime.split(" ")[1];
-              date = vm.changeStr(date, 4, "年");
-              date = vm.changeStr(date, 7, "月");
-              date = date + "日";
-              arr.push({
-                placeName: v.selfPlaceName,
-                time: time.substring(0, time.length - 5),
-                date: date
-              });
-            });
-            vm.reportList = arr;
-          } else {
-            vm.reportList = [];
-          }
+          Toast({
+            message: "打卡失败!",
+            iconClass: "icon icon-success"
+          });
         }
       });
     },
@@ -688,18 +999,28 @@ export default {
         this.timer--;
       }, 1000);
     },
+    choseOutPatient(value) {
+      this.chosedOutpatient = value;
+      this.isShowMedicaIcon = false;
+      this.isShowOutpatient = false;
+    },
+    choseHospital(value) {
+      this.chosedHospital = value;
+      this.isShowHospitalIcon = false;
+      this.isShowHospital = false;
+    },
     openPicker() {
       this.$refs.datepicker.open();
+      this.closeTouch();
+    },
+    openRework() {
+      this.$refs.reworkPicker.open();
       this.closeTouch();
     },
     closeDate() {
       this.openTouch();
     },
-    choseTime() {
-      this.$refs.timepicker.open();
-      this.closeTouch();
-    },
-    closeTime() {
+    closeRework() {
       this.openTouch();
     },
     returnDate(value) {
@@ -712,12 +1033,33 @@ export default {
       this.dateValue = value;
       this.openTouch();
     },
+    confirmRework(value) {
+      this.reworkDate = value;
+      this.openTouch();
+    },
     confirmTime(value) {
       this.timeValue = value;
       this.openTouch();
     },
-    choseCross(index) {
-      this.chosedCrossIndex = index;
+    // 是否咳嗽
+    choseCough(index) {
+      this.chosedCough = index;
+    },
+    // 是否离开南通
+    choseLeave(index) {
+      this.chosedLeaveIndex = index;
+    },
+    // 是否复工
+    choseRework(index) {
+      this.choseReworkIndex = index;
+    },
+    // 选择隔离方式
+    choseQuarantine(index) {
+      this.chosedQuarantineIndex = index;
+    },
+    //选择就诊方式
+    choseSeeMedical(index) {
+      this.chosedSeeMedicalIndex = index;
     },
     choseHealth(index) {
       if (index === 0) {
@@ -888,61 +1230,8 @@ export default {
           passive: false
         }); //打开默认事件
     },
-    // isShowHealthy(){
-    //     alert("2222")
-    //     console.log(this.epidemicArea,this.reportList.length);
-    //     if() {
-    //         return true;
-    //     }else {
-    //         return false;
-    //     }
-    // },
-    keywordSearch() {
-      var vm = this;
-      var options = {
-        onSearchComplete: function(results) {
-          // 判断状态是否正确
-          if (local.getStatus() == BMAP_STATUS_SUCCESS) {
-            var s = [];
-            for (var i = 0; i < results.getCurrentNumPois(); i++) {
-              s.push({
-                name: results.getPoi(i).title,
-                address: results.getPoi(i).address,
-                lng: results.getPoi(i).point.lng,
-                lat: results.getPoi(i).point.lat
-              });
-            }
-            // console.log(s);
-            vm.searchList = s;
-            // document.getElementById("r-result").innerHTML = s.join("<br/>");
-          }
-        }
-      };
-      var local = new BMap.LocalSearch(window.baseMap, options);
-      local.search(this.keyword);
-      vm.isShowSearchList = true;
-    },
-    sendTo(item) {
-      window.baseMap.clearOverlays();
-      var vm = this;
-      vm.keyword = item.name;
-      vm.clickValue = item.name;
-      vm.isShowSearchList = false;
-      vm.bdx = item.lng;
-      vm.bdy = item.lat;
-      var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-        anchor: new BMap.Size(20, 32),
-        imageSize: new BMap.Size(40, 40)
-      });
-      var point = new BMap.Point(item.lng, item.lat);
-      var mk = new BMap.Marker(point, {
-        icon: locPoint
-      });
-      window.baseMap.addOverlay(mk);
-      window.baseMap.panTo(point);
-    },
     showArea(index) {
-      this.addressType = index;
+      // this.addressType = index;
       this.isShowAddressList = true;
       this.isShowProvinceList = true;
       this.isShowCityList = false;
@@ -995,23 +1284,21 @@ export default {
     },
     choseArea(item) {
       this.chosedAreaName = item.name;
-      if(this.addressType === 0) {
-        this.chosedNowAddress.province = this.chosedProvinceName;
-        this.chosedNowAddress.city = this.chosedCityName;
-        this.chosedNowAddress.area = item.name;
-        this.isShowSelectedNow = true;
-        this.isShowNowIcon = false;
-      }else {
-        this.chosedValues.province = this.chosedProvinceName;
-        this.chosedValues.city = this.chosedCityName;
-        this.chosedValues.area = item.name;
-        this.isShowSelectValue = true;
-        this.isShowCrossIcon = false;
-      }
+      this.chosedValues.province = this.chosedProvinceName;
+      this.chosedValues.city = this.chosedCityName;
+      this.chosedValues.area = item.name;
+      this.isShowSelectValue = true;
+      this.isShowCrossIcon = false;
       this.isShowAddressList = false;
     },
     closeAddress() {
       this.isShowAddressList = false;
+    },
+    closeOutpatient() {
+      this.isShowOutpatient = false;
+    },
+    closeHospital() {
+      this.isShowHospital = false;
     },
     selectProvince() {
       this.isShowProvinceList = true;
@@ -1063,9 +1350,6 @@ export default {
         this.isShowSearchList = false;
       }
     }
-  },
-  components: {
-    MMap
   }
 };
 </script>
@@ -1083,17 +1367,6 @@ export default {
     left: 0;
     top: 0;
     z-index: 999;
-    .map {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 50%;
-      top: 0;
-      z-index: 999;
-      transform: translateX(-50%);
-      box-sizing: border-box;
-      border: 1px solid #eee;
-    }
     .header {
       height: 40px;
       background-color: #d22d2d;
@@ -1126,7 +1399,8 @@ export default {
       }
     }
 
-    .top {
+    .top,
+    .fourth {
       background-color: #fff;
 
       .item {
@@ -1143,6 +1417,25 @@ export default {
           box-sizing: border-box;
           text-align: left;
           letter-spacing: 2px;
+          .icon-cross {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            float: right;
+            position: absolute;
+            right: 0;
+            top: 15px;
+          }
+          .chosedValue {
+            height: 75px;
+            .value {
+              text-align: right;
+              height: 25px;
+              line-height: 25px;
+              font-weight: 100;
+            }
+          }
         }
 
         .value {
@@ -1179,17 +1472,17 @@ export default {
         }
         .addressDetail {
           width: 250px;
-          height:25px;
+          height: 25px;
           font-size: 13px;
           margin-left: 18px;
         }
       }
 
-      .item:first-child {
-        .name {
-          letter-spacing: 28px;
-        }
-      }
+      // .item:first-child {
+      //   .name {
+      //     letter-spacing: 28px;
+      //   }
+      // }
       .now-address {
         min-height: 40px;
         line-height: 40px;
@@ -1226,13 +1519,15 @@ export default {
         }
       }
     }
-
+    .fourth {
+      margin-top: 15px;
+    }
     .first,
-    .fourth,
-    .fifth {
+    .fifth,
+    .sixth,
+    .seventh {
       margin-top: 15px;
       background-color: #fff;
-
       .item {
         min-height: 40px;
         line-height: 40px;
@@ -1241,6 +1536,25 @@ export default {
         font-size: 14px;
         .name {
           position: relative;
+          .icon-cross {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            float: right;
+            position: absolute;
+            right: 0;
+            top: 15px;
+          }
+          .chosedValue {
+            height: 75px;
+            .value {
+              text-align: right;
+              height: 25px;
+              line-height: 25px;
+              font-weight: 100;
+            }
+          }
         }
         .cross-address {
           border-bottom: 1px solid #efefef;
@@ -1258,7 +1572,7 @@ export default {
             transform: translateY(-50%);
           }
         }
-        
+
         .health-item,
         .cross-item {
           border-bottom: 1px solid #efefef;
@@ -1281,6 +1595,7 @@ export default {
         .health-title,
         .cross-title {
           border-bottom: 1px solid #efefef;
+          border-top: 1px solid #efefef;
           span {
             font-size: 11px;
             color: #c7c7c7;
@@ -1313,29 +1628,113 @@ export default {
         }
         .addressDetail {
           width: 250px;
-          height:25px;
+          height: 25px;
           font-size: 13px;
         }
       }
+      .temp {
+        display: flex;
+        .name {
+          width: 30%;
+        }
+        .value {
+          width: 70%;
+          text-align: right;
+          display: flex;
+          justify-content: flex-end;
+          input {
+            font-size: 13px;
+            text-align: right;
+            text-align: end;
+            width: 55px;
+            padding-right: 5px;
+          }
+        }
+      }
+      .reworkTime {
+        display: flex;
+        .name {
+          width: 30%;
+        }
+        .value {
+          width: 70%;
+          text-align: right;
+          display: flex;
+          justify-content: flex-end;
+          // input {
+          //   font-size: 13px;
+          //   text-align: right;
+          //   text-align: end;
+          //   width: 55px;
+          //   padding-right: 5px;
+          // }
+        }
+      }
     }
-
     .second,
     .third {
       margin-top: 15px;
       background-color: #fff;
-
       .item {
-        height: 40px;
+        min-height: 40px;
         line-height: 40px;
         padding: 0 20px;
         font-weight: bold;
-        display: flex;
+        // display: flex;
         font-size: 14px;
-
         .name {
-          width: 30%;
-        }
+          position: relative;
+          .cross-title {
+            border-bottom: 1px solid #efefef;
+            border-top: 1px solid #efefef;
+            span {
+              font-size: 11px;
+              color: #c7c7c7;
+            }
+          }
+          .icon-cross {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            float: right;
+            position: absolute;
+            right: 0;
+            top: 15px;
+          }
+          .chosedValue {
+            height: 75px;
+            .value {
+              width: 100%;
+              text-align: right;
+              height: 25px;
+              line-height: 25px;
+              font-weight: 100;
+            }
+          }
+          .cross-item {
+            border-bottom: 1px solid #efefef;
+            padding-left: 10px;
+            color: #585858;
+            position: relative;
 
+            .chosed-icon {
+              background: url("../../assets/image/green-chosed.png") no-repeat;
+              width: 16px;
+              height: 16px;
+              background-size: 100% 100%;
+              position: absolute;
+              right: 20px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          }
+        }
+        .addressDetail {
+          width: 250px;
+          height: 25px;
+          font-size: 13px;
+        }
         .value {
           width: 70%;
           text-align: right;
@@ -1359,9 +1758,8 @@ export default {
       display: flex;
       justify-content: center;
 
-      .look-button,
       .punch-button {
-        width: 155px;
+        width: 285px;
         height: 40px;
         border-radius: 20px;
         background-color: #d22d2d;

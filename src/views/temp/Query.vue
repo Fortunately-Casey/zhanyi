@@ -1,5 +1,7 @@
 <template>
-  <div class="temp"></div>
+  <div class="query">
+    <h1>111</h1>
+  </div>
 </template>
 
 <script>
@@ -9,7 +11,7 @@ export default {
   },
   created() {
     // alert("空白页")
-    window.localStorage.setItem("WXID", JSON.stringify(this.$route.query.WxId));
+    // window.localStorage.setItem("WXID", JSON.stringify(this.$route.query.WxId));
     console.log(this.$route.query);
   },
   mounted() {
