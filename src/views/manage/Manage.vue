@@ -82,14 +82,17 @@ export default {
       pageSize: 10,
       list: [],
       maxPage: 0,
-      isShowQrcode: false
+      isShowQrcode: false,
+      handler: function(e) {
+        e.preventDefault();
+      }
     };
   },
   created() {
     document.getElementsByTagName("title")[0].innerText = "战疫图·数据管理";
     this.getList();
     this.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
-    console.log(this.val)
+    console.log(this.val);
   },
   methods: {
     returnDate(value) {
@@ -193,7 +196,7 @@ export default {
         }); //打开默认事件
     }
   },
-  components:{
+  components: {
     Qrcode
   }
 };
