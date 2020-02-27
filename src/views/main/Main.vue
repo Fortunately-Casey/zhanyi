@@ -22,7 +22,7 @@ export default {
   },
   computed: {},
   created() {
-    document.getElementsByTagName("title")[0].innerText = "战疫图·南通";
+    document.getElementsByTagName("title")[0].innerText = "辅助复工.南通";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
@@ -120,8 +120,6 @@ export default {
       this.$router.push({
         path:"/login"
       })
-      // window.location.href =
-      //   "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterpriseQuery";
     }
   },
   components: {},

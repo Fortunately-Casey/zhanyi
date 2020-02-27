@@ -10,18 +10,15 @@
       <input type="password" placeholder="确认密码" v-model="confirmPassword" @blur="lostblur" />
     </div>
     <div class="register-button" @click="register">注册</div>
-    <!-- <div class="company-name">
-      <div class="nantong-chy"></div>
-      <div>技术支持：南通市测绘院有限公司</div>
-    </div> -->
     <div class="modal" v-if="isShowQrcode">
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
-        <div class="red-message">注册成功！</div>
-        <div class="qrcode">
-          <Qrcode :value="val" size="200"></Qrcode>
-        </div>
+        <div class="red-message">注册成功!（长按分享二维码）</div>
+        <img :src="imgUrl" alt width="200" height="200" />
       </div>
+    </div>
+    <div class="qrcode" v-show="false">
+      <Qrcode :value="val" size="200" id="picture"></Qrcode>
     </div>
   </div>
 </template>
@@ -41,12 +38,13 @@ export default {
       searchPassword: "",
       confirmPassword: "",
       isShowQrcode: false,
-      val: ""
+      val: "",
+      imgUrl: ""
     };
   },
   computed: {},
   created() {
-    document.getElementsByTagName("title")[0].innerText = "战疫图·企业注册";
+    document.getElementsByTagName("title")[0].innerText = "辅助复工.南通";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
@@ -143,10 +141,13 @@ export default {
         password: vm.searchPassword,
         createWxID: vm.$route.query.WXID
       };
+
       saveEnterprise(params).then(resp => {
         if (resp.data.success) {
           vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
           vm.isShowQrcode = true;
+          let myCanvas = document.getElementsByTagName("canvas");
+          vm.imgUrl = myCanvas[0].toDataURL("image/png");
         } else {
           Toast({
             message: resp.data.data,
@@ -159,7 +160,7 @@ export default {
       var vm = this;
       if (value === "phone") {
         vm.phoneReg(vm.phoneNumber);
-      } 
+      }
       blur();
     },
     phoneReg(value) {
@@ -171,7 +172,7 @@ export default {
         });
         return;
       }
-    }
+    },
   },
   components: {
     Qrcode
@@ -222,7 +223,7 @@ export default {
     height: 45px;
     text-align: center;
     line-height: 45px;
-    color: #fff; 
+    color: #fff;
     background-color: #e75a4f;
     border-radius: 22.5px;
     position: absolute;
@@ -274,7 +275,9 @@ export default {
       top: 30%;
       transform: translateX(-50%);
       z-index: 999;
-      .icon-close {
+      text-align: center;
+      padding-bottom: 10px;
+      .icon-close { 
         width: 20px;
         height: 20px;
         background: url("../../assets/image/icon-close.png") no-repeat;

@@ -57,10 +57,12 @@
     <div class="modal" v-if="isShowQrcode">
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
-        <div class="qrcode">
-          <Qrcode :value="val" size="200"></Qrcode>
-        </div>
+        <div class="red-message">长按分享二维码</div>
+        <img :src="imgUrl" alt width="200" height="200" />
       </div>
+    </div>
+    <div class="qrcode" v-show="false">
+      <Qrcode :value="val" size="200"></Qrcode>
     </div>
   </div>
 </template>
@@ -82,6 +84,7 @@ export default {
       pageSize: 10,
       list: [],
       maxPage: 0,
+      imgUrl: "",
       isShowQrcode: false,
       handler: function(e) {
         e.preventDefault();
@@ -91,8 +94,11 @@ export default {
   created() {
     document.getElementsByTagName("title")[0].innerText = "战疫图·数据管理";
     this.getList();
+  },
+  mounted() {
     this.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
-    console.log(this.val);
+    let myCanvas = document.getElementsByTagName("canvas");
+    this.imgUrl = myCanvas[0].toDataURL("image/png");
   },
   methods: {
     returnDate(value) {
@@ -206,6 +212,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #eee;
+  overflow-y:auto;
   .header {
     height: 40px;
     background-color: #d22d2d;
@@ -334,6 +341,7 @@ export default {
     line-height: 30px;
     text-align: center;
     font-size: 15px;
+    margin-top: 10px;
     span {
       display: inline-block;
       width: 50px;
@@ -344,7 +352,7 @@ export default {
     background-color: #eee;
     display: flex;
     justify-content: center;
-
+    margin-bottom: 20px;
     .look-button,
     .punch-button {
       width: 155px;
@@ -381,6 +389,8 @@ export default {
       top: 30%;
       transform: translateX(-50%);
       z-index: 999;
+      text-align: center;
+      padding-bottom: 10px;
       .icon-close {
         width: 20px;
         height: 20px;
@@ -389,6 +399,16 @@ export default {
         position: absolute;
         right: 10px;
         top: 10px;
+      }
+      .red-message {
+        width: 100%;
+        text-align: center;
+        /* padding-left: 20px; */
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        color: red;
+        margin-top: 15px;
       }
       .qrcode {
         margin: 0 auto;

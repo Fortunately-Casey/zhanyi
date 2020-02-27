@@ -28,7 +28,7 @@ export default {
   },
   computed: {},
   created() {
-    document.getElementsByTagName("title")[0].innerText = "战疫图·南通";
+    document.getElementsByTagName("title")[0].innerText = "辅助复工.南通";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
