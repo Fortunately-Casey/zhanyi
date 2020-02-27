@@ -28,12 +28,12 @@ export default {
   },
   computed: {},
   created() {
-    document.getElementsByTagName("title")[0].innerText = "辅助复工.南通";
+    document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
-      "关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心",
-      "战疫图 • 南通（持续更新）"
+      "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
+      "辅助复工 • 南通"
     );
   },
   methods: {

@@ -39,7 +39,7 @@
       <span @click="next">></span>
     </div>
     <div class="bottom">
-      <div class="look-button" @click="download">数据下载</div>
+      <!-- <div class="look-button" @click="download">数据下载</div> -->
       <div class="punch-button" @click="approvalPeriodPlace">审核</div>
     </div>
     <mt-datetime-picker
@@ -212,7 +212,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #eee;
-  overflow-y:auto;
+  overflow-y: auto;
   .header {
     height: 40px;
     background-color: #d22d2d;
@@ -363,6 +363,7 @@ export default {
       line-height: 40px;
       color: #fff;
       font-size: 15px;
+      margin: 0 auto;
       margin-top: 20px;
     }
 
