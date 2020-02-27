@@ -211,7 +211,7 @@ export default {
     border-radius: 22.5px;
     position: absolute;
     left: 50%;
-    bottom: 150px;
+    top: 600px;
     transform: translateX(-50%);
     font-size: 15px;
     letter-spacing: 10px;
