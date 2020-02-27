@@ -1227,7 +1227,7 @@ export default {
       document
         .getElementsByTagName("body")[0]
         .removeEventListener("touchmove", this.handler, {
-          passive: false
+          passive: true
         }); //打开默认事件
     },
     showArea(index) {

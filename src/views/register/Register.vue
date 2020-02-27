@@ -10,16 +10,17 @@
       <input type="password" placeholder="确认密码" v-model="confirmPassword" @blur="lostblur" />
     </div>
     <div class="register-button" @click="register">注册</div>
-    <div class="modal" v-if="isShowQrcode">
+    <div class="modal" v-show="isShowQrcode">
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">注册成功!（长按分享二维码）</div>
         <img :src="imgUrl" alt width="200" height="200" />
+        <div class="qrcode" ref="qrCodeUrl" v-show="false"></div>
       </div>
     </div>
-    <div class="qrcode" v-show="false">
-      <Qrcode :value="val" size="200" id="picture"></Qrcode>
-    </div>
+    <!-- <div class="qrcode" style="height:0">
+      <Qrcode :value="val" id="picture"></Qrcode>
+    </div>-->
   </div>
 </template>
 <script>
@@ -28,7 +29,8 @@ import axios from "axios";
 import { Toast } from "mint-ui";
 import { saveEnterprise } from "@/api/register";
 import { getURL, blur } from "@/common/tool/tool";
-import Qrcode from "qrcode.vue";
+// import Qrcode from "qrcode.vue";
+import QRCode from "qrcodejs2";
 export default {
   data() {
     return {
@@ -141,13 +143,14 @@ export default {
         password: vm.searchPassword,
         createWxID: vm.$route.query.WXID
       };
-
+      
       saveEnterprise(params).then(resp => {
         if (resp.data.success) {
-          vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
           vm.isShowQrcode = true;
-          let myCanvas = document.getElementsByTagName("canvas");
-          vm.imgUrl = myCanvas[0].toDataURL("image/png");
+          vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
+          vm.creatQrCode(vm.val);
+      let myCanvas = document.getElementsByTagName("canvas");
+      this.imgUrl = myCanvas[0].toDataURL("image/png");
         } else {
           Toast({
             message: resp.data.data,
@@ -173,11 +176,27 @@ export default {
         return;
       }
     },
+    creatQrCode(val) {
+      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+        text: val,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
   },
   components: {
-    Qrcode
+    // Qrcode
   },
-  watch: {}
+  watch: {
+    // val() {
+    //   var vm = this;
+    //   console.log("111");
+    //   vm.isShowQrcode = true;
+    // }
+  }
 };
 </script>
 <style lang="less">
@@ -277,7 +296,7 @@ export default {
       z-index: 999;
       text-align: center;
       padding-bottom: 10px;
-      .icon-close { 
+      .icon-close {
         width: 20px;
         height: 20px;
         background: url("../../assets/image/icon-close.png") no-repeat;
@@ -297,10 +316,10 @@ export default {
         margin-top: 15px;
       }
       .qrcode {
+        width: 200px;
         margin: 0 auto;
         margin-top: 10px;
         margin-bottom: 20px;
-        text-align: center;
       }
     }
   }

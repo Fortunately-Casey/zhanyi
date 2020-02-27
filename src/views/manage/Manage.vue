@@ -8,39 +8,46 @@
       </div>
       <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span>
     </div>
-    <div class="date" @click="openDate">
-      {{returnDate(date)}}
-      <span class="cart"></span>
-    </div>
-    <div class="tab">
-      <div class="item" :class="chosedIndex === 3?'active':''" @click="choseTab(3)">全部</div>
-      <div class="item" :class="chosedIndex === 1?'active':''" @click="choseTab(1)">已打卡</div>
-      <div class="item" :class="chosedIndex === 0?'active':''" @click="choseTab(0)">未打卡</div>
-    </div>
-    <div class="list">
-      <div class="list-header">
-        <div class="index">序号</div>
-        <div class="name">姓名</div>
-        <div class="temp">体温</div>
-        <div class="isCough">是否咳嗽</div>
-        <div class="phone">联系电话</div>
+    <div class="content">
+      <div class="date" @click="openDate">
+        {{returnDate(date)}}
+        <span class="cart"></span>
       </div>
-      <div class="item" v-for="(item,index) in list" :class="item.temp >= 37?'hot':''" :key="index">
-        <div class="index">{{item.number}}</div>
-        <div class="name">{{item.name}}</div>
-        <div class="temp">{{item.temp}}</div>
-        <div class="isCough">{{returnCough(item.cough)}}</div>
-        <div class="phone">{{item.mobile}}</div>
+      <div class="tab">
+        <div class="item" :class="chosedIndex === 3?'active':''" @click="choseTab(3)">全部</div>
+        <div class="item" :class="chosedIndex === 1?'active':''" @click="choseTab(1)">已打卡</div>
+        <div class="item" :class="chosedIndex === 0?'active':''" @click="choseTab(0)">未打卡</div>
       </div>
-    </div>
-    <div class="pagenation">
-      <span @click="prev"><</span>
-      {{page}}页
-      <span @click="next">></span>
-    </div>
-    <div class="bottom">
-      <!-- <div class="look-button" @click="download">数据下载</div> -->
-      <div class="punch-button" @click="approvalPeriodPlace">审核</div>
+      <div class="list">
+        <div class="list-header">
+          <div class="index">序号</div>
+          <div class="name">姓名</div>
+          <div class="temp">体温</div>
+          <div class="isCough">是否咳嗽</div>
+          <div class="phone">联系电话</div>
+        </div>
+        <div
+          class="item"
+          v-for="(item,index) in list"
+          :class="item.temp >= 37?'hot':''"
+          :key="index"
+        >
+          <div class="index">{{item.number}}</div>
+          <div class="name">{{item.name}}</div>
+          <div class="temp">{{item.temp}}</div>
+          <div class="isCough">{{returnCough(item.cough)}}</div>
+          <div class="phone">{{item.mobile}}</div>
+        </div>
+      </div>
+      <div class="pagenation">
+        <span @click="prev"><</span>
+        {{page}}页
+        <span @click="next">></span>
+      </div>
+      <div class="bottom">
+        <!-- <div class="look-button" @click="download">数据下载</div> -->
+        <div class="punch-button" @click="approvalPeriodPlace">审核</div>
+      </div>
     </div>
     <mt-datetime-picker
       ref="datepicker"
@@ -94,9 +101,9 @@ export default {
   created() {
     document.getElementsByTagName("title")[0].innerText = "战疫图·数据管理";
     this.getList();
+    this.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
   mounted() {
-    this.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
     let myCanvas = document.getElementsByTagName("canvas");
     this.imgUrl = myCanvas[0].toDataURL("image/png");
   },
@@ -112,6 +119,7 @@ export default {
     confirmDate(value) {
       this.date = value;
       this.getList();
+      this.openTouch();
     },
     choseTab(index) {
       this.page = 1;
@@ -198,7 +206,7 @@ export default {
       document
         .getElementsByTagName("body")[0]
         .removeEventListener("touchmove", this.handler, {
-          passive: false
+          passive: true
         }); //打开默认事件
     }
   },
@@ -212,7 +220,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #eee;
-  overflow-y: auto;
   .header {
     height: 40px;
     background-color: #d22d2d;
@@ -251,124 +258,126 @@ export default {
       color: #fff;
     }
   }
-  .date {
-    height: 40px;
-    border-bottom: 1px solid rgb(199, 197, 197);
-    text-align: center;
-    color: #d22d2d;
-    font-size: 14px;
-    line-height: 40px;
-    background-color: #fff;
-    .cart {
-      width: 0;
-      height: 0;
-      position: relative;
-      top: 10px;
-      margin-left: 2px;
-      vertical-align: middle;
-      border-top: 5px dashed;
-      border-top: 5px solid #d22d2d;
-      border-right: 5px solid transparent;
-      border-left: 5px solid transparent;
-    }
-  }
-  .tab {
-    background-color: #fff;
-    height: 40px;
-    border-bottom: 1px solid rgb(199, 197, 197);
-    .item {
-      width: 60px;
-      height: 20px;
-      line-height: 20px;
-      text-align: center;
-      font-size: 12px;
-      // color: #fff;
-      // background-color: rgb(226, 118, 118);
-      border-radius: 15px;
-      float: left;
-      margin-top: 10px;
-      letter-spacing: 2px;
-      margin-left: 20px;
-    }
-    .active {
-      color: #fff;
-      background-color: rgb(246, 153, 153);
-      color: #d22d2d;
-    }
-  }
-  .list {
-    height: 451px;
-    background-color: #fff;
-    .list-header,
-    .item {
-      border-bottom: 1px solid rgb(199, 197, 197);
+  .content {
+    .date {
       height: 40px;
-      .index,
-      .name,
-      .temp,
-      .isCough,
-      .phone {
-        float: left;
-        height: 40px;
-        line-height: 40px;
-        text-align: center;
-      }
-      .index {
-        width: 15%;
-      }
-      .name {
-        width: 20%;
-      }
-      .temp {
-        width: 15%;
-      }
-      .isCough {
-        width: 25%;
-      }
-      .phone {
-        width: 25%;
+      border-bottom: 1px solid rgb(199, 197, 197);
+      text-align: center;
+      color: #d22d2d;
+      font-size: 14px;
+      line-height: 40px;
+      background-color: #fff;
+      .cart {
+        width: 0;
+        height: 0;
+        position: relative;
+        top: 10px;
+        margin-left: 2px;
+        vertical-align: middle;
+        border-top: 5px dashed;
+        border-top: 5px solid #d22d2d;
+        border-right: 5px solid transparent;
+        border-left: 5px solid transparent;
       }
     }
-    .hot {
-      background-color: rgb(246, 153, 153);
-      .temp {
+    .tab {
+      background-color: #fff;
+      height: 40px;
+      border-bottom: 1px solid rgb(199, 197, 197);
+      .item {
+        width: 60px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        font-size: 12px;
+        // color: #fff;
+        // background-color: rgb(226, 118, 118);
+        border-radius: 15px;
+        float: left;
+        margin-top: 10px;
+        letter-spacing: 2px;
+        margin-left: 20px;
+      }
+      .active {
+        color: #fff;
+        background-color: rgb(246, 153, 153);
         color: #d22d2d;
       }
     }
-  }
-  .pagenation {
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    font-size: 15px;
-    margin-top: 10px;
-    span {
-      display: inline-block;
-      width: 50px;
-      text-align: center;
+    .list {
+      height: 451px;
+      background-color: #fff;
+      .list-header,
+      .item {
+        border-bottom: 1px solid rgb(199, 197, 197);
+        height: 40px;
+        .index,
+        .name,
+        .temp,
+        .isCough,
+        .phone {
+          float: left;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+        }
+        .index {
+          width: 15%;
+        }
+        .name {
+          width: 20%;
+        }
+        .temp {
+          width: 15%;
+        }
+        .isCough {
+          width: 25%;
+        }
+        .phone {
+          width: 25%;
+        }
+      }
+      .hot {
+        background-color: rgb(246, 153, 153);
+        .temp {
+          color: #d22d2d;
+        }
+      }
     }
-  }
-  .bottom {
-    background-color: #eee;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    .look-button,
-    .punch-button {
-      width: 155px;
-      height: 40px;
-      border-radius: 20px;
-      background-color: #d22d2d;
+    .pagenation {
+      height: 30px;
+      line-height: 30px;
       text-align: center;
-      line-height: 40px;
-      color: #fff;
       font-size: 15px;
-      margin: 0 auto;
-      margin-top: 20px;
+      margin-top: 10px;
+      span {
+        display: inline-block;
+        width: 50px;
+        text-align: center;
+      }
     }
+    .bottom {
+      background-color: #eee;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      .look-button,
+      .punch-button {
+        width: 155px;
+        height: 40px;
+        border-radius: 20px;
+        background-color: #d22d2d;
+        text-align: center;
+        line-height: 40px;
+        color: #fff;
+        font-size: 15px;
+        margin: 0 auto;
+        margin-top: 20px;
+      }
 
-    .look-button {
-      margin-right: 15px;
+      .look-button {
+        margin-right: 15px;
+      }
     }
   }
   .modal {
