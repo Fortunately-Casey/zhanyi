@@ -20,21 +20,13 @@
         <div class="item">
           <div class="name">联系电话</div>
           <div class="value">
-            <input
-              type="text"
-              v-model="phoneNumber"
-              @blur="lostblur('phone')"
-            />
+            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
           </div>
         </div>
         <div class="item">
           <div class="name">身份证号</div>
           <div class="value">
-            <input
-              type="text"
-              v-model="idCard"
-              @blur="lostblur('usernumber')"
-            />
+            <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
           </div>
         </div>
         <div class="item">
@@ -85,10 +77,7 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedCough === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedCough === index ? true : false"></div>
             </div>
           </div>
         </div>
@@ -108,10 +97,7 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedLeaveIndex === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedLeaveIndex === index ? true : false"></div>
             </div>
           </div>
         </div>
@@ -145,15 +131,11 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">
-              {{ returnDate(dateValue) }}
-            </div>
+            <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
           </div>
         </div>
         <div class="item">
-          <div class="name">
-            {{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}
-          </div>
+          <div class="name">{{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}</div>
           <div class="value"></div>
         </div>
         <div class="item">
@@ -181,19 +163,14 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="choseReworkIndex === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="choseReworkIndex === index ? true : false"></div>
             </div>
           </div>
         </div>
         <div class="item reworkTime" v-if="choseReworkIndex === 1">
           <div class="name">复工日期</div>
           <div class="value">
-            <div class="date" @click="openRework">
-              {{ returnDate(reworkDate) }}
-            </div>
+            <div class="date" @click="openRework">{{ returnDate(reworkDate) }}</div>
           </div>
         </div>
       </div>
@@ -212,10 +189,7 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedSeeMedicalIndex === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index ? true : false"></div>
             </div>
           </div>
         </div>
@@ -230,10 +204,7 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[0].value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedQuarantineIndex === 0 ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0 ? true : false"></div>
             </div>
           </div>
         </div>
@@ -250,28 +221,18 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[1].value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedQuarantineIndex === 1 ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1 ? true : false"></div>
             </div>
           </div>
         </div>
         <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio
-            v-model="chosedQuarant"
-            :options="options"
-            @change="check"
-          ></mt-radio>
+          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(2)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[2].value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedQuarantineIndex === 2 ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2 ? true : false"></div>
             </div>
           </div>
         </div>
@@ -290,11 +251,7 @@
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div
-                class="chosedValue"
-                style="height:40px"
-                v-if="chosedOutpatient.value"
-              >
+              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
                 <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
@@ -307,11 +264,7 @@
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div
-                class="chosedValue"
-                style="height:40px"
-                v-if="chosedHospital.value"
-              >
+              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
                 <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
@@ -373,30 +326,25 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item, index) in provinceList" :key="index">
-              <div
-                class="province"
-                v-for="(v, i) in item.items"
-                :key="i"
-                @click="choseProvince(v)"
-              >
+              <div class="province" v-for="(v, i) in item.items" :key="i" @click="choseProvince(v)">
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">{{
+            <span class="seleted-province" @click="selectProvince">
+              {{
               chosedProvinceName
-            }}</span>
-            <span class="selectCityButton" v-if="!chosedCityName"
-              >选择城市</span
-            >
-            <span class="selectedCityButton" v-else @click="selectCity">{{
+              }}
+            </span>
+            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
+            <span class="selectedCityButton" v-else @click="selectCity">
+              {{
               chosedCityName
-            }}</span>
-            <span class="selectCityButton" v-if="isShowAreaSelect"
-              >选择区域</span
-            >
+              }}
+            </span>
+            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
           </div>
           <div class="select-city" v-if="isShowCityList">
             <div v-for="(item, index) in cityList" :key="index">
@@ -762,104 +710,6 @@ export default {
     check() {
       console.log(this.chosedQuarant);
     },
-    // 打卡
-    punchTo() {
-      var vm = this;
-      if (!vm.temperature) {
-        Toast({
-          message: "请输入体温读数！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.idCard) {
-        Toast({
-          message: "请输入身份证号！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.phoneNumber) {
-        Toast({
-          message: "请输入电话号码！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.addressValue) {
-        Toast({
-          message: "请选取途径地点！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.isChosedHealth && !vm.isChosedCough && !vm.isChosedHot) {
-        Toast({
-          message: "请填写健康症状!",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (
-        !vm.chosedValues.province ||
-        !vm.chosedValues.city ||
-        !vm.chosedValues.area ||
-        !vm.addressDetail
-      ) {
-        Toast({
-          message: "请填写完整的来自地区!",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (
-        !vm.chosedNowAddress.province ||
-        !vm.chosedNowAddress.city ||
-        !vm.chosedNowAddress.area ||
-        !vm.nowAddress
-      ) {
-        Toast({
-          message: "请填写完整的现居住地!",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      var params = {
-        wxID: vm.weixin,
-        idCard: vm.idCard,
-        mobile: vm.phoneNumber,
-        placeName: vm.addressValue,
-        bdx: vm.bdx.toString(),
-        bdy: vm.bdy.toString(),
-        stime: vm.returnDate(vm.dateValue) + " " + vm.timeValue,
-        healthy1: vm.isChosedHealth,
-        healthy2: vm.isChosedCough,
-        healthy3: vm.isChosedHot,
-        temp: vm.temperature,
-        epidemicArea: false,
-        fromProvince: vm.chosedValues.province,
-        fromCity: vm.chosedValues.city,
-        fromCounty: vm.chosedValues.area,
-        fromAddress: vm.addressDetail,
-        currLiveProvince: vm.chosedNowAddress.province,
-        currLiveCity: vm.chosedNowAddress.city,
-        currLiveCounty: vm.chosedNowAddress.area,
-        currLiveAddress: vm.nowAddress
-      };
-      Indicator.open();
-      savePeriodPlace(params).then(resp => {
-        Indicator.close();
-        if (resp.data.success) {
-          vm.closeTouch();
-          vm.isShowSuccess = true;
-        } else {
-          Toast({
-            message: "打卡失败!",
-            iconClass: "icon icon-success"
-          });
-        }
-      });
-    },
     // 企业打卡
     saveEnterprisePeriodPlace() {
       var vm = this;
@@ -1170,54 +1020,6 @@ export default {
       this.isShowMap = true;
       // this.$refs.punch.style.overflowY = "hidden";
     },
-    location() {
-      var vm = this;
-      var geolocation = new BMap.Geolocation();
-      window.baseMap.removeOverlay(vm.localPoint);
-      geolocation.getCurrentPosition(
-        function(r) {
-          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-            var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-              anchor: new BMap.Size(5, 5),
-              imageSize: new BMap.Size(40, 40)
-            });
-            var mk = new BMap.Marker(r.point, {
-              icon: locPoint
-            });
-            vm.localPoint = mk;
-            window.baseMap.addOverlay(mk);
-            window.baseMap.setZoom(17);
-            window.baseMap.panTo(r.point);
-          } else {
-            alert("failed" + this.getStatus());
-          }
-        },
-        {
-          enableHighAccuracy: true
-        }
-      );
-    },
-    getLocalAddress() {
-      var vm = this;
-      var geolocation = new BMap.Geolocation();
-      geolocation.getCurrentPosition(
-        function(r) {
-          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-            var gc = new BMap.Geocoder();
-            gc.getLocation(r.point, rs => {
-              vm.addressValue = rs.surroundingPois[0].title;
-              vm.bdx = rs.surroundingPois[0].point.lng;
-              vm.bdy = rs.surroundingPois[0].point.lat;
-            });
-          } else {
-            alert("failed" + this.getStatus());
-          }
-        },
-        {
-          enableHighAccuracy: true
-        }
-      );
-    },
     lostblur(value) {
       var vm = this;
       if (value === "phone") {
@@ -1228,31 +1030,6 @@ export default {
         vm.tempReg(vm.temperature);
       }
       blur();
-    },
-    clickAddress(address) {
-      this.clickValue = address.address;
-      this.bdx = address.bdx;
-      this.bdy = address.bdy;
-    },
-    confirmAddress() {
-      if (this.clickValue === "") {
-        Toast({
-          message: "请选择兴趣点!",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (this.clickValue.length > 15) {
-        Toast({
-          message: "兴趣点名称不能超过15个字符!",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      // this.$refs.punch.style.overflowY = "auto";
-      this.addressValue = this.clickValue;
-      this.isShowMap = false;
-      this.clickValue = "";
     },
     goBack() {
       this.$router.push({

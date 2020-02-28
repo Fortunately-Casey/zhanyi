@@ -50,33 +50,6 @@
       </div>
     </div>
     <div class="ch-logo"></div>
-    <!-- <div
-      class="button epidemic-button"
-      :class="isshowEpidemic?'yellow-chosed':''"
-      @click="showEpidemic"
-    >
-      <div class="icon" :class="isshowEpidemic?'open':'close'"></div>疫情小区
-    </div>
-    <div
-      class="button trajectory-button"
-      :class="isShowTrajectory?'red-chosed':''"
-      @click="showTrajectory"
-    >
-      <div class="icon" :class="isShowTrajectory?'open':'close'"></div>确诊轨迹
-    </div>-->
-    <!-- <div class="button area-button" @click="showArea" :class="isShowArea?'red-chosed':''">
-      <div class="icon" :class="isShowArea?'open':'close'"></div>疫区查看
-    </div>-->
-    <!-- <div
-      class="button near-trajectory"
-      :class="isShowNearTrajectory?'red-chosed':''"
-      @click="showNearTrajectory"
-    >
-      <div class="icon" :class="isShowNearTrajectory?'open':'close'"></div>最近轨迹
-    </div>-->
-    <!--<div class="button near-area" :class="isShowNearArea?'yellow-chosed':''" @click="showNearArea">-->
-    <!--<div class="icon" :class="isShowNearArea?'open':'close'"></div>最近疫区-->
-    <!--</div>-->
     <div class="my-location" @click="clickMyLocation">
       <div class="location-icon"></div>我的位置
     </div>

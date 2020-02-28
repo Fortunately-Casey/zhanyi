@@ -214,3 +214,17 @@ export default class AddressName {
         this.key = key
     }
 }
+
+// 防抖
+export function debounce (fn, delay) {
+    let timer = null
+    return function () {
+        let arg = arguments
+        
+        clearTimeout(timer)
+        
+        timer = setTimeout(() => {
+            fn.apply(this, arg)
+        }, delay)
+    }
+}

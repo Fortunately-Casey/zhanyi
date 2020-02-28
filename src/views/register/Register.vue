@@ -4,8 +4,26 @@
     <div class="title">单位注册，请填写信息</div>
     <div class="register-box">
       <input type="text" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
-      <input type="text" placeholder="单位名称" v-model="factoryName" @blur="lostblur" />
-      <input type="text" placeholder="人数" v-model="peopleCount" @blur="lostblur" />
+
+      <input
+        type="text"
+        placeholder="单位名称"
+        v-model="factoryName"
+        @blur="lostblur"
+        @input="keywordSearch"
+      />
+
+      <div class="factory" v-if="isShowList">
+        <input type="text" placeholder="人数" v-model="peopleCount" @blur="lostblur" />
+        <div class="factory-list">
+          <div
+            class="search-item"
+            v-for="(item, index) in searchList"
+            :key="index"
+            @click="choseFactory(item)"
+          >{{ item }}</div>
+        </div>
+      </div>
       <input type="password" placeholder="查询密码" v-model="searchPassword" @blur="lostblur" />
       <input type="password" placeholder="确认密码" v-model="confirmPassword" @blur="lostblur" />
     </div>
@@ -18,17 +36,14 @@
         <div class="qrcode" ref="qrCodeUrl" v-show="false"></div>
       </div>
     </div>
-    <!-- <div class="qrcode" style="height:0">
-      <Qrcode :value="val" id="picture"></Qrcode>
-    </div>-->
   </div>
 </template>
 <script>
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { Toast } from "mint-ui";
-import { saveEnterprise } from "@/api/register";
-import { getURL, blur } from "@/common/tool/tool";
+import { saveEnterprise, selectEnterpriseNameLib } from "@/api/register";
+import { getURL, blur, debounce } from "@/common/tool/tool";
 // import Qrcode from "qrcode.vue";
 import QRCode from "qrcodejs2";
 export default {
@@ -41,17 +56,30 @@ export default {
       confirmPassword: "",
       isShowQrcode: false,
       val: "",
-      imgUrl: ""
+      imgUrl: "",
+      searchList: [],
+      isShowList: false,
+      isWatch: true
     };
   },
   computed: {},
   created() {
+    var vm = this;
     document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
       "辅助复工 • 南通"
+    );
+    this.$watch(
+      "factoryName",
+      debounce((newValue, oldValue) => {
+        if (!vm.isWatch) {
+          return;
+        }
+        vm.search();
+      }, 500)
     );
   },
   methods: {
@@ -143,14 +171,14 @@ export default {
         password: vm.searchPassword,
         createWxID: vm.$route.query.WXID
       };
-      
+
       saveEnterprise(params).then(resp => {
         if (resp.data.success) {
           vm.isShowQrcode = true;
           vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
           vm.creatQrCode(vm.val);
-      let myCanvas = document.getElementsByTagName("canvas");
-      this.imgUrl = myCanvas[0].toDataURL("image/png");
+          let myCanvas = document.getElementsByTagName("canvas");
+          this.imgUrl = myCanvas[0].toDataURL("image/png");
         } else {
           Toast({
             message: resp.data.data,
@@ -185,17 +213,41 @@ export default {
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
+    },
+    choseFactory(item) {
+      this.isWatch = false;
+      this.factoryName = item;
+      this.isShowList = false;
+    },
+    keywordSearch() {
+      this.isWatch = true;
+      // this.isShowList = true;
+    },
+    search() {
+      var vm = this;
+      selectEnterpriseNameLib({
+        enterpriseName: vm.factoryName
+      }).then(resp => {
+        vm.searchList = resp.data.data;
+      });
     }
   },
   components: {
     // Qrcode
   },
   watch: {
-    // val() {
-    //   var vm = this;
-    //   console.log("111");
-    //   vm.isShowQrcode = true;
-    // }
+    factoryName() {
+      if (this.factoryName === "") {
+        this.isShowList = false;
+      }
+    },
+    searchList() {
+      if (this.searchList.length === 0) {
+        this.isShowList = false;
+      } else {
+        this.isShowList = true;
+      }
+    }
   }
 };
 </script>
@@ -231,10 +283,31 @@ export default {
     padding: 10px 50px;
     box-sizing: border-box;
     input {
-      margin-top: 20px;
+      margin-top: 10px;
+      height: 30px;
       width: 100%;
       border-bottom: 1px solid rgb(214, 211, 211);
       font-size: 13px;
+    }
+    .factory {
+      width: 100%;
+      position: relative;
+      .factory-list {
+        width: 100%;
+        height: 200px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border: 1px solid rgb(190, 185, 185);
+        overflow-y: auto;
+        background-color: #fff;
+        .search-item {
+          height: 20px;
+          left: 20px;
+          font-size: 13px;
+          padding-left: 4px;
+        }
+      }
     }
   }
   .register-button {
