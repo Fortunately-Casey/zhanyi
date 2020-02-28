@@ -180,6 +180,7 @@
         year-format="{value} 年"
         month-format="{value} 月"
         date-format="{value} 日"
+        :closeOnClickModal="false"
         :endDate="new Date()"
         :startDate="new Date('2020/1/1')"
         @confirm="confirmDate"
@@ -189,6 +190,7 @@
         ref="timepicker"
         type="time"
         v-model="timepicker"
+        :closeOnClickModal="false"
         @confirm="confirmTime"
         @cancel="closeTime"
       ></mt-datetime-picker>
