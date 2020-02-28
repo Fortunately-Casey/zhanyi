@@ -1,14 +1,13 @@
 <template>
   <div class="register">
     <div class="logo"></div>
-    <div class="search-button" @click="toSearchMap"></div>
-    <div class="health-button" @click="toWeiXin"></div>
-    <!-- <div class="registration-button" @click="toRegister"></div>
-    <div class="infoManage-button" @click="toQuery"></div> -->
+    <!-- <div class="search-button" @click="toSearchMap"></div>
+    <div class="health-button" @click="toWeiXin"></div> -->
+    <div class="registration-button" @click="toRegister"></div>
+    <div class="infoManage-button" @click="toQuery"></div>
     <div class="company-name">
       <div class="nantong-chy"></div>
       <div>技术支持：南通市测绘院有限公司</div>
-      <!-- <div>数据来源：南通市疾病预防控制中心</div> -->
     </div>
   </div>
 </template>
@@ -22,12 +21,12 @@ export default {
   },
   computed: {},
   created() {
-    document.getElementsByTagName("title")[0].innerText = "战疫图 • 南通";
+    document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
-      "关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心",
-      "战疫图 • 南通（持续更新）"
+      "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
+      "辅助复工 • 南通"
     );
   },
   methods: {
@@ -184,7 +183,7 @@ export default {
   .nantong-chy {
     width: 230px;
     height: 29px;
-    background: url("../../assets/image/main-logo.png") no-repeat;
+    background: url("../../assets/image/jkzx-logo.png") no-repeat;
     background-size: 100% 100%;
     margin-bottom: 5px;
     // position: absolute;

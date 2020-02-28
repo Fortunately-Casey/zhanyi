@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
 <template>
   <div class="punch-content">
     <div class="punch" ref="punch" v-show="!isShowMap">
@@ -18,13 +20,21 @@
         <div class="item">
           <div class="name">联系电话</div>
           <div class="value">
-            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input
+              type="text"
+              v-model="phoneNumber"
+              @blur="lostblur('phone')"
+            />
           </div>
         </div>
         <div class="item">
           <div class="name">身份证号</div>
           <div class="value">
-            <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
+            <input
+              type="text"
+              v-model="idCard"
+              @blur="lostblur('usernumber')"
+            />
           </div>
         </div>
         <div class="item">
@@ -66,11 +76,19 @@
             <div class="cross-title">有无咳嗽状况</div>
           </div>
         </div>
-        <div class="item" v-for="(item,index) in coughList" :key="index" @click="choseCough(index)">
+        <div
+          class="item"
+          v-for="(item, index) in coughList"
+          :key="index"
+          @click="choseCough(index)"
+        >
           <div class="name">
             <div class="cross-item">
-              {{item.value}}
-              <div class="chosed-icon" v-if="chosedCough === index?true:false"></div>
+              {{ item.value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedCough === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -81,11 +99,19 @@
             <div class="cross-title">1月23日至今是否离开过南通</div>
           </div>
         </div>
-        <div class="item" v-for="(item,index) in crossList" :key="index" @click="choseLeave(index)">
+        <div
+          class="item"
+          v-for="(item, index) in crossList"
+          :key="index"
+          @click="choseLeave(index)"
+        >
           <div class="name">
             <div class="cross-item">
-              {{item.value}}
-              <div class="chosed-icon" v-if="chosedLeaveIndex === index?true:false"></div>
+              {{ item.value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedLeaveIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -96,9 +122,9 @@
             <div class="cross-title">
               返通前地址
               <div class="chosedValue" v-if="isShowSelectValue">
-                <div class="value">{{chosedValues.province}}</div>
-                <div class="value">{{chosedValues.city}}</div>
-                <div class="value">{{chosedValues.area}}</div>
+                <div class="value">{{ chosedValues.province }}</div>
+                <div class="value">{{ chosedValues.city }}</div>
+                <div class="value">{{ chosedValues.area }}</div>
               </div>
             </div>
 
@@ -119,11 +145,15 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{returnDate(dateValue)}}</div>
+            <div class="date" @click="openPicker">
+              {{ returnDate(dateValue) }}
+            </div>
           </div>
         </div>
         <div class="item">
-          <div class="name">{{chosedLeaveIndex === 0?'现居住地':'返通居住地'}}</div>
+          <div class="name">
+            {{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}
+          </div>
           <div class="value"></div>
         </div>
         <div class="item">
@@ -144,21 +174,26 @@
         </div>
         <div
           class="item"
-          v-for="(item,index) in crossList"
+          v-for="(item, index) in crossList"
           :key="index"
           @click="choseRework(index)"
         >
           <div class="name">
             <div class="cross-item">
-              {{item.value}}
-              <div class="chosed-icon" v-if="choseReworkIndex === index?true:false"></div>
+              {{ item.value }}
+              <div
+                class="chosed-icon"
+                v-if="choseReworkIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item reworkTime" v-if="choseReworkIndex === 1">
           <div class="name">复工日期</div>
           <div class="value">
-            <div class="date" @click="openRework">{{returnDate(reworkDate)}}</div>
+            <div class="date" @click="openRework">
+              {{ returnDate(reworkDate) }}
+            </div>
           </div>
         </div>
       </div>
@@ -170,14 +205,17 @@
         </div>
         <div
           class="item"
-          v-for="(item,index) in seekMedicalList"
+          v-for="(item, index) in seekMedicalList"
           :key="index"
           @click="choseSeeMedical(index)"
         >
           <div class="name">
             <div class="cross-item">
-              {{item.value}}
-              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index?true:false"></div>
+              {{ item.value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedSeeMedicalIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -191,12 +229,15 @@
         <div class="item" @click="choseQuarantine(0)">
           <div class="name">
             <div class="cross-item">
-              {{quarantineList[0].value}}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0?true:false"></div>
+              {{ quarantineList[0].value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 0 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
-        <div class="item" v-show="chosedQuarantineIndex===0">
+        <div class="item" v-show="chosedQuarantineIndex === 0">
           <input
             type="text"
             v-model="enterpriseAddress"
@@ -208,23 +249,33 @@
         <div class="item" @click="choseQuarantine(1)">
           <div class="name">
             <div class="cross-item">
-              {{quarantineList[1].value}}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1?true:false"></div>
+              {{ quarantineList[1].value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 1 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
+          <mt-radio
+            v-model="chosedQuarant"
+            :options="options"
+            @change="check"
+          ></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(2)">
           <div class="name">
             <div class="cross-item">
-              {{quarantineList[2].value}}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2?true:false"></div>
+              {{ quarantineList[2].value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 2 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
-        <div class="item" v-show="chosedQuarantineIndex===2">
+        <div class="item" v-show="chosedQuarantineIndex === 2">
           <input
             type="text"
             v-model="nantongAddress"
@@ -239,8 +290,12 @@
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
-                <div class="value">{{chosedOutpatient.value}}</div>
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedOutpatient.value"
+              >
+                <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
             <div class="icon-cross" v-if="isShowMedicaIcon">></div>
@@ -252,8 +307,12 @@
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
-                <div class="value">{{chosedHospital.value}}</div>
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedHospital.value"
+              >
+                <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
             <div class="icon-cross" v-if="isShowHospitalIcon">></div>
@@ -311,44 +370,57 @@
           </div>
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
-            <div v-for="(item,index) in provinceList" :key="index">
-              <div class="province" v-for="(v,i) in item.items" :key="i" @click="choseProvince(v)">
-                <div class="label">{{i === 0?v.key:''}}</div>
-                <div class="name">{{v.name}}</div>
+            <div v-for="(item, index) in provinceList" :key="index">
+              <div
+                class="province"
+                v-for="(v, i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
+                <div class="label">{{ i === 0 ? v.key : "" }}</div>
+                <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">{{chosedProvinceName}}</span>
-            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
-            <span class="selectedCityButton" v-else @click="selectCity">{{chosedCityName}}</span>
-            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+            <span class="seleted-province" @click="selectProvince">{{
+              chosedProvinceName
+            }}</span>
+            <span class="selectCityButton" v-if="!chosedCityName"
+              >选择城市</span
+            >
+            <span class="selectedCityButton" v-else @click="selectCity">{{
+              chosedCityName
+            }}</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect"
+              >选择区域</span
+            >
           </div>
           <div class="select-city" v-if="isShowCityList">
-            <div v-for="(item,index) in cityList" :key="index">
+            <div v-for="(item, index) in cityList" :key="index">
               <div
                 class="city"
-                v-for="(v,i) in item.items"
+                v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseCity(v)"
                 v-if="v.name !== '直辖县'"
               >
-                <div class="label">{{i === 0?v.key:''}}</div>
-                <div class="name">{{v.short_name + '市'}}</div>
+                <div class="label">{{ i === 0 ? v.key : "" }}</div>
+                <div class="name">{{ v.short_name + "市" }}</div>
               </div>
             </div>
           </div>
           <div class="select-area" v-if="isShowAreaList">
-            <div v-for="(item,index) in areaList" :key="index">
+            <div v-for="(item, index) in areaList" :key="index">
               <div
                 class="area"
-                v-for="(v,i) in item.items"
+                v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseArea(v)"
                 v-if="v.name !== '市辖区'"
               >
-                <div class="label">{{i === 0?v.key:''}}</div>
-                <div class="name">{{v.name}}</div>
+                <div class="label">{{ i === 0 ? v.key : "" }}</div>
+                <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
@@ -361,9 +433,9 @@
             <div class="icon-close" @click="closeOutpatient"></div>
           </div>
           <div class="select-city">
-            <div v-for="(item,index) in outpatientList" :key="index">
+            <div v-for="(item, index) in outpatientList" :key="index">
               <div class="city" @click="choseOutPatient(item)">
-                <div class="name">{{item.value}}</div>
+                <div class="name">{{ item.value }}</div>
               </div>
             </div>
           </div>
@@ -376,9 +448,9 @@
             <div class="icon-close" @click="closeHospital"></div>
           </div>
           <div class="select-city">
-            <div v-for="(item,index) in hospitalList" :key="index">
+            <div v-for="(item, index) in hospitalList" :key="index">
               <div class="city" @click="choseHospital(item)">
-                <div class="name">{{item.value}}</div>
+                <div class="name">{{ item.value }}</div>
               </div>
             </div>
           </div>
@@ -414,7 +486,7 @@ export default {
       beforeBackAddress: "",
       nantongAddress: "",
       choseReworkIndex: 0,
-      chosedQuarantineIndex: 0,
+      chosedQuarantineIndex: "",
       chosedSeeMedicalIndex: 0,
       enterpriseAddress: "",
       reworkDate: new Date(),
@@ -582,7 +654,7 @@ export default {
     getEnterprise({
       enterpriseID: vm.$route.query.enterpriseID
     }).then(resp => {
-      if (resp.data.success) {
+      if (resp.data.success && resp.data.data) {
         vm.enterpriseName = resp.data.data.enterpriseName;
         // vm.phoneNumber = resp.data.data.mobile;
         // vm.createWxID = resp.data.data.createWxID;
@@ -595,16 +667,15 @@ export default {
     });
     // 获取用户信息
     getEnterpriseUser({
-      wxID:vm.$route.query.WxId
-
-    }).then((resp) => {
-      if(resp.data.success&&resp.data.data) {
+      wxID: vm.$route.query.WxId
+    }).then(resp => {
+      if (resp.data.success && resp.data.data) {
         vm.username = resp.data.data.name;
         vm.phoneNumber = resp.data.data.mobile;
         vm.idCard = resp.data.data.idCard;
         vm.age = resp.data.data.age;
       }
-    })
+    });
     //获取省会列表
     this.getProvinceList();
   },
@@ -793,6 +864,7 @@ export default {
       var isolationAddress, seekMedicalAddress;
       if (vm.chosedSeeMedicalIndex !== 1) {
         isolationAddress = "";
+        vm.chosedQuarantineIndex = "";
       } else {
         if (vm.chosedQuarantineIndex === 0) {
           isolationAddress = vm.enterpriseAddress;
@@ -958,19 +1030,25 @@ export default {
         cough: vm.chosedCough === 0 ? false : true,
         leaveNT: vm.chosedLeaveIndex === 0 ? false : true,
         ntAddress: vm.nantongAddress,
-        returnNTDate: vm.returnDate(vm.dateValue),
+        returnNTDate:
+          vm.chosedLeaveIndex === 0 ? "" : vm.returnDate(vm.dateValue),
         beforeReturnNtProvince: vm.chosedValues.province,
         beforeReturnNtCity: vm.chosedValues.city,
         beforeReturnNtCounty: vm.chosedValues.area,
         beforeReturnNtAddress: vm.beforeBackAddress,
         recoveryWork: vm.choseReworkIndex === 0 ? false : true,
-        recoveryWorkDate: vm.returnDate(vm.reworkDate),
-        isolationType: vm.quarantineList[vm.chosedQuarantineIndex].value,
+        recoveryWorkDate:
+          vm.choseReworkIndex === 0 ? "" : vm.returnDate(vm.reworkDate),
+        isolationType:
+          vm.chosedQuarantineIndex === ""
+            ? ""
+            : vm.quarantineList[vm.chosedQuarantineIndex].value,
         isolationAddress: isolationAddress,
         seekMedicalAddress: seekMedicalAddress,
         other: vm.otherInfo,
-        CurrStatus:vm.seekMedicalList[vm.chosedSeeMedicalIndex].value
+        currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value
       };
+      console.log(params);
       Indicator.open();
       saveEnterprisePeriodPlace(params).then(resp => {
         Indicator.close();

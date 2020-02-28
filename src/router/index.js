@@ -31,6 +31,11 @@ const routes = [
     component: resolve => require(["../views/temp/Query.vue"], resolve)
   },
   {
+    path: "/enterPrise",
+    name: "enterPrise",
+    component: resolve => require(["../views/enterprise/Enterprise.vue"], resolve)
+  },
+  {
     path: "/punch",
     name: "punch",
     component: resolve => require(["../views/punch/Punch.vue"], resolve)
