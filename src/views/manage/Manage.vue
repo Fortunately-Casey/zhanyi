@@ -113,7 +113,7 @@ export default {
     },
     goBack() {
       this.$router.push({
-        path: "/main"
+        path: "/enterprise"
       });
     },
     confirmDate(value) {

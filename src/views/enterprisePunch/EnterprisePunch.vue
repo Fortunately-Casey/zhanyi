@@ -1440,7 +1440,6 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #eee;
-    position: fixed;
     overflow-y: auto;
     left: 0;
     top: 0;

@@ -15,9 +15,9 @@ export function Todate(chinadatetime) { //Fri Oct 31 18:00:00 UTC+0800 2008
 
 export function blur() {
     setTimeout(function () {
-        var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0;
-        window.scrollTo(0, Math.max(scrollHeight - 1, 0));
-    }, 5);
+        window.scrollTo(0, document.body.scrollTop + 1);
+        document.body.scrollTop >= 1 && window.scrollTo(0, document.body.scrollTop - 1);
+    }, 10);
 }
 
 export function getURL(url) {
