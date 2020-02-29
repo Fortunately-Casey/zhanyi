@@ -3,12 +3,9 @@
     <div class="logo"></div>
     <div class="search-button" @click="toSearchMap"></div>
     <div class="health-button" @click="toWeiXin"></div>
-    <!-- <div class="registration-button" @click="toRegister"></div>
-    <div class="infoManage-button" @click="toQuery"></div> -->
     <div class="company-name">
       <div class="nantong-chy"></div>
       <div>技术支持：南通市测绘院有限公司</div>
-      <!-- <div>数据来源：南通市疾病预防控制中心</div> -->
     </div>
   </div>
 </template>

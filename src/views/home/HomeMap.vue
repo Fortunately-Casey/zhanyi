@@ -1,29 +1,31 @@
 <template>
   <div class="home-map">
     <div class="home-header">
-      <div class="title">截止{{date}} 南通市疫情统计数据</div>
-      <div class="open" @click="isShowMore = !isShowMore">{{isShowMore?"收起数据":"展开区县数据"}}</div>
+      <div class="title">截止{{ date }} 南通市疫情统计数据</div>
+      <div class="open" @click="isShowMore = !isShowMore">
+        {{ isShowMore ? "收起数据" : "展开区县数据" }}
+      </div>
       <div class="cart"></div>
       <div class="tabs">
         <div class="item confirm">
-          <div class="value">{{patient}}</div>
+          <div class="value">{{ patient }}</div>
           <div class="text">确诊</div>
         </div>
         <div class="item area">
-          <div class="value">{{region}}</div>
+          <div class="value">{{ region }}</div>
           <div class="text">疫情点</div>
         </div>
         <div class="item add-people">
           <div class="value">
             <span>昨日</span>
-            +{{patientGain}}
+            +{{ patientGain }}
           </div>
           <div class="text">新增确诊</div>
         </div>
         <div class="item add-area">
           <div class="value">
             <span>昨日</span>
-            +{{regionGain}}
+            +{{ regionGain }}
           </div>
           <div class="text">新增疫情点</div>
         </div>
@@ -35,23 +37,22 @@
           <div class="quarters">疫情点数</div>
           <div class="people-number">昨日新增确诊总人数</div>
           <div class="quarters-number">昨日新增疫情点数</div>
-          <!-- <div class="date">统计日期</div> -->
         </div>
         <ul>
-          <li v-for="(item,index) in dateList" :key="index">
-            <div class="area">{{item.cityName}}</div>
-            <div class="confirm-number">{{item.patient}}</div>
-            <div class="quarters">{{item.region}}</div>
-            <div class="people-number">{{item.patientGain}}</div>
-            <div class="quarters-number">{{item.regionGain}}</div>
-            <!-- <div class="date">{{item.dateString}}</div> -->
+          <li v-for="(item, index) in dateList" :key="index">
+            <div class="area">{{ item.cityName }}</div>
+            <div class="confirm-number">{{ item.patient }}</div>
+            <div class="quarters">{{ item.region }}</div>
+            <div class="people-number">{{ item.patientGain }}</div>
+            <div class="quarters-number">{{ item.regionGain }}</div>
           </li>
         </ul>
       </div>
     </div>
     <div class="ch-logo"></div>
     <div class="my-location" @click="clickMyLocation">
-      <div class="location-icon"></div>我的位置
+      <div class="location-icon"></div>
+      我的位置
     </div>
     <div class="area-infowindow" v-if="isShowArea">
       <div class="top">
@@ -65,7 +66,9 @@
           ></drop-down>
         </div>
       </div>
-      <div class="table-title">{{chosedArea.name}} ({{patientList.length}}个小区)</div>
+      <div class="table-title">
+        {{ chosedArea.name }} ({{ patientList.length }}个小区)
+      </div>
       <div class="info-table">
         <div class="header">
           <div class="index">序号</div>
@@ -73,16 +76,19 @@
           <div class="option">操作</div>
         </div>
         <ul class="list">
-          <li class="item" v-for="(item,index) in patientList" :key="index">
-            <div class="index">{{item.id}}</div>
-            <div class="name">{{item.regionName}}</div>
+          <li class="item" v-for="(item, index) in patientList" :key="index">
+            <div class="index">{{ item.id }}</div>
+            <div class="name">{{ item.regionName }}</div>
             <div class="option" @click="lookAt(item)">查看</div>
           </li>
         </ul>
       </div>
       <div class="close-button" @click="isShowArea = false">关闭</div>
     </div>
-    <div :class="isShowSearchList?'sortList act':'sortList'" v-if="isShowSort">
+    <div
+      :class="isShowSearchList ? 'sortList act' : 'sortList'"
+      v-if="isShowSort"
+    >
       <div class="link">
         <span>附近疫情点</span>
         <div class="search-input">
@@ -95,43 +101,43 @@
             placeholder="输入地址并选择要查看的地点"
             v-model="keyword"
           />
-          <!-- <div class="search-icon" @click="keywordSearch"></div> -->
         </div>
       </div>
-      <!--<div class="kuai"></div>-->
       <div class="search-list" v-if="isShowSearchList">
         <div
-          v-for="(item,index) in searchList"
+          v-for="(item, index) in searchList"
           :key="index"
           class="search-item"
           @click="setTo(item)"
-        >{{item.name}}</div>
+        >
+          {{ item.name }}
+        </div>
       </div>
       <div class="list-wrap">
         <div
           class="sort-item"
-          v-for="(item,index) in sortList"
+          v-for="(item, index) in sortList"
           :key="index"
-          @click="locationTo(item,index,true)"
-          :class="clickIndex === index?'clickChosed':''"
+          @click="locationTo(item, index, true)"
+          :class="clickIndex === index ? 'clickChosed' : ''"
         >
           <div class="name">
-            {{item.id.regionName}}
-            <div class="address">{{item.id.address}}</div>
+            {{ item.id.regionName }}
+            <div class="address">{{ item.id.address }}</div>
           </div>
 
-          <div :class="index==0?'length1':'length'">
-            <!--<div class="location"></div>-->
-            <template v-if="index==0">
+          <div :class="index == 0 ? 'length1' : 'length'">
+            <template v-if="index == 0">
               <span>距您最近</span>
-              &nbsp;&nbsp;&nbsp;{{(item.length/1000).toFixed(2)+ "km"}}
+              &nbsp;&nbsp;&nbsp;{{ (item.length / 1000).toFixed(2) + "km" }}
             </template>
-            <template v-else>{{(item.length/1000).toFixed(2)+ "km"}}</template>
+            <template v-else>
+              {{ (item.length / 1000).toFixed(2) + "km" }}
+            </template>
           </div>
         </div>
       </div>
       <div class="close">
-        <!--<div class="close-button" @click="closeSort">关闭</div>-->
         技术合作：南通市测绘院有限公司
         <i @click="showNantongCH"></i>
         <div class="chy-name" v-if="isShowName">南通市测绘院有限公司</div>
@@ -147,7 +153,6 @@ import {
   getDayStatisticsTotal,
   getDayStatisticsDetails,
   getRegionData,
-  getPatient,
   getPatientTrail
 } from "@/api/homeMap.js";
 import {
@@ -241,10 +246,6 @@ export default {
     )[0].innerText = `南通市“战疫图”:${arr[1] + "-" + arr[2]}最新数据`;
     this.getDayStatisticsTotal();
     this.getDayStatisticsDetails();
-    //  this.shareList('https://yqfk.ntschy.com/swnt.png', window.location.href, '南通市“战疫图”:' + this.date + ' 最新数据', '南通市“战疫图”:' + this.date + ' 最新数据');
-
-    // this.drawPoint();
-    // this.drawPloy();
   },
   mounted() {
     var vm = this;
@@ -256,7 +257,6 @@ export default {
   },
   methods: {
     shareList(imgUrl, link, desc, title) {
-      // var url = encodeURIComponent(link)
       var url = link;
       // 分享
       const signUrl = getURL("/weixin/getSignPackage");
@@ -368,7 +368,6 @@ export default {
           mk.id = data[i].id;
           vm.markList.push(mk);
           var values = "";
-          // var values = data[i].remarks.split("|").join("<br>");
           data[i].remarks.split("|").map((v, i) => {
             if ((i = 0)) {
               values += `<div class='title'>${v}</div>`;
@@ -376,7 +375,6 @@ export default {
               values += `<div>${v}</div>`;
             }
           });
-          // values.join("");
           window.baseMap.addOverlay(mk);
           addClickHandler(values, mk);
           var options = {
@@ -414,59 +412,6 @@ export default {
             vm.openInfo(content, marker);
           });
         }
-        /*   function openInfo(content,e){
-          var p = e.target;
-          var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-          var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
-          window.baseMap.openInfoWindow(infoWindow,point); //开启信息窗口
-        }*/
-
-        /*
-        var mk = new BMap.Marker(r.point, {
-          icon: locPoint
-        });
-        vm.pointOne = r.point;
-        window.baseMap.addOverlay(mk);*/
-        /*var polyList = [];
-        resp.data.data.map(item => {
-          var path = [];
-          path.push({
-            lng: item.bdx,
-            lat: item.bdy
-          });
-          var opts = {
-            position: new BMap.Point(
-              getCenterPoint(path).lng,
-              getCenterPoint(path).lat
-            ), // 指定文本标注所在的地理位置
-            offset: new BMap.Size(10, -30) //设置文本偏移量
-          };
-          var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
-          label.setStyle({
-            color: "#D22D2D",
-            fontSize: "14px",
-            padding: "0 8px",
-            height: "24px",
-            lineHeight: "24px",
-            borderRadius: "12px",
-            fontFamily: "微软雅黑"
-          });
-          window.baseMap.addOverlay(label);
-          var point = getCenterPoint(path);
-          point.
-          polyList.push(getCenterPoint(path));
-          window.titleLabel = label;
-        });
-        var options = {
-          size: BMAP_POINT_SIZE_BIGGER,
-          shape: BMAP_POINT_SHAPE_CIRCLE,
-          color: "#D22D2D"
-        };
-        window.baseMap.setViewport(polyList, {
-            margins: [90, 30, 220, 30]
-        });
-        var pointCollection = new BMap.PointCollection(polyList, options);
-        window.baseMap.addOverlay(pointCollection);*/
       });
     },
     scrollToText: function() {
@@ -546,7 +491,6 @@ export default {
       this.isShowNearArea = false;
       if (this.isShowNearTrajectory) {
         this.isShowNearTrajectory = !this.isShowNearTrajectory;
-        // window.baseMap.clearOverlays();
       } else {
         getPatientTrail().then(resp => {
           var geolocation = new BMap.Geolocation();
@@ -594,8 +538,6 @@ export default {
                   fontFamily: "微软雅黑"
                 });
                 window.baseMap.panTo(new BMap.Point(max.bdx, max.bdy));
-                // window.baseMap.addOverlay(label);
-                // window.baseMap.addOverlay(marker);
                 var allOverlay = window.baseMap.getOverlays();
               } else {
                 // alert("failed" + this.getStatus());
@@ -624,8 +566,6 @@ export default {
             vm.localPoint = mk;
             vm.pointOne = r.point;
             window.baseMap.addOverlay(mk);
-            //  window.baseMap.setZoom(17);
-            // window.baseMap.panTo(r.point);
           } else {
             alert("failed" + this.getStatus());
           }
@@ -636,8 +576,6 @@ export default {
     clickMyLocation() {
       var vm = this;
       vm.clickIndex = 0;
-      //  window.baseMap.clearOverlays();
-      //  vm.drawPloy();
       window.baseMap.removeOverlay(vm.smallPoint);
       window.baseMap.removeOverlay(vm.localPoint);
       vm.keyword = "";
@@ -655,10 +593,7 @@ export default {
             vm.pointOne = r.point;
             window.baseMap.panTo(r.point);
             window.baseMap.addOverlay(mk);
-            // window.baseMap.setZoom(9);
-
             getRegionData().then(resp => {
-              //   console.log(resp.data.data);
               var polyList = [];
               resp.data.data.map(item => {
                 var path = [];
@@ -690,15 +625,11 @@ export default {
                 }
               });
               vm.sortList = lengthList.sort(compare("length"));
-              //  vm.locationTo(vm.sortList[0],0);
-
               $(".sortList").scrollTop(0);
               var bluePoint = new BMap.Point(
                 getCenterPoint(vm.sortList[0].path).lng,
                 getCenterPoint(vm.sortList[0].path).lat
               );
-              // vm.setMapArea();
-              // vm.drawBlue(bluePoint);
             });
           } else {
             alert("failed" + this.getStatus());
@@ -715,20 +646,11 @@ export default {
       this.isShowNearTrajectory = false;
       if (this.isShowNearArea) {
         this.isShowNearArea = !this.isShowNearArea;
-        // window.baseMap.clearOverlays();
       } else {
         getRegionData().then(resp => {
-          //   console.log(resp.data.data);
           var polyList = [];
           resp.data.data.map(item => {
             var path = [];
-            // var newStr = item.cors1.substr(0, item.cors1.length - 1);
-            // newStr.split("],").map(v => {
-            //   path.push({
-            //     lng: v.substr(1).split(",")[0],
-            //     lat: v.substr(1).split(",")[1]
-            //   });
-            // });
             path.push({
               lng: item.bdx,
               lat: item.bdy
@@ -803,20 +725,12 @@ export default {
         fontFamily: "微软雅黑"
       });
       polygon.regionID = item.id;
-      polygon.addEventListener("click", function() {
-        //   alert(this.regionID)
-        alert("1111");
-      });
+      polygon.addEventListener("click", function() {});
       this.isShowArea = false;
       window.baseMap.addOverlay(label);
       window.baseMap.setZoom(17);
       window.baseMap.panTo(getCenterPoint(pointList));
       window.baseMap.addOverlay(polygon); //增加多边形
-      // getPatient({
-      //     regionID:item.id
-      // }).then((resp) => {
-      //     console.log(resp)
-      // })
     },
     drawBlue(point) {
       var vm = this;
@@ -838,18 +752,8 @@ export default {
       });
       vm.bluePoint = mk;
       window.baseMap.addOverlay(mk);
-      // var options2 = {
-
-      //     size: BMAP_POINT_SIZE_BIGGER,
-      //     shape: BMAP_POINT_SHAPE_CIRCLE,
-      //     color: 'blue'
-      // }
-      // vm.pointCollection2 = new BMap.PointCollection(points2, options2);
-      //  //  pointCollection2.setTop(true);
-      // window.baseMap.addOverlay(vm.pointCollection2);
     },
     locationTo(item, index, isSetView) {
-      console.log(item);
       var vm = this;
       vm.clickIndex = index;
       // window.baseMap.removeOverlay(vm.localPoint);
@@ -888,64 +792,6 @@ export default {
         window.baseMap.setZoom(16);
       }
       window.baseMap.panTo(point);
-
-      // if (vm.isShowSearchList) {
-      //   vm.isShowSearchList = false;
-      // } else {
-      /*    var point = new BMap.Point(
-          getCenterPoint(item.path).lng,
-          getCenterPoint(item.path).lat
-        );
-        vm.pointTwo = point;
-        // vm.drawPloy();
-          getRegionData().then(resp => {
-          var polyList = [];
-          resp.data.data.map(item => {
-            var path = [];
-            path.push({
-              lng: item.bdx,
-              lat: item.bdy
-            });
-            var opts = {
-              position: new BMap.Point(
-                getCenterPoint(path).lng,
-                getCenterPoint(path).lat
-              ), // 指定文本标注所在的地理位置
-              offset: new BMap.Size(10, -30) //设置文本偏移量
-            };
-            var label = new BMap.Label(item.regionName, opts); // 创建文本标注对象
-            label.setStyle({
-              color: "#D22D2D",
-              fontSize: "14px",
-              padding: "0 8px",
-              height: "24px",
-              lineHeight: "24px",
-              borderRadius: "12px",
-              fontFamily: "微软雅黑"
-            });
-            // window.baseMap.addOverlay(label);
-            polyList.push(getCenterPoint(path));
-            window.titleLabel = label;
-          });
-          var options = {
-            size: BMAP_POINT_SIZE_BIGGER,
-            shape: BMAP_POINT_SHAPE_CIRCLE,
-            color: "#D22D2D"
-          };
-          window.baseMap.setViewport(polyList, {
-              margins: [90, 30, 220, 30]
-          });
-  
-        });
-        vm.drawBlue(point);*/
-      // window.baseMap.setZoom(9);
-      // window.baseMap.panTo(point);
-      // if(isSetView) {
-      //   window.baseMap.setViewport([vm.pointOne, vm.pointTwo], {
-      //     margins: [90, 30, 220, 30]
-      //   });
-      // }
-      // }
     },
     closeSort() {
       this.isShowNearArea = false;
@@ -970,7 +816,6 @@ export default {
             }
             console.log(s);
             vm.searchList = s;
-            // document.getElementById("r-result").innerHTML = s.join("<br/>");
           }
         }
       };
@@ -1005,7 +850,6 @@ export default {
       window.baseMap.panTo(new BMap.Point(item.lng, item.lat));
 
       getRegionData().then(resp => {
-        //   console.log(resp.data.data);
         var polyList = [];
         resp.data.data.map(item => {
           var path = [];
@@ -1034,7 +878,7 @@ export default {
 
         vm.sortList = lengthList.sort(compare("length"));
 
-        //这个if里面是周佳佳加上去的，因为搜索了一个地址后，默认的气泡还是原来的没边
+        //因为搜索了一个地址后，默认的气泡还是原来的没边
         if (
           vm.sortList != null &&
           vm.sortList.length > 0 &&
@@ -1120,7 +964,6 @@ export default {
   position: relative;
   .home-header {
     width: 90%;
-    // height: 75px;
     background-color: #fff;
     position: absolute;
     top: 5px;
@@ -1254,7 +1097,6 @@ export default {
     .icon {
       width: 12px;
       height: 12px;
-      // background-color: red;
       position: absolute;
       left: 5px;
       top: 50%;
@@ -1390,7 +1232,6 @@ export default {
   }
   .area-infowindow {
     width: 80%;
-    // height: 250px;
     background-color: #fff;
     position: absolute;
     top: 30%;
@@ -1523,14 +1364,12 @@ export default {
       padding: 0 10px;
     }
     .sort-item {
-      //   display: flex;
       height: 30px;
       font-size: 14px;
       .name {
         padding-left: 10px;
         line-height: 30px;
         box-sizing: border-box;
-        // flex: 1;
         float: left;
         width: 65%;
         display: flex;
@@ -1554,7 +1393,6 @@ export default {
         box-sizing: border-box;
         float: left;
         width: 35%;
-        // flex: 1;
         position: relative;
       }
       .length1 {
@@ -1643,17 +1481,12 @@ export default {
       width: 65%;
       height: 30px;
       background-color: #fff;
-      /*position: fixed;*/
-      /*left: 40%;*/
-      /*bottom: 160px;*/
       z-index: 999;
       input {
-        /*float: left;*/
         margin-top: 12px;
         margin-left: 20px;
         width: 85%;
         font-size: 14px;
-        // width: calc(100% - 85px);
       }
       .search-icon {
         width: 20px;
@@ -1668,7 +1501,6 @@ export default {
     .search-list {
       width: 90%;
       height: 162px;
-      //   box-shadow: 2px 2px 3px #ccdbec;
       box-sizing: border-box;
       border: 1px solid rgb(190, 185, 185);
       overflow-y: auto;

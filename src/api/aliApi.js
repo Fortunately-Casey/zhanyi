@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import axios from "axios";
-
+// 获取所有省会
 export function getProvinceList(params) {
   const url = "https://api02.aliyun.venuscn.com/area/all";
   return axios
@@ -15,7 +15,7 @@ export function getProvinceList(params) {
       console.log(err);
     });
 }
-
+// 获取下级城市
 export function getCityList(params) {
   const url = "https://api02.aliyun.venuscn.com/area/query";
   return axios

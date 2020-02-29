@@ -1,31 +1,58 @@
 <template>
   <div class="register">
     <div class="logo"></div>
-    <div class="title">单位注册，请填写信息</div>
+    <div class="title">管理员注册，请填写信息</div>
     <div class="register-box">
-      <input type="text" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
       <input
         type="text"
-        placeholder="单位名称"
+        placeholder="管理员手机号码"
+        v-model="phoneNumber"
+        @blur="lostblur('phone')"
+      />
+      <input
+        type="text"
+        placeholder="管理员名称"
         v-model="factoryName"
         @blur="lostblur"
         @input="keywordSearch"
       />
 
       <div class="factory">
-        <input type="text" placeholder="人数" v-model="peopleCount" @blur="lostblur('number')" />
+        <input
+          type="text"
+          placeholder="人数"
+          v-model="peopleCount"
+          @blur="lostblur('number')"
+        />
         <div class="factory-list" v-if="isShowList">
           <div
             class="search-item"
             v-for="(item, index) in searchList"
             :key="index"
             @click="choseFactory(item)"
-          >{{ item }}</div>
+          >
+            {{ item }}
+          </div>
         </div>
       </div>
-      <input type="text" placeholder="企业隔离床位数" v-model="bedCount" @blur="lostblur('bed')" />
-      <input type="password" placeholder="查询密码" v-model="searchPassword" @blur="lostblur" />
-      <input type="password" placeholder="确认密码" v-model="confirmPassword" @blur="lostblur" />
+      <input
+        type="text"
+        placeholder="企业隔离床位数"
+        v-model="bedCount"
+        @blur="lostblur('bed')"
+      />
+      <input
+        type="password"
+        placeholder="查询密码"
+        v-model="searchPassword"
+        @blur="lostblur"
+      />
+      <input
+        type="password"
+        placeholder="确认密码"
+        v-model="confirmPassword"
+        @blur="lostblur"
+      />
     </div>
     <div class="register-button" @click="register">注册</div>
     <div class="modal" v-show="isShowQrcode">

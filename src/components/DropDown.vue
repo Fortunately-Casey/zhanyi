@@ -1,16 +1,16 @@
 <template>
   <div class="drop-down" ref="dropdown">
     <div class="dropdown-toggle" @click="showDropDown = !showDropDown">
-      <span>{{chosedOption.name}}</span>
+      <span>{{ chosedOption.name }}</span>
       <span class="cart"></span>
     </div>
-    <!-- <el-collapse-transition> -->
     <ul class="dropdown-menu" v-show="showDropDown">
-      <li v-for="(option,index) in dropList" :key="index">
-        <a href="javascript:void(0)" @click="updateOption(option,index)">{{ option.name }}</a>
+      <li v-for="(option, index) in dropList" :key="index">
+        <a href="javascript:void(0)" @click="updateOption(option, index)">{{
+          option.name
+        }}</a>
       </li>
     </ul>
-    <!-- </el-collapse-transition> -->
   </div>
 </template>
 <script>
@@ -45,13 +45,6 @@ export default {
         index: index
       });
       this.showDropDown = false;
-      // if(this.dropDownType === "city") {
-      //   this.$emit("choseCity",option);
-      // }else if(this.dropDownType === "area") {
-      //   this.$emit("choseArea",option);
-      // }else if(this.dropDownType === "street") {
-      //   this.$emit("choseStreet",option);
-      // }
     },
     hidePandel(e) {
       if (!this.$refs.dropdown) {
@@ -86,16 +79,12 @@ export default {
     font-size: 13px;
     span {
       display: inline-block;
-      // width: 50px;
-      // overflow: hidden;
-      // white-space: nowrap;
-      // text-overflow: ellipsis;
     }
     .cart {
       width: 0;
       position: relative;
       top: 13px;
-      right:-3px;
+      right: -3px;
       height: 0;
       margin-left: 2px;
       vertical-align: middle;

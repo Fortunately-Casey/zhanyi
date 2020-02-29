@@ -3,14 +3,20 @@
     <div class="logo"></div>
     <div class="title">欢迎您，请登录</div>
     <div class="register-box">
-      <input type="text" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
-      <input type="password" placeholder="密码" v-model="password" @blur="lostblur" />
+      <input
+        type="text"
+        placeholder="手机号码"
+        v-model="phoneNumber"
+        @blur="lostblur('phone')"
+      />
+      <input
+        type="password"
+        placeholder="密码"
+        v-model="password"
+        @blur="lostblur"
+      />
     </div>
     <div class="register-button" @click="login">进入</div>
-    <!-- <div class="company-name">
-      <div class="nantong-chy"></div>
-      <div>技术支持：南通市测绘院有限公司</div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -124,7 +130,7 @@ export default {
             vm.$router.push({
               path: "/manage",
               query: {
-                enterpriseID: resp.data.data.enterpriseID,
+                enterpriseID: resp.data.data.enterpriseID
                 // WXID: vm.$route.query.
               }
             });

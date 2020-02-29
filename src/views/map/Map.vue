@@ -1,7 +1,5 @@
 <template>
   <baidu-map id="register" :center="center" :zoom="zoom" @ready="handler">
-    <!-- <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation> -->
-    <!-- <button @click="startPosition" class="start-button">开始记录</button> -->
   </baidu-map>
 </template>
 
@@ -60,41 +58,6 @@ export default {
           });
         }
       });
-      //   map.addEventListener("click", function (e) {
-      //       if(vm.$route.path === '/punch') {
-      //           var locPoint = new BMap.Icon(locIcon, new BMap.Size(40, 40), {
-      //              anchor: new BMap.Size(20, 32),
-      //              imageSize: new BMap.Size(40, 40)
-      //           });
-      //           map.clearOverlays();
-      //           var gc = new BMap.Geocoder();
-      //           gc.getLocation(e.point,(rs) => {
-      //               vm.mk = new BMap.Marker(e.point, {
-      //                   icon:locPoint
-      //               });
-      //               map.addOverlay(vm.mk);
-      //               map.panTo(e.point)
-      //               if(rs.surroundingPois.length === 0) {
-      //                   Toast({
-      //                         message: "未获取到地点,请重新点击或手动输入兴趣点!",
-      //                         iconClass: "icon icon-success"
-      //                   })
-      //                 vm.$emit('clickAddress', {
-      //                     address: "",
-      //                     bdx : e.point.lng,
-      //                     bdy : e.point.lat
-      //                 });
-      //                 //   return;
-      //               }else {
-      //                 vm.$emit('clickAddress', {
-      //                     address: rs.surroundingPois[0].title ,
-      //                     bdx : rs.surroundingPois[0].point.lng,
-      //                     bdy : rs.surroundingPois[0].point.lat
-      //                 });
-      //               }
-      //           })
-      //       }
-      //   })
       var xArr = []; //存放横坐标
       var yArr = []; //存放纵坐标
 

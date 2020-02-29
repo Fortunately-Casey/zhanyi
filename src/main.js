@@ -3,9 +3,12 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import BaiduMap from "vue-baidu-map";
-import Mint from 'mint-ui';
+import Mint from "mint-ui";
 import "mint-ui/lib/style.css";
-import 'lib-flexible/flexible.js'
+import "lib-flexible/flexible.js";
+import FastClick from "fastclick";
+FastClick.attach(document.body);
+
 Vue.use(Mint);
 Vue.use(BaiduMap, {
   ak: "Ocm4ieXqGPaZZgblGHi4GTnDfGfZcBbv"

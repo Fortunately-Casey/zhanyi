@@ -12,19 +12,29 @@
         <div class="item">
           <div class="name">日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{returnDate(dateValue)}}</div>
+            <div class="date" @click="openPicker">
+              {{ returnDate(dateValue) }}
+            </div>
           </div>
         </div>
         <div class="item">
           <div class="name">身份证号</div>
           <div class="value">
-            <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
+            <input
+              type="text"
+              v-model="idCard"
+              @blur="lostblur('usernumber')"
+            />
           </div>
         </div>
         <div class="item">
           <div class="name">电话号码</div>
           <div class="value">
-            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input
+              type="text"
+              v-model="phoneNumber"
+              @blur="lostblur('phone')"
+            />
           </div>
         </div>
         <div class="now-address">
@@ -32,9 +42,9 @@
             现居住地
             <div class="icon-cross" v-if="isShowNowIcon">></div>
             <div class="chosedValue" v-if="isShowSelectedNow">
-              <div class="value">{{chosedNowAddress.province}}</div>
-              <div class="value">{{chosedNowAddress.city}}</div>
-              <div class="value">{{chosedNowAddress.area}}</div>
+              <div class="value">{{ chosedNowAddress.province }}</div>
+              <div class="value">{{ chosedNowAddress.city }}</div>
+              <div class="value">{{ chosedNowAddress.area }}</div>
             </div>
           </div>
         </div>
@@ -70,14 +80,14 @@
           </div>
         </div>
         <div class="item">
-          <div class="address">{{addressValue}}</div>
+          <div class="address">{{ addressValue }}</div>
         </div>
       </div>
       <div class="second">
         <div class="item">
           <div class="name">2. 途经时间</div>
           <div class="value">
-            <div class="date" @click="choseTime">{{timeValue}}</div>
+            <div class="date" @click="choseTime">{{ timeValue }}</div>
           </div>
         </div>
       </div>
@@ -150,9 +160,9 @@
             <div class="cross-title">
               5. 您来自的地区
               <div class="chosedValue" v-if="isShowSelectValue">
-                <div class="value">{{chosedValues.province}}</div>
-                <div class="value">{{chosedValues.city}}</div>
-                <div class="value">{{chosedValues.area}}</div>
+                <div class="value">{{ chosedValues.province }}</div>
+                <div class="value">{{ chosedValues.city }}</div>
+                <div class="value">{{ chosedValues.area }}</div>
               </div>
             </div>
 
@@ -212,32 +222,47 @@
             <div class="report-list">
               <div
                 class="health"
-                v-if="!this.epidemicArea&&this.reportList.length === 0?true:false"
+                v-if="
+                  !this.epidemicArea && this.reportList.length === 0
+                    ? true
+                    : false
+                "
               >
-                <div class="health-icon"></div>依据现有确诊人员数据及您的打卡信息，您非密切接触人员
+                <div class="health-icon"></div>
+                依据现有确诊人员数据及您的打卡信息，您非密切接触人员
               </div>
               <div class="bad" v-if="epidemicArea">
-                <div class="bad-icon"></div>您14天内经过疫区
-              </div>
-              <div class="bad" v-for="(item,index) in reportList" :key="index">
                 <div class="bad-icon"></div>
-                {{item.date}}{{item.time}}您经过{{item.placeName}}，5天内确诊者也在此逗留
+                您14天内经过疫区
+              </div>
+              <div class="bad" v-for="(item, index) in reportList" :key="index">
+                <div class="bad-icon"></div>
+                {{ item.date }}{{ item.time }}您经过{{
+                  item.placeName
+                }}，5天内确诊者也在此逗留
               </div>
             </div>
           </div>
           <div class="tips" v-if="!periodPlace14">
-            <div class="tips-icon"></div>温馨提示:您14天内并未进行打卡，无法分析数据
+            <div class="tips-icon"></div>
+            温馨提示:您14天内并未进行打卡，无法分析数据
           </div>
           <div class="tips" v-else>
             <div class="tips-icon"></div>
-            温馨提示:{{epidemicArea||reportList.length > 0?"需在家隔离14天，如有症状请及时就医":"减少外出，加强防护，关注体温"}}
+            温馨提示:{{
+              epidemicArea || reportList.length > 0
+                ? "需在家隔离14天，如有症状请及时就医"
+                : "减少外出，加强防护，关注体温"
+            }}
           </div>
           <div class="function" @click="isShowFunction = !isShowFunction">
             <span class="left">分析方法</span>
             <div class="plus" v-if="!isShowFunction"></div>
             <div class="minus" v-else></div>
             <span class="right">（点击查看详情）</span>
-            <div class="function-message" v-if="isShowFunction">依据南通市确诊人员轨迹，及您前14天打卡数据进行对比分析</div>
+            <div class="function-message" v-if="isShowFunction">
+              依据南通市确诊人员轨迹，及您前14天打卡数据进行对比分析
+            </div>
           </div>
           <div class="bottom-message">确诊轨迹来源于南通市疾病预防控制中心</div>
         </div>
@@ -250,44 +275,57 @@
           </div>
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
-            <div v-for="(item,index) in provinceList" :key="index">
-              <div class="province" v-for="(v,i) in item.items" :key="i" @click="choseProvince(v)">
-                <div class="label">{{i === 0?v.key:''}}</div>
-                <div class="name">{{v.name}}</div>
+            <div v-for="(item, index) in provinceList" :key="index">
+              <div
+                class="province"
+                v-for="(v, i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
+                <div class="label">{{ i === 0 ? v.key : "" }}</div>
+                <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">{{chosedProvinceName}}</span>
-            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
-            <span class="selectedCityButton" v-else @click="selectCity">{{chosedCityName}}</span>
-            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+            <span class="seleted-province" @click="selectProvince">{{
+              chosedProvinceName
+            }}</span>
+            <span class="selectCityButton" v-if="!chosedCityName"
+              >选择城市</span
+            >
+            <span class="selectedCityButton" v-else @click="selectCity">{{
+              chosedCityName
+            }}</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect"
+              >选择区域</span
+            >
           </div>
           <div class="select-city" v-if="isShowCityList">
-            <div v-for="(item,index) in cityList" :key="index">
+            <div v-for="(item, index) in cityList" :key="index">
               <div
                 class="city"
-                v-for="(v,i) in item.items"
+                v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseCity(v)"
                 v-if="v.name !== '直辖县'"
               >
-                <div class="label">{{i === 0?v.key:''}}</div>
-                <div class="name">{{v.short_name + '市'}}</div>
+                <div class="label">{{ i === 0 ? v.key : "" }}</div>
+                <div class="name">{{ v.short_name + "市" }}</div>
               </div>
             </div>
           </div>
           <div class="select-area" v-if="isShowAreaList">
-            <div v-for="(item,index) in areaList" :key="index">
+            <div v-for="(item, index) in areaList" :key="index">
               <div
                 class="area"
-                v-for="(v,i) in item.items"
+                v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseArea(v)"
                 v-if="v.name !== '市辖区'"
               >
-                <div class="label">{{i === 0?v.key:''}}</div>
-                <div class="name">{{v.name}}</div>
+                <div class="label">{{ i === 0 ? v.key : "" }}</div>
+                <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
@@ -296,7 +334,12 @@
     </div>
     <div class="click-box" v-if="isShowMap">
       <div class="map-title">
-        <input type="text" v-model="clickValue" placeholder="图中没有想找的点?手动输入添加地点" @blur="lostblur" />
+        <input
+          type="text"
+          v-model="clickValue"
+          placeholder="图中没有想找的点?手动输入添加地点"
+          @blur="lostblur"
+        />
       </div>
       <div class="confirm" @click="confirmAddress">确 认</div>
     </div>
@@ -312,10 +355,12 @@
       <div class="search-list" v-if="isShowSearchList">
         <div
           class="item"
-          v-for="(item,index) in searchList"
+          v-for="(item, index) in searchList"
           :key="index"
           @click="sendTo(item)"
-        >{{item.name}}</div>
+        >
+          {{ item.name }}
+        </div>
       </div>
     </div>
     <m-map @clickAddress="clickAddress"></m-map>
@@ -412,15 +457,15 @@ export default {
       },
       addressDetail: "",
       nowAddress: "",
-      chosedNowAddress:{
+      chosedNowAddress: {
         province: "",
         city: "",
         area: ""
       },
-      isShowSelectedNow:false,
+      isShowSelectedNow: false,
       // 地址类型flag
-      addressType:0,
-      isShowNowIcon:true
+      addressType: 0,
+      isShowNowIcon: true
     };
   },
   created() {
@@ -612,10 +657,10 @@ export default {
         fromCity: vm.chosedValues.city,
         fromCounty: vm.chosedValues.area,
         fromAddress: vm.addressDetail,
-        currLiveProvince:vm.chosedNowAddress.province,
-        currLiveCity:vm.chosedNowAddress.city,
-        currLiveCounty:vm.chosedNowAddress.area,
-        currLiveAddress:vm.nowAddress,
+        currLiveProvince: vm.chosedNowAddress.province,
+        currLiveCity: vm.chosedNowAddress.city,
+        currLiveCounty: vm.chosedNowAddress.area,
+        currLiveAddress: vm.nowAddress
       };
       Indicator.open();
       savePeriodPlace(params).then(resp => {
@@ -997,13 +1042,13 @@ export default {
     },
     choseArea(item) {
       this.chosedAreaName = item.name;
-      if(this.addressType === 0) {
+      if (this.addressType === 0) {
         this.chosedNowAddress.province = this.chosedProvinceName;
         this.chosedNowAddress.city = this.chosedCityName;
         this.chosedNowAddress.area = item.name;
         this.isShowSelectedNow = true;
         this.isShowNowIcon = false;
-      }else {
+      } else {
         this.chosedValues.province = this.chosedProvinceName;
         this.chosedValues.city = this.chosedCityName;
         this.chosedValues.area = item.name;
@@ -1181,7 +1226,7 @@ export default {
         }
         .addressDetail {
           width: 250px;
-          height:25px;
+          height: 25px;
           font-size: 13px;
           margin-left: 18px;
         }
@@ -1260,7 +1305,7 @@ export default {
             transform: translateY(-50%);
           }
         }
-        
+
         .health-item,
         .cross-item {
           border-bottom: 1px solid #efefef;
@@ -1315,7 +1360,7 @@ export default {
         }
         .addressDetail {
           width: 250px;
-          height:25px;
+          height: 25px;
           font-size: 13px;
         }
       }

@@ -133,7 +133,7 @@ export function addMarkerEnd(point, name, mapInit, trackUnit, prePoint, carMk) {
     }
 }
 //获得角度的函数
-export //获得角度的函数
+export
 function getAngle(n, next) {
     var ret
     var w1 = n.lat / 180 * Math.PI
@@ -145,9 +145,7 @@ function getAngle(n, next) {
     ret = 4 * Math.pow(Math.sin((w1 - w2) / 2), 2) - Math.pow(Math.sin((j1 - j2) / 2) * (Math.cos(w1) - Math.cos(w2)), 2);
     ret = Math.sqrt(ret);
 
-    // var temp = Math.sin(Math.abs(j1 - j2) / 2) * (Math.cos(w1) + Math.cos(w2));
     var temp = Math.sin((j1 - j2) / 2) * (Math.cos(w1) + Math.cos(w2));
-    console.log(temp)
     ret = ret / temp;
 
     ret = Math.atan(ret) / Math.PI * 180;
@@ -177,9 +175,6 @@ function getAngle(n, next) {
 }
 // 获取中心点
 export function getCenterPoint(path) {
-    //var path =e.;
-    //Array<Point> 返回多边型的点数组
-    //var ret=parseFloat(num1)+parseFloat(num2);
     var x = 0.0;
     var y = 0.0;
     for (var i = 0; i < path.length; i++) {
@@ -188,9 +183,7 @@ export function getCenterPoint(path) {
     }
     x = x / path.length;
     y = y / path.length;
-    //return new BMap.Point(path[0].lng,path[0].lat);
     return new BMap.Point(x, y);
-    //return path[0];
 }
 
 export function compare(property) {
