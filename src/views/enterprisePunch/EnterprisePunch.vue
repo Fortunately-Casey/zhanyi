@@ -65,7 +65,7 @@
         </div>
         <div class="item">
           <div class="name">
-            <div class="cross-title">有无咳嗽状况</div>
+            <div class="cross-title">有无咳嗽乏力等状况</div>
           </div>
         </div>
         <div

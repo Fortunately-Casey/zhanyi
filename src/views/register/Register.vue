@@ -4,7 +4,6 @@
     <div class="title">单位注册，请填写信息</div>
     <div class="register-box">
       <input type="text" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
-
       <input
         type="text"
         placeholder="单位名称"
@@ -13,9 +12,9 @@
         @input="keywordSearch"
       />
 
-      <div class="factory" v-if="isShowList">
-        <input type="text" placeholder="人数" v-model="peopleCount" @blur="lostblur" />
-        <div class="factory-list">
+      <div class="factory">
+        <input type="text" placeholder="人数" v-model="peopleCount" @blur="lostblur('number')" />
+        <div class="factory-list" v-if="isShowList">
           <div
             class="search-item"
             v-for="(item, index) in searchList"
@@ -24,6 +23,7 @@
           >{{ item }}</div>
         </div>
       </div>
+      <input type="text" placeholder="企业隔离床位数" v-model="bedCount" @blur="lostblur('bed')" />
       <input type="password" placeholder="查询密码" v-model="searchPassword" @blur="lostblur" />
       <input type="password" placeholder="确认密码" v-model="confirmPassword" @blur="lostblur" />
     </div>
@@ -59,7 +59,8 @@ export default {
       imgUrl: "",
       searchList: [],
       isShowList: false,
-      isWatch: true
+      isWatch: true,
+      bedCount: ""
     };
   },
   computed: {},
@@ -169,7 +170,8 @@ export default {
         employeeCount: vm.peopleCount,
         mobile: vm.phoneNumber,
         password: vm.searchPassword,
-        createWxID: vm.$route.query.WXID
+        createWxID: vm.$route.query.WXID,
+        isolatedBedCount: vm.bedCount
       };
 
       saveEnterprise(params).then(resp => {
@@ -191,6 +193,10 @@ export default {
       var vm = this;
       if (value === "phone") {
         vm.phoneReg(vm.phoneNumber);
+      } else if (value === "number") {
+        vm.numberReg(vm.peopleCount);
+      } else if (value === "bed") {
+        vm.numberReg(vm.bedCount);
       }
       blur();
     },
@@ -199,6 +205,16 @@ export default {
       if (!phoneReg.test(Number(value))) {
         Toast({
           message: "请输入合法手机号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+    },
+    numberReg(value) {
+      var numberReg = /^[0-9]*$/;
+      if (!numberReg.test(Number(value))) {
+        Toast({
+          message: "请输入合法数量！",
           iconClass: "icon icon-success"
         });
         return;
