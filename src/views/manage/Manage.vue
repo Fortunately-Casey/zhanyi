@@ -134,7 +134,7 @@ export default {
     },
     goBack() {
       this.$router.push({
-        path: "/enterprise"
+        path: "/enterPrise"
       });
     },
     confirmDate(value) {

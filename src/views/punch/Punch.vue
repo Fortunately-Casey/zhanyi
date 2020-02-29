@@ -882,7 +882,7 @@ export default {
     goBack() {
       this.$router.push({
         path: "/main"
-      });
+      }); 
     },
     changeStr(str, index, changeStr) {
       return (

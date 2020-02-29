@@ -41,6 +41,14 @@ export default {
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
       "辅助复工 • 南通"
     );
+    var phoneNumber = window.localStorage.getItem("phoneNumber");
+    var password = window.localStorage.getItem("password");
+    if (phoneNumber) {
+      this.phoneNumber = phoneNumber;
+    }
+    if (password) {
+      this.password = password;
+    }
   },
   methods: {
     shareList(imgUrl, link, desc, title) {
@@ -127,6 +135,8 @@ export default {
               message: "登录成功",
               iconClass: "icon icon-success"
             });
+            window.localStorage.setItem("phoneNumber", vm.phoneNumber);
+            window.localStorage.setItem("password", vm.password);
             vm.$router.push({
               path: "/manage",
               query: {

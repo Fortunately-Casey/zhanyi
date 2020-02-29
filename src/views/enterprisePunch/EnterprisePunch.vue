@@ -525,7 +525,7 @@ export default {
           value: "企业隔离"
         },
         {
-          value: "集中隔离"
+          value: "政府隔离"
         },
         {
           value: "居家隔离"
@@ -1117,7 +1117,7 @@ export default {
     },
     goBack() {
       this.$router.push({
-        path: "/main"
+        path: "/enterPrise"
       });
     },
     changeStr(str, index, changeStr) {
