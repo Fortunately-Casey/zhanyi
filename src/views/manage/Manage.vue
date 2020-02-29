@@ -18,23 +18,17 @@
           class="item"
           :class="chosedIndex === 3 ? 'active' : ''"
           @click="choseTab(3)"
-        >
-          全部
-        </div>
+        >全部{{ chosedIndex === 3 ? `(${count})` : "" }}</div>
         <div
           class="item"
           :class="chosedIndex === 1 ? 'active' : ''"
           @click="choseTab(1)"
-        >
-          已打卡
-        </div>
+        >已打卡{{ chosedIndex === 1 ? `(${count})` : "" }}</div>
         <div
           class="item"
           :class="chosedIndex === 0 ? 'active' : ''"
           @click="choseTab(0)"
-        >
-          未打卡
-        </div>
+        >未打卡{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
       </div>
       <div class="list">
         <div class="list-header">
@@ -43,6 +37,7 @@
           <div class="temp">体温</div>
           <div class="isCough">是否咳嗽</div>
           <div class="phone">联系电话</div>
+          <div class="option">操作</div>
         </div>
         <div
           class="item"
@@ -55,6 +50,10 @@
           <div class="temp">{{ item.temp }}</div>
           <div class="isCough">{{ returnCough(item.cough) }}</div>
           <div class="phone">{{ item.mobile }}</div>
+          <div class="option">
+            <span v-if="item.id === 0">未打卡</span>
+            <mt-button type="danger" size="small" @click="deletePunch(item)" v-else>删除</mt-button>
+          </div>
         </div>
       </div>
       <div class="pagenation">
@@ -84,20 +83,22 @@
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
-        <img :src="imgUrl" alt width="200" height="200" />
-        <div class="qrcode" ref="qrCodeUrl" v-show="false"></div>
+        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl" ></vue-qr>
       </div>
     </div>
   </div>
 </template>
 <script>
 import { Todate, blur, Totime } from "@/common/tool/tool.js";
+import { MessageBox } from "mint-ui";
 import {
   getEnterprisePeriodPlaceList,
-  approvalPeriodPlace
+  approvalPeriodPlace,
+  deleteEnterprisePeriodPlace
 } from "@/api/register";
 import { Toast, Indicator } from "mint-ui";
 import QRCode from "qrcodejs2";
+import VueQr from "vue-qr";
 export default {
   data() {
     return {
@@ -109,24 +110,23 @@ export default {
       list: [],
       maxPage: 0,
       imgUrl: "",
+      count: 0,
       isShowQrcode: false,
       handler: function(e) {
         e.preventDefault();
-      }
+      },
+      text:"",
+      imageUrl: require("../../assets/image/zhanyi-logo.png"), 
     };
   },
   created() {
     var vm = this;
     document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
     vm.getList();
-    vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
-    
+    vm.text = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
   mounted() {
-    var vm = this;
-    vm.creatQrCode(vm.val);
-    let myCanvas = document.getElementsByTagName("canvas");
-    this.imgUrl = myCanvas[0].toDataURL("image/png");
+
   },
   methods: {
     returnDate(value) {
@@ -156,15 +156,28 @@ export default {
         return "否";
       }
     },
-    creatQrCode(val) {
-      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
-        text: val,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H,
-        src: require("@/assets/image/爱心.png")
+    deletePunch(item) {
+      var vm = this;
+      MessageBox.confirm("确定执行此操作?", "删除当前记录").then(() => {
+        var params = {
+          enterprisePeriodPlaceID: item.id,
+          enterpriseID: vm.$route.query.enterpriseID
+        };
+        deleteEnterprisePeriodPlace(params).then(resp => {
+          if (resp.data.success) {
+            Toast({
+              message: "删除成功！",
+              iconClass: "icon icon-success"
+            });
+            vm.page = 1;
+            vm.getList();
+          } else {
+            Toast({
+              message: "删除失败！",
+              iconClass: "icon icon-success"
+            });
+          }
+        });
       });
     },
     getList() {
@@ -180,6 +193,7 @@ export default {
         Indicator.close();
         vm.list = resp.data.data;
         vm.maxPage = resp.data.page.pageCount;
+        vm.count = resp.data.page.totalCount;
       });
     },
     prev() {
@@ -242,7 +256,9 @@ export default {
         }); //打开默认事件
     }
   },
-  components: {}
+  components: {
+    VueQr
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -315,7 +331,8 @@ export default {
       height: 40px;
       border-bottom: 1px solid rgb(199, 197, 197);
       .item {
-        width: 60px;
+        // width: 80px;
+        padding: 3px 10px;
         height: 20px;
         line-height: 20px;
         text-align: center;
@@ -345,26 +362,30 @@ export default {
         .name,
         .temp,
         .isCough,
-        .phone {
+        .phone,
+        .option {
           float: left;
           height: 40px;
           line-height: 40px;
           text-align: center;
         }
         .index {
-          width: 15%;
+          width: 10%;
         }
         .name {
-          width: 20%;
+          width: 18%;
         }
         .temp {
-          width: 15%;
+          width: 12%;
         }
         .isCough {
-          width: 25%;
+          width: 20%;
         }
         .phone {
           width: 25%;
+        }
+        .option {
+          width: 15%;
         }
       }
       .hot {
@@ -401,8 +422,7 @@ export default {
         line-height: 40px;
         color: #fff;
         font-size: 15px;
-        margin: 0 auto;
-        margin-top: 20px;
+        margin: 20px auto;
       }
 
       .look-button {

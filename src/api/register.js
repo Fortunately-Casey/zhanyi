@@ -77,3 +77,19 @@ export function selectEnterpriseNameLib(params) {
             console.log(err);
         });
 }
+
+
+// 删除打卡记录
+export function deleteEnterprisePeriodPlace(params) {
+    const url = getURL("/enterprise/deleteEnterprisePeriodPlace");
+    return axios
+        .get(url, {
+            params:params
+        })
+        .then(resp => {
+            return Promise.resolve(resp);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}

@@ -11,7 +11,7 @@
       />
       <input
         type="text"
-        placeholder="管理员名称"
+        placeholder="企业名称"
         v-model="factoryName"
         @blur="lostblur"
         @input="keywordSearch"
@@ -19,7 +19,7 @@
       <div class="factory">
         <input
           type="text"
-          placeholder="人数"
+          placeholder="拟用工人数"
           v-model="peopleCount"
           @blur="lostblur('number')"
         />
@@ -58,8 +58,12 @@
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">注册成功!（长按分享二维码）</div>
-        <img :src="imgUrl" alt width="200" height="200" />
-        <div class="qrcode" ref="qrCodeUrl" v-show="false"></div>
+        <vue-qr
+          :text="text"
+          :logoScale="50"
+          :size="250"
+          :logoSrc="imageUrl"
+        ></vue-qr>
       </div>
     </div>
   </div>
@@ -70,8 +74,7 @@ import axios from "axios";
 import { Toast } from "mint-ui";
 import { saveEnterprise, selectEnterpriseNameLib } from "@/api/register";
 import { getURL, blur, debounce } from "@/common/tool/tool";
-// import Qrcode from "qrcode.vue";
-import QRCode from "qrcodejs2";
+import VueQr from "vue-qr";
 export default {
   data() {
     return {
@@ -81,12 +84,13 @@ export default {
       searchPassword: "",
       confirmPassword: "",
       isShowQrcode: false,
-      val: "",
       imgUrl: "",
       searchList: [],
       isShowList: false,
       isWatch: true,
-      bedCount: ""
+      bedCount: "",
+      imageUrl: require("../../assets/image/zhanyi-logo.png"), //默认二维码中间图片
+      text: ""
     };
   },
   computed: {},
@@ -199,14 +203,10 @@ export default {
         createWxID: vm.$route.query.WXID,
         isolatedBedCount: vm.bedCount
       };
-
       saveEnterprise(params).then(resp => {
         if (resp.data.success) {
           vm.isShowQrcode = true;
-          vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
-          vm.creatQrCode(vm.val);
-          let myCanvas = document.getElementsByTagName("canvas");
-          this.imgUrl = myCanvas[0].toDataURL("image/png");
+          vm.text = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
         } else {
           Toast({
             message: resp.data.data,
@@ -246,16 +246,6 @@ export default {
         return;
       }
     },
-    creatQrCode(val) {
-      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
-        text: val,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    },
     choseFactory(item) {
       this.isWatch = false;
       this.factoryName = item;
@@ -275,7 +265,7 @@ export default {
     }
   },
   components: {
-    // Qrcode
+    VueQr
   },
   watch: {
     factoryName() {
