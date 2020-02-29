@@ -10,13 +10,31 @@
     </div>
     <div class="content">
       <div class="date" @click="openDate">
-        {{returnDate(date)}}
+        {{ returnDate(date) }}
         <span class="cart"></span>
       </div>
       <div class="tab">
-        <div class="item" :class="chosedIndex === 3?'active':''" @click="choseTab(3)">全部</div>
-        <div class="item" :class="chosedIndex === 1?'active':''" @click="choseTab(1)">已打卡</div>
-        <div class="item" :class="chosedIndex === 0?'active':''" @click="choseTab(0)">未打卡</div>
+        <div
+          class="item"
+          :class="chosedIndex === 3 ? 'active' : ''"
+          @click="choseTab(3)"
+        >
+          全部
+        </div>
+        <div
+          class="item"
+          :class="chosedIndex === 1 ? 'active' : ''"
+          @click="choseTab(1)"
+        >
+          已打卡
+        </div>
+        <div
+          class="item"
+          :class="chosedIndex === 0 ? 'active' : ''"
+          @click="choseTab(0)"
+        >
+          未打卡
+        </div>
       </div>
       <div class="list">
         <div class="list-header">
@@ -28,20 +46,20 @@
         </div>
         <div
           class="item"
-          v-for="(item,index) in list"
-          :class="item.temp >= 37?'hot':''"
+          v-for="(item, index) in list"
+          :class="item.temp >= 37 ? 'hot' : ''"
           :key="index"
         >
-          <div class="index">{{item.number}}</div>
-          <div class="name">{{item.name}}</div>
-          <div class="temp">{{item.temp}}</div>
-          <div class="isCough">{{returnCough(item.cough)}}</div>
-          <div class="phone">{{item.mobile}}</div>
+          <div class="index">{{ item.number }}</div>
+          <div class="name">{{ item.name }}</div>
+          <div class="temp">{{ item.temp }}</div>
+          <div class="isCough">{{ returnCough(item.cough) }}</div>
+          <div class="phone">{{ item.mobile }}</div>
         </div>
       </div>
       <div class="pagenation">
         <span @click="prev"><</span>
-        {{page}}页
+        {{ page }}页
         <span @click="next">></span>
       </div>
       <div class="bottom">
@@ -62,15 +80,13 @@
       @confirm="confirmDate"
       @cancel="closeDate"
     ></mt-datetime-picker>
-    <div class="modal" v-if="isShowQrcode">
+    <div class="modal" v-show="isShowQrcode">
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
         <img :src="imgUrl" alt width="200" height="200" />
+        <div class="qrcode" ref="qrCodeUrl" v-show="false"></div>
       </div>
-    </div>
-    <div class="qrcode" v-show="false">
-      <Qrcode :value="val" size="200"></Qrcode>
     </div>
   </div>
 </template>
@@ -81,7 +97,7 @@ import {
   approvalPeriodPlace
 } from "@/api/register";
 import { Toast, Indicator } from "mint-ui";
-import Qrcode from "qrcode.vue";
+import QRCode from "qrcodejs2";
 export default {
   data() {
     return {
@@ -100,11 +116,15 @@ export default {
     };
   },
   created() {
-    document.getElementsByTagName("title")[0].innerText = "战疫图·数据管理";
-    this.getList();
-    this.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
+    var vm = this;
+    document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
+    vm.getList();
+    vm.val = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
+    
   },
   mounted() {
+    var vm = this;
+    vm.creatQrCode(vm.val);
     let myCanvas = document.getElementsByTagName("canvas");
     this.imgUrl = myCanvas[0].toDataURL("image/png");
   },
@@ -135,6 +155,17 @@ export default {
       } else if (value === false) {
         return "否";
       }
+    },
+    creatQrCode(val) {
+      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+        text: val,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+        src: require("@/assets/image/爱心.png")
+      });
     },
     getList() {
       var vm = this;
@@ -211,9 +242,7 @@ export default {
         }); //打开默认事件
     }
   },
-  components: {
-    Qrcode
-  }
+  components: {}
 };
 </script>
 <style lang="less" scoped>

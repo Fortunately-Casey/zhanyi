@@ -1,16 +1,16 @@
 # yiqing
 
-## Project setup
+## 拉取依赖项目（推荐cnpm）
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发环境启动
 ```
-npm run serve
+npm run start / npm start
 ```
 
-### Compiles and minifies for production
+### 打包部署
 ```
 npm run build
 ```
@@ -21,4 +21,3 @@ npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

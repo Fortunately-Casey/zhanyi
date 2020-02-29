@@ -951,7 +951,6 @@ export default {
         other: vm.otherInfo,
         currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value
       };
-      console.log(params);
       Indicator.open();
       saveEnterprisePeriodPlace(params).then(resp => {
         Indicator.close();

@@ -8,9 +8,7 @@ import { chinaDateTime } from "@/common/tool/tool.js";
 import $ from "jquery";
 export default {
   created() {},
-  mounted() {
-    console.log($(".BMap_pop img"));
-  }
+  mounted() {}
 };
 </script>
 <style lang="less">
@@ -19,8 +17,10 @@ html {
 }
 body {
   height: 100%;
+  width: 100%;
   margin: 0px;
   padding: 0px;
+  // position: fixed;
   //  overflow:hidden;
 }
 .anchorBL {
@@ -91,57 +91,24 @@ input[type="password"]:focus {
     text-align: left;
   }
 }
-// /* 内容 */
-// .BMap_pop div:nth-child(9) {
-// 	top:35px !important;
-// }
-// /* 左上角删除按键 */
-// .BMap_pop img {
-// 	top:43px !important;
-// 	left:215px !important;
-// }
-// .BMap_pop img:nth-child(1) {
-// 	background-color:red;
-// }
-// .BMap_top {
-// 	display:none;
-// }
-// .BMap_bottom {
-// 	display:none;
-// }
-// .BMap_center {
-// 	display:none;
-// }
-// /* 隐藏边角 */
-// .BMap_pop div:nth-child(1) div {
-// 	display:none;
-// }
-// .BMap_pop div:nth-child(3) {
-// 	display:none;
-// }
-// .BMap_pop div:nth-child(4) {
-// 	display:none!important;
-// }
-// .BMap_pop div:nth-child(7) {
-// 	display:none;
-// }
+
 .BMap_pop div:nth-child(8) {
   height: 50px !important;
   overflow-y: auto !important;
 }
 
 .mint-indicator-wrapper {
-	z-index: 1000 !important;
+  z-index: 1000 !important;
 }
- 
+
 .mint-indicator-mask {
   z-index: 1000 !important;
 }
 .mint-radiolist-title {
-  display: none!important;
+  display: none !important;
 }
 .mint-radio-label {
-  font-size: 13px!important;
-  font-weight: 40!important;
+  font-size: 13px !important;
+  font-weight: 40 !important;
 }
 </style>
