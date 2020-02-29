@@ -16,7 +16,6 @@
         @blur="lostblur"
         @input="keywordSearch"
       />
-
       <div class="factory">
         <input
           type="text"

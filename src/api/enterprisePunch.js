@@ -40,3 +40,15 @@ export function getEnterpriseUser(params) {
       console.log(err)
   })
 }
+
+// 医院/诊所模糊查询
+export function getHospitalList(params) {
+  const url = getURL("/enterprise/getHospitalList")
+  return axios.get(url, {
+    params:params
+  }).then((resp) => {
+      return Promise.resolve(resp)
+  }).catch((err) => {
+      console.log(err)
+  })
+}

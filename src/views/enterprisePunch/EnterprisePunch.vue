@@ -19,27 +19,19 @@
         <div class="item">
           <div class="name">联系电话</div>
           <div class="value">
-            <input
-              type="text"
-              v-model="phoneNumber"
-              @blur="lostblur('phone')"
-            />
+            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
           </div>
         </div>
         <div class="item">
           <div class="name">身份证号</div>
           <div class="value">
-            <input
-              type="text"
-              v-model="idCard"
-              @blur="lostblur('usernumber')"
-            />
+            <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
           </div>
         </div>
         <div class="item">
           <div class="name">年龄</div>
           <div class="value">
-            <input type="text" v-model="age" @blur="lostblur('temp')" />
+            <input type="text" v-model="age" @blur="lostblur('age')" />
           </div>
         </div>
         <div class="item">
@@ -84,12 +76,18 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedCough === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedCough === index ? true : false"></div>
             </div>
           </div>
+        </div>
+        <div class="item" v-show="chosedCough === 1">
+          <input
+            type="text"
+            v-model="symptomsDetail"
+            placeholder="请输入身体异常状况"
+            class="addressDetail"
+            @blur="lostblur"
+          />
         </div>
       </div>
       <div class="second">
@@ -107,10 +105,7 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedLeaveIndex === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedLeaveIndex === index ? true : false"></div>
             </div>
           </div>
         </div>
@@ -144,15 +139,11 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">
-              {{ returnDate(dateValue) }}
-            </div>
+            <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
           </div>
         </div>
         <div class="item">
-          <div class="name">
-            {{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}
-          </div>
+          <div class="name">{{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}</div>
           <div class="value"></div>
         </div>
         <div class="item">
@@ -180,19 +171,14 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="choseReworkIndex === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="choseReworkIndex === index ? true : false"></div>
             </div>
           </div>
         </div>
         <div class="item reworkTime" v-if="choseReworkIndex === 1">
           <div class="name">复工日期</div>
           <div class="value">
-            <div class="date" @click="openRework">
-              {{ returnDate(reworkDate) }}
-            </div>
+            <div class="date" @click="openRework">{{ returnDate(reworkDate) }}</div>
           </div>
         </div>
       </div>
@@ -211,10 +197,7 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedSeeMedicalIndex === index ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index ? true : false"></div>
             </div>
           </div>
         </div>
@@ -229,10 +212,7 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[0].value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedQuarantineIndex === 0 ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0 ? true : false"></div>
             </div>
           </div>
         </div>
@@ -249,28 +229,18 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[1].value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedQuarantineIndex === 1 ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1 ? true : false"></div>
             </div>
           </div>
         </div>
         <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio
-            v-model="chosedQuarant"
-            :options="options"
-            @change="check"
-          ></mt-radio>
+          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(2)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[2].value }}
-              <div
-                class="chosed-icon"
-                v-if="chosedQuarantineIndex === 2 ? true : false"
-              ></div>
+              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2 ? true : false"></div>
             </div>
           </div>
         </div>
@@ -285,36 +255,62 @@
         </div>
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
-        <div class="item" @click="isShowOutpatient = true">
+        <div class="item">
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div
-                class="chosedValue"
-                style="height:40px"
-                v-if="chosedOutpatient.value"
-              >
+              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
                 <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
-            <div class="icon-cross" v-if="isShowMedicaIcon">></div>
+          </div>
+        </div>
+        <div class="input-search">
+          <input
+            type="text"
+            v-model="seeMedicalName"
+            placeholder="请输入发热门诊"
+            class="addressDetail"
+            @blur="lostblur"
+            @input="seeMedicaSearch"
+          />
+          <div class="search-list" v-if="isShowSeeMedicalList">
+            <div
+              class="search-item"
+              v-for="(item, index) in seeMedicalList"
+              :key="index"
+              @click="setSeeMedical(item)"
+            >{{ item }}</div>
           </div>
         </div>
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 3">
-        <div class="item" @click="isShowHospital = true">
+        <div class="item">
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div
-                class="chosedValue"
-                style="height:40px"
-                v-if="chosedHospital.value"
-              >
+              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
                 <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
-            <div class="icon-cross" v-if="isShowHospitalIcon">></div>
+          </div>
+        </div>
+        <div class="input-search">
+          <input
+            type="text"
+            v-model="hospitalName"
+            placeholder="请输入定点医院"
+            class="addressDetail"
+            @blur="lostblur"
+            @input="hospitalSearch"
+          />
+          <div class="search-list" v-if="isShowHospitalList">
+            <div
+              class="search-item"
+              v-for="(item, index) in hospitalList"
+              :key="index"
+              @click="setHospital(item)"
+            >{{ item }}</div>
           </div>
         </div>
       </div>
@@ -372,12 +368,7 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item, index) in provinceList" :key="index">
-              <div
-                class="province"
-                v-for="(v, i) in item.items"
-                :key="i"
-                @click="choseProvince(v)"
-              >
+              <div class="province" v-for="(v, i) in item.items" :key="i" @click="choseProvince(v)">
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
               </div>
@@ -385,17 +376,17 @@
           </div>
           <div class="selected" v-if="!isShowProvinceList">
             <span class="seleted-province" @click="selectProvince">
-              {{ chosedProvinceName }}
+              {{
+              chosedProvinceName
+              }}
             </span>
-            <span class="selectCityButton" v-if="!chosedCityName"
-              >选择城市</span
-            >
+            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
             <span class="selectedCityButton" v-else @click="selectCity">
-              {{ chosedCityName }}
+              {{
+              chosedCityName
+              }}
             </span>
-            <span class="selectCityButton" v-if="isShowAreaSelect"
-              >选择区域</span
-            >
+            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
           </div>
           <div class="select-city" v-if="isShowCityList">
             <div v-for="(item, index) in cityList" :key="index">
@@ -427,46 +418,17 @@
           </div>
         </div>
       </div>
-      <div class="modal" v-if="isShowOutpatient">
-        <div class="city-list">
-          <div class="city-top">
-            选择门诊
-            <div class="icon-close" @click="closeOutpatient"></div>
-          </div>
-          <div class="select-city">
-            <div v-for="(item, index) in outpatientList" :key="index">
-              <div class="city" @click="choseOutPatient(item)">
-                <div class="name">{{ item.value }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal" v-if="isShowHospital">
-        <div class="city-list">
-          <div class="city-top">
-            选择医院
-            <div class="icon-close" @click="closeHospital"></div>
-          </div>
-          <div class="select-city">
-            <div v-for="(item, index) in hospitalList" :key="index">
-              <div class="city" @click="choseHospital(item)">
-                <div class="name">{{ item.value }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 <script>
-import { Todate, blur, Totime } from "@/common/tool/tool.js";
+import { Todate, blur, debounce, Totime } from "@/common/tool/tool.js";
 import { Toast, Indicator, Radio } from "mint-ui";
 import {
   saveEnterprisePeriodPlace,
   getEnterprise,
-  getEnterpriseUser
+  getEnterpriseUser,
+  getHospitalList
 } from "@/api/enterprisePunch.js";
 import wx from "weixin-js-sdk";
 import axios from "axios";
@@ -497,19 +459,26 @@ export default {
       chosedQuarant: "",
       isShowHospitalIcon: true,
       isShowMedicaIcon: true,
+      seeMedicalName: "",
+      hospitalName: "",
+      hospitalList: [],
+      seeMedicalList: [],
+      isShowHospitalList: false,
+      isShowSeeMedicalList: false,
+      symptomsDetail: "",
       outpatientList: [
         {
           value: "南通瑞慈医院"
         }
       ],
-      hospitalList: [
-        {
-          value: "南通市第三人民医院"
-        },
-        {
-          value: "南通大学附属医院"
-        }
-      ],
+      // hospitalList: [
+      //   {
+      //     value: "南通市第三人民医院"
+      //   },
+      //   {
+      //     value: "南通大学附属医院"
+      //   }
+      // ],
       options: [
         {
           label: "嘉福宾馆",
@@ -601,9 +570,6 @@ export default {
       isShowReport: false,
       epidemicArea: "",
       isShowFunction: false,
-      reportList: [],
-      periodPlace14: "",
-      keyword: "",
       searchList: [],
       handler: function(e) {
         e.preventDefault();
@@ -640,7 +606,9 @@ export default {
       isShowSelectedNow: false,
       // 地址类型flag
       addressType: 0,
-      isShowNowIcon: true
+      isShowNowIcon: true,
+      isWatchHospital: true,
+      isWatchSeeMedical: true
     };
   },
   created() {
@@ -652,6 +620,26 @@ export default {
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
       "辅助复工 • 南通"
     );
+    this.$watch(
+      "hospitalName",
+      debounce((newValue, oldValue) => {
+        if (!vm.isWatchHospital) {
+          return;
+        }
+        vm.searchHospital();
+      }, 500)
+    );
+
+    this.$watch(
+      "seeMedicalName",
+      debounce((newValue, oldValue) => {
+        if (!vm.isWatchSeeMedical) {
+          return;
+        }
+        vm.searchSeeMedica();
+      }, 500)
+    );
+
     getEnterprise({
       enterpriseID: vm.$route.query.enterpriseID
     }).then(resp => {
@@ -781,9 +769,18 @@ export default {
         seekMedicalAddress = "";
       } else {
         if (vm.chosedSeeMedicalIndex === 2) {
-          seekMedicalAddress = vm.chosedOutpatient.value;
+          seekMedicalAddress = vm.seeMedicalName;
         } else if (vm.chosedSeeMedicalIndex === 3) {
-          seekMedicalAddress = vm.chosedHospital.value;
+          seekMedicalAddress = vm.hospitalName;
+        }
+      }
+      if (vm.chosedCough === 1 && vm.symptomsDetail === "") {
+        if (!vm.username) {
+          Toast({
+            message: "请输入身体异常状况！",
+            iconClass: "icon icon-success"
+          });
+          return;
         }
       }
       if (vm.chosedSeeMedicalIndex !== 4) {
@@ -843,13 +840,6 @@ export default {
         return;
       }
 
-      if (!vm.nantongAddress) {
-        Toast({
-          message: "居住地不能为空！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
       if (vm.chosedLeaveIndex === 1) {
         if (
           !vm.chosedValues.province ||
@@ -892,7 +882,7 @@ export default {
         }
       }
       if (vm.chosedSeeMedicalIndex === 2) {
-        if (!vm.chosedOutpatient.value) {
+        if (!vm.seeMedicalName) {
           Toast({
             message: "请填写完整的就诊地址!",
             iconClass: "icon icon-success"
@@ -902,9 +892,9 @@ export default {
       }
 
       if (vm.chosedSeeMedicalIndex === 3) {
-        if (!vm.chosedHospital.value) {
+        if (!vm.hospitalName) {
           Toast({
-            message: "请填写完整的就诊地址!",
+            message: "请填写完整的医院地址!",
             iconClass: "icon icon-success"
           });
           return;
@@ -949,7 +939,8 @@ export default {
         isolationAddress: isolationAddress,
         seekMedicalAddress: seekMedicalAddress,
         other: vm.otherInfo,
-        currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value
+        currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value,
+        symptomsDetail: vm.symptomsDetail
       };
       Indicator.open();
       saveEnterprisePeriodPlace(params).then(resp => {
@@ -1024,6 +1015,7 @@ export default {
     // 是否咳嗽
     choseCough(index) {
       this.chosedCough = index;
+      this.symptomsDetail = "";
     },
     // 是否离开南通
     choseLeave(index) {
@@ -1040,6 +1032,12 @@ export default {
     //选择就诊方式
     choseSeeMedical(index) {
       this.chosedSeeMedicalIndex = index;
+      this.isWatchHospital = false;
+      this.isWatchSeeMedical = false;
+      this.seeMedicalName = "";
+      this.hospitalName = "";
+      this.isShowHospitalList = false;
+      this.isShowSeeMedicalList = false;
     },
     choseHealth(index) {
       if (index === 0) {
@@ -1055,6 +1053,40 @@ export default {
         this.isChosedHot = !this.isChosedHot;
         this.isChosedHealth = false;
       }
+    },
+    hospitalSearch() {
+      this.isWatchHospital = true;
+    },
+    searchHospital() {
+      var vm = this;
+      getHospitalList({
+        hospitalName: vm.hospitalName,
+        hospitalType: 1
+      }).then(resp => {
+        vm.hospitalList = resp.data.data;
+      });
+    },
+    seeMedicaSearch() {
+      this.isWatchSeeMedical = true;
+    },
+    searchSeeMedica() {
+      var vm = this;
+      getHospitalList({
+        hospitalName: vm.seeMedicalName,
+        hospitalType: 0
+      }).then(resp => {
+        vm.seeMedicalList = resp.data.data;
+      });
+    },
+    setHospital(value) {
+      this.isWatchHospital = false;
+      this.isShowHospitalList = false;
+      this.hospitalName = value;
+    },
+    setSeeMedical(value) {
+      this.isWatchSeeMedical = false;
+      this.isShowSeeMedicalList = false;
+      this.seeMedicalName = value;
     },
     closeSuccess() {
       this.isShowSuccess = !this.isShowSuccess;
@@ -1078,6 +1110,8 @@ export default {
         vm.userNumberReg(vm.idCard);
       } else if (value === "temp") {
         vm.tempReg(vm.temperature);
+      } else if (value === "age") {
+        vm.ageReg(vm.age);
       }
       blur();
     },
@@ -1105,7 +1139,24 @@ export default {
       var tempReg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
       if (!tempReg.test(Number(value))) {
         Toast({
-          message: "请输入合法体温！",
+          message: "请输入35℃-45℃体温！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (Number(value) > 45 || Number(value) < 35) {
+        Toast({
+          message: "请输入35℃-45℃体温！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+    },
+    ageReg(value) {
+      var ageReg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
+      if (!ageReg.test(Number(value))) {
+        Toast({
+          message: "请输入正确年龄！",
           iconClass: "icon icon-success"
         });
         return;
@@ -1252,9 +1303,28 @@ export default {
     }
   },
   watch: {
-    keyword() {
-      if (this.keyword === "") {
-        this.isShowSearchList = false;
+    hospitalName() {
+      if (this.hospitalName === "") {
+        this.isShowHospitalList = false;
+      }
+    },
+    hospitalList() {
+      if (this.hospitalList.length === 0) {
+        this.isShowHospitalList = false;
+      } else {
+        this.isShowHospitalList = true;
+      }
+    },
+    seeMedicalName() {
+      if (this.seeMedicalName === "") {
+        this.isShowSeeMedicalList = false;
+      }
+    },
+    seeMedicalList() {
+      if (this.seeMedicalList.length === 0) {
+        this.isShowSeeMedicalList = false;
+      } else {
+        this.isShowSeeMedicalList = true;
       }
     }
   }
@@ -1434,7 +1504,8 @@ export default {
     .seventh {
       margin-top: 15px;
       background-color: #fff;
-      .item {
+      .item,
+      .input-search {
         min-height: 40px;
         line-height: 40px;
         padding: 0 20px;
@@ -1536,6 +1607,26 @@ export default {
           width: 250px;
           height: 25px;
           font-size: 13px;
+        }
+      }
+      .input-search {
+        position: relative;
+        margin-bottom: 100px;
+        .search-list {
+          width: 255px;
+          height: 100px;
+          position: absolute;
+          left: 20px;
+          top: 35px;
+          border: 1px solid rgb(190, 185, 185);
+          overflow-y: auto;
+          background-color: #fff;
+          .search-item {
+            height: 20px;
+            left: 20px;
+            font-size: 13px;
+            padding-left: 4px;
+          }
         }
       }
       .temp {

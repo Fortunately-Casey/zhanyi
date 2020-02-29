@@ -6,8 +6,7 @@ import BaiduMap from "vue-baidu-map";
 import Mint from "mint-ui";
 import "mint-ui/lib/style.css";
 import "lib-flexible/flexible.js";
-import FastClick from "fastclick";
-FastClick.attach(document.body);
+
 
 Vue.use(Mint);
 Vue.use(BaiduMap, {
