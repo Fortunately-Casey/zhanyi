@@ -39,7 +39,7 @@ export default {
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
-      "辅助复工 • 南通"
+      "开发区企业员工健康申报系统"
     );
     var phoneNumber = window.localStorage.getItem("phoneNumber");
     var password = window.localStorage.getItem("password");

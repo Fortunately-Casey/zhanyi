@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="item">
-          <div class="name">身份证号</div>
+          <div class="name">身份证号/护照</div>
           <div class="value">
             <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
           </div>
@@ -253,6 +253,20 @@
             @blur="lostblur"
           />
         </div>
+        <div class="item reworkTime">
+          <div class="name">隔离日期</div>
+          <div class="value">
+            <div class="date" @click="openIsolationDays">{{ returnDate(isolationDays) }}</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">
+            <div class="cross-title">隔离期限</div>
+          </div>
+        </div>
+        <div class="item">
+          <mt-radio v-model="chosedDate" :options="dateOptions" @change="checkDate"></mt-radio>
+        </div>
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
         <div class="item">
@@ -359,6 +373,19 @@
         @confirm="confirmRework"
         @cancel="closeRework"
       ></mt-datetime-picker>
+      <mt-datetime-picker
+        ref="isolationPicker"
+        v-model="isolationValue"
+        type="date"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        :endDate="new Date()"
+        :closeOnClickModal="false"
+        :startDate="new Date('2020/1/1')"
+        @confirm="confirmIsolation"
+        @cancel="closeIsolation"
+      ></mt-datetime-picker>
       <div class="modal" v-if="isShowAddressList">
         <div class="city-list">
           <div class="city-top">
@@ -457,6 +484,7 @@ export default {
       isShowOutpatient: false,
       isShowHospital: false,
       chosedQuarant: "",
+      chosedDate: "3",
       isShowHospitalIcon: true,
       isShowMedicaIcon: true,
       seeMedicalName: "",
@@ -466,19 +494,12 @@ export default {
       isShowHospitalList: false,
       isShowSeeMedicalList: false,
       symptomsDetail: "",
+      isolationDays: new Date(),
       outpatientList: [
         {
           value: "南通瑞慈医院"
         }
       ],
-      // hospitalList: [
-      //   {
-      //     value: "南通市第三人民医院"
-      //   },
-      //   {
-      //     value: "南通大学附属医院"
-      //   }
-      // ],
       options: [
         {
           label: "嘉福宾馆",
@@ -491,6 +512,16 @@ export default {
         {
           label: "金桥公寓",
           value: "金桥公寓"
+        }
+      ],
+      dateOptions: [
+        {
+          label: "3天",
+          value: "3"
+        },
+        {
+          label: "14天",
+          value: "14"
         }
       ],
       healthList: [
@@ -552,6 +583,7 @@ export default {
       chosedHospital: {},
       pickerValue: new Date(),
       reworkValue: new Date(),
+      isolationValue: new Date(),
       phoneNumber: "",
       dateValue: new Date(),
       timeValue: this.returnTime(new Date()),
@@ -618,7 +650,7 @@ export default {
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
-      "辅助复工 • 南通"
+      "开发区企业员工健康申报系统"
     );
     this.$watch(
       "hospitalName",
@@ -645,8 +677,6 @@ export default {
     }).then(resp => {
       if (resp.data.success && resp.data.data) {
         vm.enterpriseName = resp.data.data.enterpriseName;
-        // vm.phoneNumber = resp.data.data.mobile;
-        // vm.createWxID = resp.data.data.createWxID;
       } else {
         Toast({
           message: "获取信息失败!",
@@ -659,10 +689,52 @@ export default {
       wxID: vm.$route.query.WxId
     }).then(resp => {
       if (resp.data.success && resp.data.data) {
+        var last = resp.data.data.lastPeriodPlace;
         vm.username = resp.data.data.name;
         vm.phoneNumber = resp.data.data.mobile;
         vm.idCard = resp.data.data.idCard;
         vm.age = resp.data.data.age;
+        // vm.temperature = last.temp;
+        vm.chosedCough = last.cough ? 1 : 0;
+        vm.symptomsDetail = last.symptomsDetail;
+        vm.chosedLeaveIndex = last.leaveNT ? 1 : 0;
+        vm.chosedValues.province = last.beforeReturnNtProvince;
+        vm.isShowSelectValue = last.beforeReturnNtCity ? true : false;
+        vm.chosedValues.city = last.beforeReturnNtCity;
+        vm.chosedValues.area = last.beforeReturnNtCounty;
+        vm.beforeBackAddress = last.beforeReturnNtAddress;
+        vm.dateValue = new Date(last.returnNTDate);
+        vm.nantongAddress = last.ntAddress;
+        vm.choseReworkIndex = last.recoveryWork ? 1 : 0;
+        vm.reworkDate = new Date(last.recoveryWorkDate);
+        if (last.currStatus === "正常") {
+          vm.chosedSeeMedicalIndex = 0;
+        } else if (last.currStatus === "隔离中") {
+          vm.chosedSeeMedicalIndex = 1;
+          if (last.isolationType === "企业隔离") {
+            vm.chosedQuarantineIndex = 0;
+            vm.enterpriseAddress = last.isolationAddress;
+          } else if (last.isolationType === "集中隔离") {
+            vm.chosedQuarantineIndex = 1;
+            vm.chosedQuarant = last.isolationAddress;
+          } else if (last.isolationType === "居家隔离") {
+            vm.nantongAddress = last.isolationAddress;
+            vm.chosedQuarantineIndex = 2;
+          }
+          vm.isolationDays = new Date(last.isolationStartDate);
+          vm.chosedDate = last.isolationDays;
+        } else if (last.currStatus === "发热门诊留观") {
+          vm.chosedSeeMedicalIndex = 2;
+          vm.isWatchSeeMedical = false;
+          vm.seeMedicalName = last.seekMedicalAddress;
+        } else if (last.currStatus === "定点医院就诊") {
+          vm.chosedSeeMedicalIndex = 3;
+          vm.isWatchHospital = false;
+          vm.hospitalName = last.seekMedicalAddress;
+        } else if (last.currStatus === "其他") {
+          vm.chosedSeeMedicalIndex = 4;
+          vm.otherInfo = last.other;
+        }
       }
     });
     //获取省会列表
@@ -749,6 +821,9 @@ export default {
     check() {
       console.log(this.chosedQuarant);
     },
+    checkDate() {
+      console.log(this.chosedDate);
+    },
     // 企业打卡
     saveEnterprisePeriodPlace() {
       var vm = this;
@@ -767,17 +842,28 @@ export default {
       }
       if (vm.chosedSeeMedicalIndex !== 2 || vm.chosedSeeMedicalIndex !== 3) {
         seekMedicalAddress = "";
-      } else {
-        if (vm.chosedSeeMedicalIndex === 2) {
-          seekMedicalAddress = vm.seeMedicalName;
-        } else if (vm.chosedSeeMedicalIndex === 3) {
-          seekMedicalAddress = vm.hospitalName;
-        }
+      }
+      if (vm.chosedSeeMedicalIndex === 2) {
+        seekMedicalAddress = vm.seeMedicalName;
+      }
+      if (vm.chosedSeeMedicalIndex === 3) {
+        seekMedicalAddress = vm.hospitalName;
       }
       if (vm.chosedCough === 1 && vm.symptomsDetail === "") {
         if (!vm.username) {
           Toast({
             message: "请输入身体异常状况！",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+      }
+      if (vm.chosedSeeMedicalIndex === 2 || vm.chosedSeeMedicalIndex === 3) {
+        if (seekMedicalAddress) {
+          return;
+        } else {
+          Toast({
+            message: "请填写完整的就诊地址",
             iconClass: "icon icon-success"
           });
           return;
@@ -881,25 +967,6 @@ export default {
           return;
         }
       }
-      if (vm.chosedSeeMedicalIndex === 2) {
-        if (!vm.seeMedicalName) {
-          Toast({
-            message: "请填写完整的就诊地址!",
-            iconClass: "icon icon-success"
-          });
-          return;
-        }
-      }
-
-      if (vm.chosedSeeMedicalIndex === 3) {
-        if (!vm.hospitalName) {
-          Toast({
-            message: "请填写完整的医院地址!",
-            iconClass: "icon icon-success"
-          });
-          return;
-        }
-      }
 
       if (vm.chosedSeeMedicalIndex === 4) {
         if (!vm.otherInfo) {
@@ -910,7 +977,6 @@ export default {
           return;
         }
       }
-
       var params = {
         name: vm.username,
         mobile: vm.phoneNumber,
@@ -940,7 +1006,10 @@ export default {
         seekMedicalAddress: seekMedicalAddress,
         other: vm.otherInfo,
         currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value,
-        symptomsDetail: vm.symptomsDetail
+        symptomsDetail: vm.symptomsDetail,
+        isolationDays: vm.chosedSeeMedicalIndex === 1 ? vm.chosedDate : "",
+        isolationStartDate:
+          vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : ""
       };
       Indicator.open();
       saveEnterprisePeriodPlace(params).then(resp => {
@@ -988,6 +1057,13 @@ export default {
       this.$refs.reworkPicker.open();
       this.closeTouch();
     },
+    openIsolationDays() {
+      this.$refs.isolationPicker.open();
+      this.closeTouch();
+    },
+    closeIsolation() {
+      this.openTouch();
+    },
     closeDate() {
       this.openTouch();
     },
@@ -1006,6 +1082,10 @@ export default {
     },
     confirmRework(value) {
       this.reworkDate = value;
+      this.openTouch();
+    },
+    confirmIsolation(value) {
+      this.isolationDays = value;
       this.openTouch();
     },
     confirmTime(value) {
@@ -1165,10 +1245,11 @@ export default {
     userNumberReg(value) {
       var userNumberReg =
         // /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
-        /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        // /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        /^[0-9a-zA-Z]*$/g;
       if (!userNumberReg.test(value)) {
         Toast({
-          message: "请输入合法身份证号！",
+          message: "请输入合法身份证号/护照！",
           iconClass: "icon icon-success"
         });
         return;
