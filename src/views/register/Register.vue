@@ -96,7 +96,8 @@ export default {
   computed: {},
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText = "开发区企业员工健康申报系统";
+    document.getElementsByTagName("title")[0].innerText =
+      "开发区企业员工健康申报系统";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
@@ -305,7 +306,7 @@ export default {
     top: 160px;
     font-size: 14px;
     font-weight: 500;
-    color: #2E55D6;
+    color: #2e55d6;
   }
   .register-box {
     position: absolute;
@@ -348,7 +349,7 @@ export default {
     text-align: center;
     line-height: 45px;
     color: #fff;
-    background-color: #2E55D6;
+    background-color: #2e55d6;
     border-radius: 22.5px;
     position: absolute;
     left: 50%;

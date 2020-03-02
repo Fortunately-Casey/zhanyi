@@ -115,8 +115,8 @@ export default {
     },
     toQuery() {
       this.$router.push({
-        path:"/login"
-      })
+        path: "/login"
+      });
     }
   },
   components: {},
@@ -175,7 +175,7 @@ export default {
     background-size: 100% 100%;
     position: absolute;
     left: 50%;
-    top: 290px; 
+    top: 290px;
     transform: translateX(-50%);
   }
   .nantong-chy {

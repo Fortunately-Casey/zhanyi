@@ -30,7 +30,7 @@ module.exports = {
         /* 允许跨域 */
         changeOrigin: true
       }
-    },
+    }
     /*css: {
       loaderOptions: {
         css: {},

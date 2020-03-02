@@ -19,13 +19,21 @@
         <div class="item">
           <div class="name">联系电话</div>
           <div class="value">
-            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input
+              type="text"
+              v-model="phoneNumber"
+              @blur="lostblur('phone')"
+            />
           </div>
         </div>
         <div class="item">
           <div class="name">身份证号/护照</div>
           <div class="value">
-            <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
+            <input
+              type="text"
+              v-model="idCard"
+              @blur="lostblur('usernumber')"
+            />
           </div>
         </div>
         <div class="item">
@@ -76,7 +84,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedCough === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedCough === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -105,7 +116,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedLeaveIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedLeaveIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -139,11 +153,15 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
+            <div class="date" @click="openPicker">
+              {{ returnDate(dateValue) }}
+            </div>
           </div>
         </div>
         <div class="item">
-          <div class="name">{{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}</div>
+          <div class="name">
+            {{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}
+          </div>
           <div class="value"></div>
         </div>
         <div class="item">
@@ -171,14 +189,19 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="choseReworkIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="choseReworkIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item reworkTime" v-if="choseReworkIndex === 1">
           <div class="name">复工日期</div>
           <div class="value">
-            <div class="date" @click="openRework">{{ returnDate(reworkDate) }}</div>
+            <div class="date" @click="openRework">
+              {{ returnDate(reworkDate) }}
+            </div>
           </div>
         </div>
       </div>
@@ -197,7 +220,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedSeeMedicalIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -212,7 +238,10 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[0].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 0 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -229,18 +258,28 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[1].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 1 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
+          <mt-radio
+            v-model="chosedQuarant"
+            :options="options"
+            @change="check"
+          ></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(2)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[2].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 2 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -256,7 +295,9 @@
         <div class="item reworkTime">
           <div class="name">隔离日期</div>
           <div class="value">
-            <div class="date" @click="openIsolationDays">{{ returnDate(isolationDays) }}</div>
+            <div class="date" @click="openIsolationDays">
+              {{ returnDate(isolationDays) }}
+            </div>
           </div>
         </div>
         <div class="item">
@@ -265,7 +306,11 @@
           </div>
         </div>
         <div class="item">
-          <mt-radio v-model="chosedDate" :options="dateOptions" @change="checkDate"></mt-radio>
+          <mt-radio
+            v-model="chosedDate"
+            :options="dateOptions"
+            @change="checkDate"
+          ></mt-radio>
         </div>
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
@@ -273,7 +318,11 @@
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedOutpatient.value"
+              >
                 <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
@@ -294,7 +343,9 @@
               v-for="(item, index) in seeMedicalList"
               :key="index"
               @click="setSeeMedical(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -303,7 +354,11 @@
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedHospital.value"
+              >
                 <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
@@ -324,7 +379,9 @@
               v-for="(item, index) in hospitalList"
               :key="index"
               @click="setHospital(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -395,7 +452,12 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item, index) in provinceList" :key="index">
-              <div class="province" v-for="(v, i) in item.items" :key="i" @click="choseProvince(v)">
+              <div
+                class="province"
+                v-for="(v, i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
               </div>
@@ -403,17 +465,17 @@
           </div>
           <div class="selected" v-if="!isShowProvinceList">
             <span class="seleted-province" @click="selectProvince">
-              {{
-              chosedProvinceName
-              }}
+              {{ chosedProvinceName }}
             </span>
-            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
+            <span class="selectCityButton" v-if="!chosedCityName"
+              >选择城市</span
+            >
             <span class="selectedCityButton" v-else @click="selectCity">
-              {{
-              chosedCityName
-              }}
+              {{ chosedCityName }}
             </span>
-            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect"
+              >选择区域</span
+            >
           </div>
           <div class="select-city" v-if="isShowCityList">
             <div v-for="(item, index) in cityList" :key="index">
@@ -645,7 +707,8 @@ export default {
   },
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText = "开发区企业员工健康申报系统";
+    document.getElementsByTagName("title")[0].innerText =
+      "开发区企业员工健康申报系统";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
@@ -730,7 +793,9 @@ export default {
             vm.chosedQuarant = "";
             vm.chosedQuarantineIndex = 2;
           }
-          vm.isolationDays = last.isolationStartDate? new Date(last.isolationStartDate):new Date();
+          vm.isolationDays = last.isolationStartDate
+            ? new Date(last.isolationStartDate)
+            : new Date();
           vm.chosedDate = last.isolationDays;
         } else if (last.currStatus === "发热门诊留观") {
           vm.chosedSeeMedicalIndex = 2;
@@ -1436,7 +1501,7 @@ export default {
     z-index: 999;
     .header {
       height: 40px;
-      background-color: #2E55D6;
+      background-color: #2e55d6;
       color: #fff;
       line-height: 40px;
       text-align: center;
@@ -1519,7 +1584,7 @@ export default {
             font-size: 14px;
           }
           .getVerification {
-            color: #2E55D6;
+            color: #2e55d6;
             font-weight: 200;
             padding-left: 5px;
             // line-height: 40px;
@@ -1850,7 +1915,7 @@ export default {
         width: 285px;
         height: 40px;
         border-radius: 20px;
-        background-color: #2E55D6;
+        background-color: #2e55d6;
         text-align: center;
         line-height: 40px;
         color: #fff;
@@ -2129,7 +2194,7 @@ export default {
             letter-spacing: 1px;
           }
           .selectCityButton {
-            color: #2E55D6;
+            color: #2e55d6;
           }
         }
       }

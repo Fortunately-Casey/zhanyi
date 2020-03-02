@@ -21,7 +21,8 @@ export default {
   },
   computed: {},
   created() {
-    document.getElementsByTagName("title")[0].innerText = "开发区企业员工健康申报系统";
+    document.getElementsByTagName("title")[0].innerText =
+      "开发区企业员工健康申报系统";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
@@ -117,8 +118,8 @@ export default {
     },
     toQuery() {
       this.$router.push({
-        path:"/login"
-      })
+        path: "/login"
+      });
     }
   },
   components: {},
@@ -177,7 +178,7 @@ export default {
     background-size: 100% 100%;
     position: absolute;
     left: 50%;
-    top: 290px; 
+    top: 290px;
     transform: translateX(-50%);
   }
   .nantong-chy {

@@ -18,17 +18,23 @@
           class="item"
           :class="chosedIndex === 3 ? 'active' : ''"
           @click="choseTab(3)"
-        >全部{{ chosedIndex === 3 ? `(${count})` : "" }}</div>
+        >
+          全部{{ chosedIndex === 3 ? `(${count})` : "" }}
+        </div>
         <div
           class="item"
           :class="chosedIndex === 1 ? 'active' : ''"
           @click="choseTab(1)"
-        >已打卡{{ chosedIndex === 1 ? `(${count})` : "" }}</div>
+        >
+          已打卡{{ chosedIndex === 1 ? `(${count})` : "" }}
+        </div>
         <div
           class="item"
           :class="chosedIndex === 0 ? 'active' : ''"
           @click="choseTab(0)"
-        >未打卡{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
+        >
+          未打卡{{ chosedIndex === 0 ? `(${count})` : "" }}
+        </div>
       </div>
       <div class="list">
         <div class="list-header">
@@ -52,7 +58,13 @@
           <div class="phone">{{ item.mobile }}</div>
           <div class="option">
             <span v-if="item.id === 0">未打卡</span>
-            <mt-button type="primary" size="small" @click="deletePunch(item)" v-else>删除</mt-button>
+            <mt-button
+              type="primary"
+              size="small"
+              @click="deletePunch(item)"
+              v-else
+              >删除</mt-button
+            >
           </div>
         </div>
       </div>
@@ -83,7 +95,12 @@
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
-        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl" ></vue-qr>
+        <vue-qr
+          :text="text"
+          :logoScale="50"
+          :size="250"
+          :logoSrc="imageUrl"
+        ></vue-qr>
       </div>
     </div>
   </div>
@@ -115,19 +132,18 @@ export default {
       handler: function(e) {
         e.preventDefault();
       },
-      text:"",
-      imageUrl: require("../../assets/image/zhanyi-logo.png"), 
+      text: "",
+      imageUrl: require("../../assets/image/zhanyi-logo.png")
     };
   },
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText = "开发区企业员工健康申报系统";
+    document.getElementsByTagName("title")[0].innerText =
+      "开发区企业员工健康申报系统";
     vm.getList();
     vm.text = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     returnDate(value) {
       return Todate(value);
@@ -268,7 +284,7 @@ export default {
   background-color: #eee;
   .header {
     height: 40px;
-    background-color: #2E55D6;
+    background-color: #2e55d6;
     color: #fff;
     line-height: 40px;
     text-align: center;
@@ -309,7 +325,7 @@ export default {
       height: 40px;
       border-bottom: 1px solid rgb(199, 197, 197);
       text-align: center;
-      color: #2E55D6;
+      color: #2e55d6;
       font-size: 14px;
       line-height: 40px;
       background-color: #fff;
@@ -321,7 +337,7 @@ export default {
         margin-left: 2px;
         vertical-align: middle;
         border-top: 5px dashed;
-        border-top: 5px solid #2E55D6;
+        border-top: 5px solid #2e55d6;
         border-right: 5px solid transparent;
         border-left: 5px solid transparent;
       }
@@ -347,8 +363,8 @@ export default {
       }
       .active {
         color: #fff;
-        background-color: rgba(45,85,215,0.3);
-        color: #2E55D6;
+        background-color: rgba(45, 85, 215, 0.3);
+        color: #2e55d6;
       }
     }
     .list {
@@ -391,7 +407,7 @@ export default {
       .hot {
         background-color: ;
         .temp {
-          color: #2E55D6;
+          color: #2e55d6;
         }
       }
     }
@@ -417,7 +433,7 @@ export default {
         width: 155px;
         height: 40px;
         border-radius: 20px;
-        background-color: #2E55D6;
+        background-color: #2e55d6;
         text-align: center;
         line-height: 40px;
         color: #fff;
