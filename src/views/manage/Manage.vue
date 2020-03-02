@@ -48,7 +48,7 @@
         <div
           class="item"
           v-for="(item, index) in list"
-          :class="item.temp >= 37 ? 'hot' : ''"
+          :class="item.temp >= 37.3 ? 'hot' : ''"
           :key="index"
         >
           <div class="index">{{ item.number }}</div>
@@ -404,7 +404,7 @@ export default {
         }
       }
       .hot {
-        background-color: ;
+        background-color: #f65235;
         .temp {
           color: #2e55d6;
         }
