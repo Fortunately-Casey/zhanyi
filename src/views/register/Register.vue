@@ -96,11 +96,11 @@ export default {
   computed: {},
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
+    document.getElementsByTagName("title")[0].innerText = "开发区企业员工健康申报系统";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
-      "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
+      "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区分中心",
       "开发区企业员工健康申报系统"
     );
     this.$watch(
@@ -287,7 +287,7 @@ export default {
 .register {
   height: 100%;
   width: 100%;
-  background: url("../../assets/image/bg.png") no-repeat;
+  background: url("../../assets/image/blue-bg.png") no-repeat;
   background-size: contain;
   position: relative;
   .logo {
@@ -297,7 +297,7 @@ export default {
     left: 50%;
     top: 6%;
     transform: translateX(-50%);
-    background: url("../../assets/image/logo.png") no-repeat;
+    background: url("../../assets/image/zhanyi-logo1.png") no-repeat;
   }
   .title {
     position: absolute;
@@ -305,7 +305,7 @@ export default {
     top: 160px;
     font-size: 14px;
     font-weight: 500;
-    color: #e75a4f;
+    color: #2E55D6;
   }
   .register-box {
     position: absolute;
@@ -348,7 +348,7 @@ export default {
     text-align: center;
     line-height: 45px;
     color: #fff;
-    background-color: #e75a4f;
+    background-color: #2E55D6;
     border-radius: 22.5px;
     position: absolute;
     left: 50%;

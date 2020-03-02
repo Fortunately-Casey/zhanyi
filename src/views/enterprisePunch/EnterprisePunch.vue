@@ -645,11 +645,11 @@ export default {
   },
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText = "辅助复工 • 南通";
+    document.getElementsByTagName("title")[0].innerText = "开发区企业员工健康申报系统";
     this.shareList(
       "https://yqfk.ntschy.com/swnt.png",
       window.location.href,
-      "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区站",
+      "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区分中心",
       "开发区企业员工健康申报系统"
     );
     this.$watch(
@@ -703,10 +703,14 @@ export default {
         vm.chosedValues.city = last.beforeReturnNtCity;
         vm.chosedValues.area = last.beforeReturnNtCounty;
         vm.beforeBackAddress = last.beforeReturnNtAddress;
-        vm.dateValue = new Date(last.returnNTDate);
+        vm.dateValue = last.returnNTDate
+          ? new Date(last.returnNTDate)
+          : new Date();
         vm.nantongAddress = last.ntAddress;
         vm.choseReworkIndex = last.recoveryWork ? 1 : 0;
-        vm.reworkDate = new Date(last.recoveryWorkDate);
+        vm.reworkDate = last.recoveryWorkDate
+          ? new Date(last.recoveryWorkDate)
+          : new Date();
         if (last.currStatus === "正常") {
           vm.chosedSeeMedicalIndex = 0;
         } else if (last.currStatus === "隔离中") {
@@ -714,14 +718,19 @@ export default {
           if (last.isolationType === "企业隔离") {
             vm.chosedQuarantineIndex = 0;
             vm.enterpriseAddress = last.isolationAddress;
+            vm.nantongAddress = "";
           } else if (last.isolationType === "集中隔离") {
             vm.chosedQuarantineIndex = 1;
             vm.chosedQuarant = last.isolationAddress;
+            vm.enterpriseAddress = "";
+            vm.nantongAddress = "";
           } else if (last.isolationType === "居家隔离") {
             vm.nantongAddress = last.isolationAddress;
+            vm.enterpriseAddress = "";
+            vm.chosedQuarant = "";
             vm.chosedQuarantineIndex = 2;
           }
-          vm.isolationDays = new Date(last.isolationStartDate);
+          vm.isolationDays = last.isolationStartDate? new Date(last.isolationStartDate):new Date();
           vm.chosedDate = last.isolationDays;
         } else if (last.currStatus === "发热门诊留观") {
           vm.chosedSeeMedicalIndex = 2;
@@ -859,9 +868,7 @@ export default {
         }
       }
       if (vm.chosedSeeMedicalIndex === 2 || vm.chosedSeeMedicalIndex === 3) {
-        if (seekMedicalAddress) {
-          return;
-        } else {
+        if (!seekMedicalAddress) {
           Toast({
             message: "请填写完整的就诊地址",
             iconClass: "icon icon-success"
@@ -1118,6 +1125,9 @@ export default {
       this.hospitalName = "";
       this.isShowHospitalList = false;
       this.isShowSeeMedicalList = false;
+      this.chosedQuarant = "";
+      this.enterpriseAddress = "";
+      // this.nantongAddress = "";
     },
     choseHealth(index) {
       if (index === 0) {
@@ -1426,7 +1436,7 @@ export default {
     z-index: 999;
     .header {
       height: 40px;
-      background-color: #d22d2d;
+      background-color: #2E55D6;
       color: #fff;
       line-height: 40px;
       text-align: center;
@@ -1509,7 +1519,7 @@ export default {
             font-size: 14px;
           }
           .getVerification {
-            color: #d22d2d;
+            color: #2E55D6;
             font-weight: 200;
             padding-left: 5px;
             // line-height: 40px;
@@ -1840,7 +1850,7 @@ export default {
         width: 285px;
         height: 40px;
         border-radius: 20px;
-        background-color: #d22d2d;
+        background-color: #2E55D6;
         text-align: center;
         line-height: 40px;
         color: #fff;
@@ -2119,7 +2129,7 @@ export default {
             letter-spacing: 1px;
           }
           .selectCityButton {
-            color: #d22d2d;
+            color: #2E55D6;
           }
         }
       }
