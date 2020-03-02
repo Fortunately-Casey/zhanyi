@@ -52,3 +52,26 @@ export function getHospitalList(params) {
       console.log(err)
   })
 }
+
+// 获取区/县
+export function getCountyArea(params) {
+  const url = getURL("/enterprise/getCountyArea")
+  return axios.get(url, {
+    params:params
+  }).then((resp) => {
+      return Promise.resolve(resp)
+  }).catch((err) => {
+      console.log(err)
+  })
+}
+// 获取镇
+export function getTownArea(params) {
+  const url = getURL("/enterprise/getTownArea")
+  return axios.get(url, {
+    params:params
+  }).then((resp) => {
+      return Promise.resolve(resp)
+  }).catch((err) => {
+      console.log(err)
+  })
+}

@@ -128,14 +128,13 @@
         <div class="item" @click="showArea()">
           <div class="name">
             <div class="cross-title">
-              返通前地址
+              返通前地址(下拉选择省市县)
               <div class="chosedValue" v-if="isShowSelectValue">
                 <div class="value">{{ chosedValues.province }}</div>
                 <div class="value">{{ chosedValues.city }}</div>
                 <div class="value">{{ chosedValues.area }}</div>
               </div>
             </div>
-
             <div class="icon-cross" v-if="isShowCrossIcon">></div>
           </div>
         </div>
@@ -158,11 +157,29 @@
             </div>
           </div>
         </div>
-        <div class="item">
-          <div class="name">
-            {{ chosedLeaveIndex === 0 ? "现居住地" : "返通居住地" }}
+        <div class="item" style="position:relative" @click="showNantong">
+          <div class="name" style="width:100%">
+            <div class="cross-title">
+              {{
+                chosedLeaveIndex === 0
+                  ? "现居住地(下拉选择区县)"
+                  : "返通居住地(下拉选择区县)"
+              }}
+              <div
+                class="chosedValue"
+                style="height:50px"
+                v-if="isShowSelectNantong"
+              >
+                <div class="value" style="width:100%;box-sizing:border-box">
+                  {{ chosedNantongValue.chosedNantongName }}
+                </div>
+                <div class="value" style="width:100%;box-sizing:border-box">
+                  {{ chosedNantongValue.chosedXian }}
+                </div>
+              </div>
+            </div>
+            <div class="icon-cross">></div>
           </div>
-          <div class="value"></div>
         </div>
         <div class="item">
           <input
@@ -286,14 +303,14 @@
         <div class="item" v-show="chosedQuarantineIndex === 2">
           <input
             type="text"
-            v-model="nantongAddress"
+            v-model="homeAddress"
             placeholder="家庭地址：道路、门牌号、楼栋号、单元号"
             class="addressDetail"
             @blur="lostblur"
           />
         </div>
         <div class="item reworkTime">
-          <div class="name">隔离日期</div>
+          <div class="name">开始隔离日期</div>
           <div class="value">
             <div class="date" @click="openIsolationDays">
               {{ returnDate(isolationDays) }}
@@ -487,7 +504,7 @@
                 v-if="v.name !== '直辖县'"
               >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
-                <div class="name">{{ v.short_name + "市" }}</div>
+                <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
@@ -507,6 +524,37 @@
           </div>
         </div>
       </div>
+      <div class="modal" v-if="isShowNantongList">
+        <div class="city-list">
+          <div class="city-top">
+            选择地区
+            <div class="icon-close" @click="closeNantongList"></div>
+          </div>
+          <div class="select-province" v-if="isShowNTArea">
+            <div class="select-title">选择区 / 县</div>
+            <div v-for="(item, index) in nantongList" :key="index" v-if="index !== 0">
+              <div class="province" @click="choseNanTong(item)">
+                <div class="label" style="width:0"></div>
+                <div class="name">{{ item.name }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="selected" v-if="!isShowNTArea">
+            <span class="seleted-province" @click="selectNTArea">
+              {{ selectNantongValue.chosedNantongName }}
+            </span>
+            <span class="selectCityButton">选择镇</span>
+          </div>
+          <div class="select-city" v-if="!isShowNTArea">
+            <div v-for="(item, index) in nantongXian" :key="index">
+              <div class="city" @click="choseXian(item)">
+                <div class="label" style="width:0"></div>
+                <div class="name">{{ item.name }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -517,7 +565,9 @@ import {
   saveEnterprisePeriodPlace,
   getEnterprise,
   getEnterpriseUser,
-  getHospitalList
+  getHospitalList,
+  getTownArea,
+  getCountyArea
 } from "@/api/enterprisePunch.js";
 import wx from "weixin-js-sdk";
 import axios from "axios";
@@ -557,6 +607,20 @@ export default {
       isShowSeeMedicalList: false,
       symptomsDetail: "",
       isolationDays: new Date(),
+      isShowNantongList: false,
+      nantongList: [],
+      isShowNTArea: true,
+      nantongXian: [],
+      homeAddress: "",
+      chosedNantongValue: {
+        chosedNantongName: "",
+        chosedXian: ""
+      },
+      selectNantongValue: {
+        chosedNantongName: "",
+        chosedXian: ""
+      },
+      isShowSelectNantong: false,
       outpatientList: [
         {
           value: "南通瑞慈医院"
@@ -574,6 +638,10 @@ export default {
         {
           label: "金桥公寓",
           value: "金桥公寓"
+        },
+        {
+          label: "丽枫酒店",
+          value: "丽枫酒店"
         }
       ],
       dateOptions: [
@@ -766,9 +834,13 @@ export default {
         vm.chosedValues.city = last.beforeReturnNtCity;
         vm.chosedValues.area = last.beforeReturnNtCounty;
         vm.beforeBackAddress = last.beforeReturnNtAddress;
+        vm.chosedNantongValue.chosedNantongName = 
         vm.dateValue = last.returnNTDate
           ? new Date(last.returnNTDate)
           : new Date();
+        vm.chosedNantongValue.chosedNantongName = last.ntCity; 
+        vm.chosedNantongValue.chosedXian = last.ntCounty;
+        vm.isShowSelectNantong = true; 
         vm.nantongAddress = last.ntAddress;
         vm.choseReworkIndex = last.recoveryWork ? 1 : 0;
         vm.reworkDate = last.recoveryWorkDate
@@ -788,7 +860,7 @@ export default {
             vm.enterpriseAddress = "";
             vm.nantongAddress = "";
           } else if (last.isolationType === "居家隔离") {
-            vm.nantongAddress = last.isolationAddress;
+            vm.homeAddress = last.isolationAddress;
             vm.enterpriseAddress = "";
             vm.chosedQuarant = "";
             vm.chosedQuarantineIndex = 2;
@@ -813,6 +885,12 @@ export default {
     });
     //获取省会列表
     this.getProvinceList();
+    //获取南通区县
+    getCityList({
+      parent_id: 176920
+    }).then(resp => {
+      vm.nantongList = resp.data.data;
+    });
   },
   mounted() {
     // alert(this.$route.query)
@@ -911,7 +989,7 @@ export default {
         } else if (vm.chosedQuarantineIndex === 1) {
           isolationAddress = vm.chosedQuarant;
         } else if (vm.chosedQuarantineIndex === 2) {
-          isolationAddress = vm.nantongAddress;
+          isolationAddress = vm.homeAddress;
         }
       }
       if (vm.chosedSeeMedicalIndex !== 2 || vm.chosedSeeMedicalIndex !== 3) {
@@ -990,7 +1068,11 @@ export default {
         return;
       }
 
-      if (!vm.nantongAddress) {
+      if (
+        !vm.nantongAddress ||
+        !vm.chosedNantongValue.chosedNantongName ||
+        !vm.chosedNantongValue.chosedXian
+      ) {
         Toast({
           message: "居住地不能为空！",
           iconClass: "icon icon-success"
@@ -1031,7 +1113,7 @@ export default {
         }
       }
       if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 2) {
-        if (!vm.nantongAddress) {
+        if (!vm.homeAddress) {
           Toast({
             message: "请填写完整的隔离地址!",
             iconClass: "icon icon-success"
@@ -1081,7 +1163,9 @@ export default {
         symptomsDetail: vm.symptomsDetail,
         isolationDays: vm.chosedSeeMedicalIndex === 1 ? vm.chosedDate : "",
         isolationStartDate:
-          vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : ""
+          vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : "",
+        ntCity: vm.chosedNantongValue.chosedNantongName,
+        ntCounty: vm.chosedNantongValue.chosedXian
       };
       Indicator.open();
       saveEnterprisePeriodPlace(params).then(resp => {
@@ -1110,6 +1194,41 @@ export default {
         }
         this.timer--;
       }, 1000);
+    },
+    // 选择南通区县
+    choseNanTong(item) {
+      var vm = this;
+      getCityList({
+        parent_id : item.id
+      }).then(resp => {
+        vm.nantongXian = resp.data.data;
+        this.selectNantongValue.chosedNantongName = item.name;
+        this.isShowNTArea = false;
+      });
+    },
+    showNantong() {
+      this.isShowNantongList = true;
+      this.selectNantongValue = {
+        chosedNantongName: "",
+        chosedXian: ""
+      };
+      this.isShowNTArea = true;
+    },
+    selectNTArea() {
+      this.isShowNTArea = true;
+      this.selectNantongValue.chosedNantongName = "";
+    },
+    choseXian(item) {
+      this.selectNantongValue.chosedXian = item.name;
+      this.chosedNantongValue = {
+        chosedNantongName: this.selectNantongValue.chosedNantongName,
+        chosedXian: this.selectNantongValue.chosedXian
+      };
+      this.isShowNantongList = false;
+      this.isShowSelectNantong = true;
+    },
+    closeNantongList() {
+      this.isShowNantongList = false;
     },
     choseOutPatient(value) {
       this.chosedOutpatient = value;
@@ -1180,6 +1299,10 @@ export default {
     // 选择隔离方式
     choseQuarantine(index) {
       this.chosedQuarantineIndex = index;
+      this.homeAddress =
+        this.chosedNantongValue.chosedNantongName +
+        this.chosedNantongValue.chosedXian +
+        this.nantongAddress;
     },
     //选择就诊方式
     choseSeeMedical(index) {
@@ -1192,7 +1315,7 @@ export default {
       this.isShowSeeMedicalList = false;
       this.chosedQuarant = "";
       this.enterpriseAddress = "";
-      // this.nantongAddress = "";
+      // this.homeAddress = "";
     },
     choseHealth(index) {
       if (index === 0) {
@@ -1382,7 +1505,7 @@ export default {
     },
     // 选择城市
     choseCity(item) {
-      this.chosedCityName = item.short_name + "市";
+      this.chosedCityName = item.name;
       var vm = this;
       getCityList({
         parent_id: item.id
@@ -1536,7 +1659,7 @@ export default {
       background-color: #fff;
 
       .item {
-        height: 40px;
+        min-height: 40px;
         line-height: 40px;
         border-bottom: 1px solid #f2f2f2;
         font-weight: bold;
@@ -1653,6 +1776,11 @@ export default {
     }
     .fourth {
       margin-top: 15px;
+      .item {
+        .name {
+          width: 100%;
+        }
+      }
     }
     .first,
     .fifth,

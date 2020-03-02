@@ -1,7 +1,7 @@
 <template>
   <div class="manage">
     <div class="header">
-      数据管理
+      健康管理
       <div class="back" @click="goBack">
         首页
         <div class="back-icon"></div>
@@ -23,17 +23,24 @@
         </div>
         <div
           class="item"
-          :class="chosedIndex === 1 ? 'active' : ''"
-          @click="choseTab(1)"
+          :class="chosedIndex === 5 ? 'active' : ''"
+          @click="choseTab(5)"
         >
-          已打卡{{ chosedIndex === 1 ? `(${count})` : "" }}
+          已审核{{ chosedIndex === 5 ? `(${count})` : "" }}
+        </div>
+        <div
+          class="item"
+          :class="chosedIndex === 4 ? 'active' : ''"
+          @click="choseTab(4)"
+        >
+          未审核{{ chosedIndex === 4 ? `(${count})` : "" }}
         </div>
         <div
           class="item"
           :class="chosedIndex === 0 ? 'active' : ''"
           @click="choseTab(0)"
         >
-          未打卡{{ chosedIndex === 0 ? `(${count})` : "" }}
+          未申报{{ chosedIndex === 0 ? `(${count})` : "" }}
         </div>
       </div>
       <div class="list">
@@ -48,8 +55,9 @@
         <div
           class="item"
           v-for="(item, index) in list"
-          :class="item.temp >= 37.3 ? 'hot' : ''"
+          :class="item.temp >= 37.3 || item.cough ? 'hot' : ''"
           :key="index"
+          @click="choseItem(item)"
         >
           <div class="index">{{ item.number }}</div>
           <div class="name">{{ item.name }}</div>
@@ -75,7 +83,7 @@
       </div>
       <div class="bottom">
         <!-- <div class="look-button" @click="download">数据下载</div> -->
-        <div class="punch-button" @click="approvalPeriodPlace">审核</div>
+        <div class="punch-button" @click="approvalPeriodPlace" v-show="chosedIndex === 5?false:true">审核</div>
       </div>
     </div>
     <mt-datetime-picker
@@ -101,6 +109,37 @@
           :size="250"
           :logoSrc="imageUrl"
         ></vue-qr>
+      </div>
+    </div>
+    <div class="modal" v-show="isShowDetail">
+      <div class="punch-detail">
+        <div class="icon-close" @click="isShowDetail = false"></div>
+        <ul class="detail-list">
+          <li>
+            <div class="name">名字:</div>
+            <div class="value">{{ chosedDetail.name }}</div>
+          </li>
+          <li>
+            <div class="name">手机号:</div>
+            <div class="value">{{ chosedDetail.mobile }}</div>
+          </li>
+          <li>
+            <div class="name">体温:</div>
+            <div class="value">{{ chosedDetail.temp }}</div>
+          </li>
+          <li>
+            <div class="name">是否咳嗽:</div>
+            <div class="value">{{ chosedDetail.cough ? "是" : "否" }}</div>
+          </li>
+          <li>
+            <div class="name">状态:</div>
+            <div class="value">{{ chosedDetail.currStatus }}</div>
+          </li>
+          <li>
+            <div class="name">返通居住地:</div>
+            <div class="value">{{ chosedDetail.ntAddress }}</div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -132,7 +171,9 @@ export default {
         e.preventDefault();
       },
       text: "",
-      imageUrl: require("../../assets/image/zhanyi-logo.png")
+      imageUrl: require("../../assets/image/zhanyi-logo.png"),
+      isShowDetail: false,
+      chosedDetail: ""
     };
   },
   created() {
@@ -161,6 +202,10 @@ export default {
       this.page = 1;
       this.chosedIndex = index;
       this.getList();
+    },
+    choseItem(item) {
+      this.chosedDetail = item;
+      this.isShowDetail = true;
     },
     returnCough(value) {
       if (value === null) {
@@ -490,6 +535,43 @@ export default {
         margin-top: 25px;
         margin-bottom: 20px;
         text-align: center;
+      }
+    }
+    .punch-detail {
+      width: 75%;
+      /* height: 20%; */
+      background-color: #fff;
+      border: 1px solid rgb(196, 193, 193);
+      border-radius: 5px;
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      transform: translateX(-50%);
+      z-index: 999;
+      text-align: center;
+      padding-bottom: 10px;
+      .icon-close {
+        width: 20px;
+        height: 20px;
+        background: url("../../assets/image/icon-close.png") no-repeat;
+        background-size: 100% 100%;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+      .detail-list {
+        list-style: none;
+        padding: 0;
+        padding-top: 20px;
+        li {
+          font-size: 13px;
+          display: flex;
+          .name {
+            width: 80px;
+          }
+          .value {
+          }
+        }
       }
     }
   }
