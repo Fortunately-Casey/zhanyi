@@ -196,6 +196,27 @@ export default {
         });
         return;
       }
+      if (!vm.phoneNumber) {
+        Toast({
+          message: "请填写手机号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.peopleCount) {
+        Toast({
+          message: "请填写拟用工人数！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.bedCount) {
+        Toast({
+          message: "请填写企业隔离床位数！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       var params = {
         enterpriseName: vm.factoryName,
         employeeCount: vm.peopleCount,

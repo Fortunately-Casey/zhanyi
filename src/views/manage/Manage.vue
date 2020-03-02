@@ -106,7 +106,7 @@
   </div>
 </template>
 <script>
-import { Todate, blur, Totime } from "@/common/tool/tool.js";
+import { Todate } from "@/common/tool/tool.js";
 import { MessageBox } from "mint-ui";
 import {
   getEnterprisePeriodPlaceList,
@@ -114,7 +114,6 @@ import {
   deleteEnterprisePeriodPlace
 } from "@/api/register";
 import { Toast, Indicator } from "mint-ui";
-import QRCode from "qrcodejs2";
 import VueQr from "vue-qr";
 export default {
   data() {
