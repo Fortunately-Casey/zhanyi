@@ -93,3 +93,18 @@ export function deleteEnterprisePeriodPlace(params) {
             console.log(err);
         });
 }
+
+//打卡记录下载
+export function exportEnterprisePeriodPlaceList(params) {
+    const url = getURL("/enterprise/exportEnterprisePeriodPlaceList");
+    return axios
+        .get(url, {
+            params:params
+        })
+        .then(resp => {
+            return Promise.resolve(resp);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}

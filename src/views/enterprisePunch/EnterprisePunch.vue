@@ -157,8 +157,12 @@
             </div>
           </div>
         </div>
-        <div class="item" style="position:relative" @click="showNantong">
-          <div class="name" style="width:100%">
+        <div
+          class="item"
+          style="position:relative;padding:0 20px"
+          @click="showNantong"
+        >
+          <div class="name" style="padding:0">
             <div class="cross-title">
               {{
                 chosedLeaveIndex === 0
@@ -178,7 +182,13 @@
                 </div>
               </div>
             </div>
-            <div class="icon-cross">></div>
+            <div
+              class="icon-cross"
+              style="transform:translateX(-20px)"
+              v-if="isShowNantongIcon"
+            >
+              >
+            </div>
           </div>
         </div>
         <div class="item">
@@ -481,15 +491,15 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">
-              {{ chosedProvinceName }}
-            </span>
+            <span class="seleted-province" @click="selectProvince">{{
+              chosedProvinceName
+            }}</span>
             <span class="selectCityButton" v-if="!chosedCityName"
               >选择城市</span
             >
-            <span class="selectedCityButton" v-else @click="selectCity">
-              {{ chosedCityName }}
-            </span>
+            <span class="selectedCityButton" v-else @click="selectCity">{{
+              chosedCityName
+            }}</span>
             <span class="selectCityButton" v-if="isShowAreaSelect"
               >选择区域</span
             >
@@ -544,9 +554,9 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowNTArea">
-            <span class="seleted-province" @click="selectNTArea">
-              {{ selectNantongValue.chosedNantongName }}
-            </span>
+            <span class="seleted-province" @click="selectNTArea">{{
+              selectNantongValue.chosedNantongName
+            }}</span>
             <span class="selectCityButton">选择镇</span>
           </div>
           <div class="select-city" v-if="!isShowNTArea">
@@ -616,6 +626,7 @@ export default {
       isShowNTArea: true,
       nantongXian: [],
       homeAddress: "",
+      isShowNantongIcon: true,
       chosedNantongValue: {
         chosedNantongName: "",
         chosedXian: ""
@@ -749,7 +760,6 @@ export default {
       chosedProvinceName: "",
       isShowCityList: false,
       chosedCityName: "",
-      isShowAreaList: false,
       isShowAreaSelect: false,
       provinceList: [],
       cityList: [],
@@ -763,15 +773,6 @@ export default {
         area: ""
       },
       addressDetail: "",
-      nowAddress: "",
-      chosedNowAddress: {
-        province: "",
-        city: "",
-        area: ""
-      },
-      isShowSelectedNow: false,
-      // 地址类型flag
-      addressType: 0,
       isShowNowIcon: true,
       isWatchHospital: true,
       isWatchSeeMedical: true
@@ -841,6 +842,7 @@ export default {
         vm.chosedNantongValue.chosedNantongName = vm.dateValue = last.returnNTDate
           ? new Date(last.returnNTDate)
           : new Date();
+        vm.isShowNantongIcon = last.ntCity ? false : true;
         vm.chosedNantongValue.chosedNantongName = last.ntCity;
         vm.chosedNantongValue.chosedXian = last.ntCounty;
         vm.isShowSelectNantong = true;
@@ -973,7 +975,7 @@ export default {
           console.log(err);
         });
     },
-    check() { 
+    check() {
       console.log(this.chosedQuarant);
     },
     checkDate() {
@@ -1201,9 +1203,11 @@ export default {
     // 选择南通区县
     choseNanTong(item) {
       var vm = this;
+      Indicator.open();
       getCityList({
         parent_id: item.id
       }).then(resp => {
+        Indicator.close();
         vm.nantongXian = resp.data.data;
         this.selectNantongValue.chosedNantongName = item.name;
         this.isShowNTArea = false;
@@ -1223,6 +1227,7 @@ export default {
     },
     choseXian(item) {
       this.selectNantongValue.chosedXian = item.name;
+      this.isShowNantongIcon = false;
       this.chosedNantongValue = {
         chosedNantongName: this.selectNantongValue.chosedNantongName,
         chosedXian: this.selectNantongValue.chosedXian
@@ -1470,8 +1475,7 @@ export default {
           passive: true
         }); //打开默认事件
     },
-    showArea(index) {
-      // this.addressType = index;
+    showArea() {
       this.isShowAddressList = true;
       this.isShowProvinceList = true;
       this.isShowCityList = false;
@@ -1780,8 +1784,13 @@ export default {
     .fourth {
       margin-top: 15px;
       .item {
+        border: none;
         .name {
           width: 100%;
+          border-bottom: 1px solid #f2f2f2;
+          .value {
+            padding: 0;
+          }
         }
       }
     }

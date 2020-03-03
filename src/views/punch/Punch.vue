@@ -311,7 +311,7 @@
                 v-if="v.name !== '直辖县'"
               >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
-                <div class="name">{{ v.short_name + "市" }}</div>
+                <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
@@ -1026,7 +1026,7 @@ export default {
     },
     // 选择城市
     choseCity(item) {
-      this.chosedCityName = item.short_name + "市";
+      this.chosedCityName = item.name;
       var vm = this;
       getCityList({
         parent_id: item.id

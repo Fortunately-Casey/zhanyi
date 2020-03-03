@@ -69,7 +69,7 @@
             <mt-button
               type="primary"
               size="small"
-              @click="deletePunch(item)"
+              @click.stop="deletePunch(item)"
               v-else
               >删除</mt-button
             >
@@ -82,7 +82,13 @@
         <span @click="next">></span>
       </div>
       <div class="bottom">
-        <!-- <div class="look-button" @click="download">数据下载</div> -->
+        <div
+          class="look-button"
+          v-show="chosedIndex === 5 ? true : false"
+          @click="download"
+        >
+          数据下载
+        </div>
         <div
           class="punch-button"
           @click="approvalPeriodPlace"
@@ -143,9 +149,31 @@
           </li>
           <li>
             <div class="name">返通居住地:</div>
-            <div class="value">{{ chosedDetail.ntAddress }}</div>
+            <div class="value">
+              {{
+                chosedDetail.ntCity +
+                  chosedDetail.ntCounty +
+                  chosedDetail.ntAddress
+              }}
+            </div>
           </li>
         </ul>
+      </div>
+    </div>
+    <div class="modal" v-show="isShowDownload">
+      <div class="punch-detail">
+        <div class="icon-close" @click="isShowDownload = false"></div>
+        <div class="download-message">
+          下载今日健康报告信息请复制以下链接到浏览器中打开
+        </div>
+        <div class="url-message">{{ downloadUrl }}</div>
+        <button
+          class="btn"
+          :data-clipboard-text="downloadUrl"
+          @click="copyAlert"
+        >
+          复制链接
+        </button>
       </div>
     </div>
   </div>
@@ -156,10 +184,12 @@ import { MessageBox } from "mint-ui";
 import {
   getEnterprisePeriodPlaceList,
   approvalPeriodPlace,
-  deleteEnterprisePeriodPlace
+  deleteEnterprisePeriodPlace,
+  exportEnterprisePeriodPlaceList
 } from "@/api/register";
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
+import Clipboard from "clipboard";
 export default {
   data() {
     return {
@@ -179,7 +209,9 @@ export default {
       text: "",
       imageUrl: require("../../assets/image/zhanyi-logo.png"),
       isShowDetail: false,
-      chosedDetail: ""
+      chosedDetail: "",
+      isShowDownload: false,
+      downloadUrl: ""
     };
   },
   created() {
@@ -189,7 +221,9 @@ export default {
     vm.getList();
     vm.text = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
-  mounted() {},
+  mounted() {
+    const clipboard = new Clipboard(".btn");
+  },
   methods: {
     returnDate(value) {
       return Todate(value);
@@ -278,7 +312,25 @@ export default {
       vm.page++;
       vm.getList();
     },
-    download() {},
+    download() {
+      var vm = this;
+      Indicator.open();
+      exportEnterprisePeriodPlaceList({
+        enterpriseID: vm.$route.query.enterpriseID,
+        periodPlaceDate: vm.returnDate(vm.date),
+        status: vm.chosedIndex
+      }).then(resp => {
+        Indicator.close();
+        this.isShowDownload = true;
+        vm.downloadUrl = "https://yqfk.ntschy.com" + resp.data.data;
+      });
+    },
+    copyAlert() {
+      Toast({
+        message: "复制成功！",
+        iconClass: "icon icon-success"
+      });
+    },
     approvalPeriodPlace() {
       var vm = this;
       Indicator.open();
@@ -492,7 +544,7 @@ export default {
       }
 
       .look-button {
-        margin-right: 15px;
+        margin: 20px auto;
       }
     }
   }
@@ -578,6 +630,21 @@ export default {
           .value {
           }
         }
+      }
+      .download-message {
+        margin-top: 30px;
+        padding: 0 15px;
+        text-align: left;
+        font-size: 14px;
+      }
+      .url-message {
+        font-size: 14px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        padding: 0 15px;
+        word-break: break-all;
+        color: #2e55d6;
+        text-align: left;
       }
     }
   }
