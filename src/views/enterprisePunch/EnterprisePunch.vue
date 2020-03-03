@@ -532,7 +532,11 @@
           </div>
           <div class="select-province" v-if="isShowNTArea">
             <div class="select-title">选择区 / 县</div>
-            <div v-for="(item, index) in nantongList" :key="index" v-if="index !== 0">
+            <div
+              v-for="(item, index) in nantongList"
+              :key="index"
+              v-if="index !== 0"
+            >
               <div class="province" @click="choseNanTong(item)">
                 <div class="label" style="width:0"></div>
                 <div class="name">{{ item.name }}</div>
@@ -834,13 +838,12 @@ export default {
         vm.chosedValues.city = last.beforeReturnNtCity;
         vm.chosedValues.area = last.beforeReturnNtCounty;
         vm.beforeBackAddress = last.beforeReturnNtAddress;
-        vm.chosedNantongValue.chosedNantongName = 
-        vm.dateValue = last.returnNTDate
+        vm.chosedNantongValue.chosedNantongName = vm.dateValue = last.returnNTDate
           ? new Date(last.returnNTDate)
           : new Date();
-        vm.chosedNantongValue.chosedNantongName = last.ntCity; 
+        vm.chosedNantongValue.chosedNantongName = last.ntCity;
         vm.chosedNantongValue.chosedXian = last.ntCounty;
-        vm.isShowSelectNantong = true; 
+        vm.isShowSelectNantong = true;
         vm.nantongAddress = last.ntAddress;
         vm.choseReworkIndex = last.recoveryWork ? 1 : 0;
         vm.reworkDate = last.recoveryWorkDate
@@ -970,7 +973,7 @@ export default {
           console.log(err);
         });
     },
-    check() {
+    check() { 
       console.log(this.chosedQuarant);
     },
     checkDate() {
@@ -1199,7 +1202,7 @@ export default {
     choseNanTong(item) {
       var vm = this;
       getCityList({
-        parent_id : item.id
+        parent_id: item.id
       }).then(resp => {
         vm.nantongXian = resp.data.data;
         this.selectNantongValue.chosedNantongName = item.name;

@@ -83,7 +83,13 @@
       </div>
       <div class="bottom">
         <!-- <div class="look-button" @click="download">数据下载</div> -->
-        <div class="punch-button" @click="approvalPeriodPlace" v-show="chosedIndex === 5?false:true">审核</div>
+        <div
+          class="punch-button"
+          @click="approvalPeriodPlace"
+          v-show="chosedIndex === 5 ? false : true"
+        >
+          审核
+        </div>
       </div>
     </div>
     <mt-datetime-picker
