@@ -19,13 +19,21 @@
         <div class="item">
           <div class="name">联系电话</div>
           <div class="value">
-            <input type="text" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input
+              type="text"
+              v-model="phoneNumber"
+              @blur="lostblur('phone')"
+            />
           </div>
         </div>
         <div class="item">
           <div class="name">身份证号/护照</div>
           <div class="value">
-            <input type="text" v-model="idCard" @blur="lostblur('usernumber')" />
+            <input
+              type="text"
+              v-model="idCard"
+              @blur="lostblur('usernumber')"
+            />
           </div>
         </div>
         <div class="item">
@@ -76,7 +84,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedCough === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedCough === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -105,7 +116,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedLeaveIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedLeaveIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -114,11 +128,14 @@
         <div class="item" @click="showArea()">
           <div class="name">
             <div class="cross-title">
-              返通前地址(下拉选择省市县)
+              返通前地址(下拉选择地区)
               <div class="chosedValue" v-if="isShowSelectValue">
                 <div class="value">{{ chosedValues.province }}</div>
                 <div class="value">{{ chosedValues.city }}</div>
                 <div class="value">{{ chosedValues.area }}</div>
+              </div>
+              <div class="chosedValue" style="height:auto" v-if="isSverseas">
+                <div class="value">海外地区</div>
               </div>
             </div>
             <div class="icon-cross" v-if="isShowCrossIcon">></div>
@@ -128,7 +145,11 @@
           <input
             type="text"
             v-model="beforeBackAddress"
-            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+            :placeholder="
+              isSverseas
+                ? '海外地址：国家'
+                : '详细地址：道路、门牌号、楼栋号、单元号'
+            "
             class="addressDetail"
             @blur="lostblur"
           />
@@ -138,29 +159,43 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
+            <div class="date" @click="openPicker">
+              {{ returnDate(dateValue) }}
+            </div>
           </div>
         </div>
-        <div class="item" style="position:relative;padding:0 20px" @click="showNantong">
+        <div
+          class="item"
+          style="position:relative;padding:0 20px"
+          @click="showNantong"
+        >
           <div class="name" style="padding:0">
-            <div class="cross-title">
+            <div class="cross-title" style="letter-spacing:0px">
               {{
-              chosedLeaveIndex === 0
-              ? "现居住地(下拉选择区县)"
-              : "返通居住地(下拉选择区县)"
+                chosedLeaveIndex === 0
+                  ? "现居住地(下拉选择区县)"
+                  : "返通居住地(下拉选择区县)"
               }}
-              <div class="chosedValue" style="height:50px" v-if="isShowSelectNantong">
-                <div
-                  class="value"
-                  style="width:100%;box-sizing:border-box"
-                >{{ chosedNantongValue.chosedNantongName }}</div>
-                <div
-                  class="value"
-                  style="width:100%;box-sizing:border-box"
-                >{{ chosedNantongValue.chosedXian }}</div>
+              <div
+                class="chosedValue"
+                style="height:50px"
+                v-if="isShowSelectNantong"
+              >
+                <div class="value" style="width:100%;box-sizing:border-box">
+                  {{ chosedNantongValue.chosedNantongName }}
+                </div>
+                <div class="value" style="width:100%;box-sizing:border-box">
+                  {{ chosedNantongValue.chosedXian }}
+                </div>
               </div>
             </div>
-            <div class="icon-cross" style="transform:translateX(-20px)" v-if="isShowNantongIcon">></div>
+            <div
+              class="icon-cross"
+              style="transform:translateX(-20px)"
+              v-if="isShowNantongIcon"
+            >
+              >
+            </div>
           </div>
         </div>
         <div class="item">
@@ -188,14 +223,19 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="choseReworkIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="choseReworkIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item reworkTime" v-if="choseReworkIndex === 1">
           <div class="name">复工日期</div>
           <div class="value">
-            <div class="date" @click="openRework">{{ returnDate(reworkDate) }}</div>
+            <div class="date" @click="openRework">
+              {{ returnDate(reworkDate) }}
+            </div>
           </div>
         </div>
       </div>
@@ -214,7 +254,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedSeeMedicalIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -229,7 +272,10 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[0].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 0 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -246,18 +292,28 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[1].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 1 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
+          <mt-radio
+            v-model="chosedQuarant"
+            :options="options"
+            @change="check"
+          ></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(2)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[2].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 2 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -273,7 +329,9 @@
         <div class="item reworkTime">
           <div class="name">开始隔离日期</div>
           <div class="value">
-            <div class="date" @click="openIsolationDays">{{ returnDate(isolationDays) }}</div>
+            <div class="date" @click="openIsolationDays">
+              {{ returnDate(isolationDays) }}
+            </div>
           </div>
         </div>
         <div class="item">
@@ -282,7 +340,11 @@
           </div>
         </div>
         <div class="item">
-          <mt-radio v-model="chosedDate" :options="dateOptions" @change="checkDate"></mt-radio>
+          <mt-radio
+            v-model="chosedDate"
+            :options="dateOptions"
+            @change="checkDate"
+          ></mt-radio>
         </div>
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
@@ -290,7 +352,11 @@
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedOutpatient.value"
+              >
                 <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
@@ -311,7 +377,9 @@
               v-for="(item, index) in seeMedicalList"
               :key="index"
               @click="setSeeMedical(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -320,7 +388,11 @@
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedHospital.value"
+              >
                 <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
@@ -341,7 +413,9 @@
               v-for="(item, index) in hospitalList"
               :key="index"
               @click="setHospital(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -412,7 +486,12 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item, index) in provinceList" :key="index">
-              <div class="province" v-for="(v, i) in item.items" :key="i" @click="choseProvince(v)">
+              <div
+                class="province"
+                v-for="(v, i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
               </div>
@@ -420,17 +499,17 @@
           </div>
           <div class="selected" v-if="!isShowProvinceList">
             <span class="seleted-province" @click="selectProvince">
-              {{
-              chosedProvinceName
-              }}
+              {{ chosedProvinceName }}
             </span>
-            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
+            <span class="selectCityButton" v-if="!chosedCityName"
+              >选择城市</span
+            >
             <span class="selectedCityButton" v-else @click="selectCity">
-              {{
-              chosedCityName
-              }}
+              {{ chosedCityName }}
             </span>
-            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect"
+              >选择区域</span
+            >
           </div>
           <div class="select-city" v-if="isShowCityList">
             <div v-for="(item, index) in cityList" :key="index">
@@ -470,7 +549,11 @@
           </div>
           <div class="select-province" v-if="isShowNTArea">
             <div class="select-title">选择区 / 县</div>
-            <div v-for="(item, index) in nantongList" :key="index" v-if="index !== 0">
+            <div
+              v-for="(item, index) in nantongList"
+              :key="index"
+              v-if="index !== 0"
+            >
               <div class="province" @click="choseNanTong(item)">
                 <div class="label" style="width:0"></div>
                 <div class="name">{{ item.name }}</div>
@@ -479,9 +562,7 @@
           </div>
           <div class="selected" v-if="!isShowNTArea">
             <span class="seleted-province" @click="selectNTArea">
-              {{
-              selectNantongValue.chosedNantongName
-              }}
+              {{ selectNantongValue.chosedNantongName }}
             </span>
             <span class="selectCityButton">选择镇</span>
           </div>
@@ -562,6 +643,8 @@ export default {
         chosedXian: ""
       },
       isShowSelectNantong: false,
+      isSverseas: false,
+      overseasAddress: "",
       outpatientList: [
         {
           value: "南通瑞慈医院"
@@ -760,11 +843,16 @@ export default {
         vm.chosedCough = last.cough ? 1 : 0;
         vm.symptomsDetail = last.symptomsDetail;
         vm.chosedLeaveIndex = last.leaveNT ? 1 : 0;
-        vm.chosedValues.province = last.beforeReturnNtProvince;
-        vm.isShowSelectValue = last.beforeReturnNtCity ? true : false;
-        vm.chosedValues.city = last.beforeReturnNtCity;
-        vm.chosedValues.area = last.beforeReturnNtCounty;
-        vm.beforeBackAddress = last.beforeReturnNtAddress;
+        if (last.overseasAddress) {
+          vm.beforeBackAddress = last.overseasAddress;
+          vm.isSverseas = true;
+        } else {
+          vm.chosedValues.province = last.beforeReturnNtProvince;
+          vm.isShowSelectValue = last.beforeReturnNtCity ? true : false;
+          vm.chosedValues.city = last.beforeReturnNtCity;
+          vm.chosedValues.area = last.beforeReturnNtCounty;
+          vm.beforeBackAddress = last.beforeReturnNtAddress;
+        }
         vm.chosedNantongValue.chosedNantongName = vm.dateValue = last.returnNTDate
           ? new Date(last.returnNTDate)
           : new Date();
@@ -1005,6 +1093,22 @@ export default {
         });
         return false;
       }
+      var tempReg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
+      if (!tempReg.test(Number(vm.temperature))) {
+        Toast({
+          message: "请输入35℃-45℃体温！",
+          iconClass: "icon icon-success"
+        });
+        return false;
+      }
+      var ageReg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
+      if (!ageReg.test(Number(vm.age))) {
+        Toast({
+          message: "请输入正确年龄！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       if (
         !vm.nantongAddress ||
         !vm.chosedNantongValue.chosedNantongName ||
@@ -1018,17 +1122,27 @@ export default {
       }
 
       if (vm.chosedLeaveIndex === 1) {
-        if (
-          !vm.chosedValues.province ||
-          !vm.chosedValues.city ||
-          !vm.chosedValues.area ||
-          !vm.beforeBackAddress
-        ) {
-          Toast({
-            message: "请填写完整的返通前地区!",
-            iconClass: "icon icon-success"
-          });
-          return;
+        if (vm.isSverseas) {
+          if (!vm.beforeBackAddress) {
+            Toast({
+              message: "请填写完整的返通前地区!",
+              iconClass: "icon icon-success"
+            });
+            return;
+          }
+        } else {
+          if (
+            !vm.chosedValues.province ||
+            !vm.chosedValues.city ||
+            !vm.chosedValues.area ||
+            !vm.beforeBackAddress
+          ) {
+            Toast({
+              message: "请填写完整的返通前地区!",
+              iconClass: "icon icon-success"
+            });
+            return;
+          }
         }
       }
       if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 0) {
@@ -1085,7 +1199,8 @@ export default {
         beforeReturnNtProvince: vm.chosedValues.province,
         beforeReturnNtCity: vm.chosedValues.city,
         beforeReturnNtCounty: vm.chosedValues.area,
-        beforeReturnNtAddress: vm.beforeBackAddress,
+        beforeReturnNtAddress: vm.isSverseas ? "" : vm.beforeBackAddress,
+        overseasAddress: vm.isSverseas ? vm.beforeBackAddress : "",
         recoveryWork: vm.choseReworkIndex === 0 ? false : true,
         recoveryWorkDate:
           vm.choseReworkIndex === 0 ? "" : vm.returnDate(vm.reworkDate),
@@ -1425,12 +1540,33 @@ export default {
       }).then(resp => {
         if (resp.status === 200) {
           vm.provinceList = vm._normalizeCity(resp.data.data);
+          console.log(vm.provinceList);
+          vm.provinceList.push({
+            title: "",
+            items: [
+              {
+                id: "haiwai",
+                name: "海外地区",
+                short_name: "海外地区",
+                key: ""
+              }
+            ]
+          });
         }
       });
     },
     // 选择省份
     choseProvince(item) {
       var vm = this;
+      if (item.name === "海外地区") {
+        vm.isSverseas = true;
+        vm.isShowAddressList = false;
+        vm.isShowSelectValue = false;
+        vm.chosedValues.province = "";
+        vm.chosedValues.city = "";
+        vm.chosedValues.area = "";
+        return;
+      }
       vm.chosedProvinceName = item.name;
       getCityList({
         parent_id: item.id
@@ -1466,6 +1602,7 @@ export default {
       this.isShowSelectValue = true;
       this.isShowCrossIcon = false;
       this.isShowAddressList = false;
+      this.isSverseas = false;
     },
     closeAddress() {
       this.isShowAddressList = false;
@@ -1717,9 +1854,9 @@ export default {
       margin-top: 15px;
       .item {
         border: none;
+        border-bottom: 1px solid #f2f2f2;
         .name {
           width: 100%;
-          border-bottom: 1px solid #f2f2f2;
           .value {
             padding: 0;
           }

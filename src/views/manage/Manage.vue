@@ -82,11 +82,7 @@
         <span @click="next">></span>
       </div>
       <div class="bottom">
-        <div
-          class="look-button"
-          v-show="chosedIndex === 5 ? true : false"
-          @click="download"
-        >
+        <div class="look-button" @click="download">
           数据下载
         </div>
         <div
@@ -450,7 +446,7 @@ export default {
       border-bottom: 1px solid rgb(199, 197, 197);
       .item {
         // width: 80px;
-        padding: 3px 10px;
+        padding: 3px 15px;
         height: 20px;
         line-height: 20px;
         text-align: center;
@@ -461,7 +457,7 @@ export default {
         float: left;
         margin-top: 10px;
         letter-spacing: 2px;
-        margin-left: 20px;
+        margin-left: 15px;
       }
       .active {
         color: #fff;

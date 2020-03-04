@@ -59,6 +59,11 @@ const routes = [
     path:"/manage",
     name:"manage",
     component: resolve => require(["../views/manage/Manage.vue"], resolve)
+  },
+  {
+    path:"/errorPage",
+    name:"manaerrorPagege",
+    component: resolve => require(["../views/errorPage/Error.vue"], resolve)
   }
  
 ];
