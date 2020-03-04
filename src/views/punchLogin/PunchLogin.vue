@@ -1,70 +1,67 @@
 <template>
   <div class="register">
     <div class="logo"></div>
-    <div class="title">管理员注册，请填写信息</div>
-    <div class="register-box">
-      <input type="text" placeholder="管理员手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
+    <div class="title" v-show="isRegister">欢迎您，请注册</div>
+    <div class="title" v-show="!isRegister">欢迎您，请登录</div>
+    <div class="register-box" v-if="isRegister">
       <input
         type="text"
-        placeholder="企业名称"
-        v-model="factoryName"
+        placeholder="手机号码"
+        v-model="phoneNumber1"
         @blur="lostblur"
-        @input="keywordSearch"
       />
-      <div class="factory">
-        <input type="text" placeholder="拟用工人数" v-model="peopleCount" @blur="lostblur('number')" />
-        <div class="factory-list" v-if="isShowList">
-          <div
-            class="search-item"
-            v-for="(item, index) in searchList"
-            :key="index"
-            @click="choseFactory(item)"
-          >{{ item }}</div>
-        </div>
-      </div>
-      <input type="text" placeholder="企业隔离床位数" v-model="bedCount" @blur="lostblur('bed')" />
-      <input type="password" placeholder="查询密码" v-model="searchPassword" @blur="lostblur" />
-      <input type="password" placeholder="确认密码" v-model="confirmPassword" @blur="lostblur" />
+      <input
+        type="password"
+        placeholder="密码"
+        v-model="password1"
+        @blur="lostblur"
+      />
+      <input
+        type="password"
+        placeholder="确认密码"
+        v-model="password2"
+        @blur="lostblur"
+      />
+      <span @click="isRegister = false">登录</span>
     </div>
-    <div class="register-button" @click="register">注册</div>
-    <div class="modal" v-show="isShowQrcode">
-      <div class="punch-success">
-        <div class="icon-close" @click="closeMessage"></div>
-        <div class="red-message">注册成功!（长按分享二维码）</div>
-        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl"></vue-qr>
-      </div>
+    <div class="register-box" v-else>
+      <input
+        type="text"
+        placeholder="手机号码"
+        v-model="phoneNumber2"
+        @blur="lostblur"
+      />
+      <input
+        type="password"
+        placeholder="密码"
+        v-model="loginPassword"
+        @blur="lostblur"
+      />
+      <span @click="isRegister = true">注册</span>
     </div>
+    <div class="register-button" v-if="isRegister" @click="register">注 册</div>
+    <div class="login-button" v-if="!isRegister" @click="login">登 录</div>
   </div>
 </template>
 <script>
 import wx from "weixin-js-sdk";
 import axios from "axios";
 import { Toast } from "mint-ui";
-import { saveEnterprise, selectEnterpriseNameLib } from "@/api/register";
-import { getURL, blur, debounce } from "@/common/tool/tool";
-import VueQr from "vue-qr";
-import { weixinTransform } from "@/common/data.js";
+import { registerUser, userLogin } from "@/api/punchLogin";
+import { getURL, blur } from "@/common/tool/tool";
 export default {
   data() {
     return {
-      phoneNumber: "",
-      factoryName: "",
-      peopleCount: "",
-      searchPassword: "",
-      confirmPassword: "",
-      isShowQrcode: false,
-      imgUrl: "",
-      searchList: [],
-      isShowList: false,
-      isWatch: true,
-      bedCount: "",
-      imageUrl: require("../../assets/image/zhanyi-logo.png"), //默认二维码中间图片
-      text: ""
+      phoneNumber1: "",
+      phoneNumber2: "",
+      password1: "",
+      password2: "",
+      isRegister: true,
+      loginPassword: ""
     };
   },
   computed: {},
   created() {
-    var vm = this;
     document.getElementsByTagName("title")[0].innerText =
       "开发区企业员工健康申报系统";
     this.shareList(
@@ -73,15 +70,15 @@ export default {
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区分中心",
       "开发区企业员工健康申报系统"
     );
-    this.$watch(
-      "factoryName",
-      debounce((newValue, oldValue) => {
-        if (!vm.isWatch) {
-          return;
-        }
-        vm.search();
-      }, 500)
-    );
+    var phoneNumber = window.localStorage.getItem("userID");
+    var password = window.localStorage.getItem("userPassword");
+    if (phoneNumber) {
+      this.isRegister = false;
+      this.phoneNumber2 = phoneNumber;
+    }
+    if (password) {
+      this.loginPassword = password;
+    }
   },
   methods: {
     shareList(imgUrl, link, desc, title) {
@@ -156,70 +153,98 @@ export default {
           console.log(err);
         });
     },
-    closeMessage() {
-      this.isShowQrcode = false;
-      this.$router.push({
-        path: "/enterPrise"
-      });
+    login() {
+      var vm = this;
+      if (vm.loginPassword && vm.phoneNumber2) {
+        var phoneReg = /^1[3456789]\d{9}$/;
+        if (!phoneReg.test(Number(vm.phoneNumber2))) {
+          Toast({
+            message: "请输入合法手机号！",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+        userLogin({
+          userId: vm.phoneNumber2,
+          password: vm.loginPassword
+        }).then(resp => {
+          if (resp.data.success) {
+            Toast({
+              message: "登录成功",
+              iconClass: "icon icon-success"
+            });
+            window.localStorage.setItem("userID", vm.phoneNumber2);
+            window.localStorage.setItem("userPassword", vm.loginPassword);
+            vm.$router.push({
+              path: "/enterprisePunch",
+              query: {
+                enterpriseID: resp.data.data.enterpriseID,
+                WxId: vm.phoneNumber2
+              }
+            });
+          } else {
+            Toast({
+              message: resp.data.data,
+              iconClass: "icon icon-success"
+            });
+          }
+        });
+      } else {
+        Toast({
+          message: "手机号和密码不能为空",
+          iconClass: "icon icon-success"
+        });
+      }
     },
     register() {
       var vm = this;
-      if (vm.searchPassword != vm.confirmPassword) {
-        Toast({
-          message: "两次输入的密码不一致！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.phoneNumber) {
-        Toast({
-          message: "请填写手机号！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.peopleCount) {
-        Toast({
-          message: "请填写拟用工人数！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (!vm.bedCount) {
-        Toast({
-          message: "请填写企业隔离床位数！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      var params = {
-        enterpriseName: vm.factoryName,
-        employeeCount: vm.peopleCount,
-        mobile: vm.phoneNumber,
-        password: vm.searchPassword,
-        createWxID: vm.phoneNumber,
-        isolatedBedCount: vm.bedCount
-      };
-      saveEnterprise(params).then(resp => {
-        if (resp.data.success) {
-          vm.isShowQrcode = true;
-          vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
-        } else {
+      if (vm.password1 && vm.phoneNumber1 && vm.password2) {
+        var phoneReg = /^1[3456789]\d{9}$/;
+        if (!phoneReg.test(Number(vm.phoneNumber1))) {
           Toast({
-            message: resp.data.data,
+            message: "请输入合法手机号！",
             iconClass: "icon icon-success"
           });
+          return;
         }
-      });
+        if (vm.password1 !== vm.password2) {
+          Toast({
+            message: "两次输入的密码不一致！",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+        registerUser({
+          userId: vm.phoneNumber1,
+          password: vm.password1,
+          enterpriseID: vm.$route.query.enterpriseID
+        }).then(resp => {
+          if (resp.data.success) {
+            Toast({
+              message: "注册成功",
+              iconClass: "icon icon-success"
+            });
+            vm.isRegister = false;
+          } else {
+            Toast({
+              message: resp.data.data,
+              iconClass: "icon icon-success"
+            });
+          }
+        });
+      } else {
+        Toast({
+          message: "手机号和密码不能为空",
+          iconClass: "icon icon-success"
+        });
+      }
     },
     lostblur(value) {
       var vm = this;
-      if (value === "phone") {
-        vm.phoneReg(vm.phoneNumber);
-      } else if (value === "number") {
-        vm.numberReg(vm.peopleCount);
-      } else if (value === "bed") {
-        vm.numberReg(vm.bedCount);
+      if (value === "phone1") {
+        vm.phoneReg(vm.phoneNumber1);
+      } else if (value === "phone2") {
+        vm.phoneReg(vm.phoneNumber2);
       }
       blur();
     },
@@ -232,52 +257,9 @@ export default {
         });
         return;
       }
-    },
-    numberReg(value) {
-      var numberReg = /^[0-9]*$/;
-      if (!numberReg.test(Number(value))) {
-        Toast({
-          message: "请输入合法数量！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-    },
-    choseFactory(item) {
-      this.isWatch = false;
-      this.factoryName = item;
-      this.isShowList = false;
-    },
-    keywordSearch() {
-      this.isWatch = true;
-      // this.isShowList = true;
-    },
-    search() {
-      var vm = this;
-      selectEnterpriseNameLib({
-        enterpriseName: vm.factoryName
-      }).then(resp => {
-        vm.searchList = resp.data.data;
-      });
     }
   },
-  components: {
-    VueQr
-  },
-  watch: {
-    factoryName() {
-      if (this.factoryName === "") {
-        this.isShowList = false;
-      }
-    },
-    searchList() {
-      if (this.searchList.length === 0) {
-        this.isShowList = false;
-      } else {
-        this.isShowList = true;
-      }
-    }
-  }
+  watch: {}
 };
 </script>
 <style lang="less">
@@ -312,35 +294,21 @@ export default {
     padding: 10px 50px;
     box-sizing: border-box;
     input {
-      margin-top: 10px;
-      height: 30px;
+      margin-top: 20px;
       width: 100%;
       border-bottom: 1px solid rgb(214, 211, 211);
       font-size: 13px;
     }
-    .factory {
-      width: 100%;
-      position: relative;
-      .factory-list {
-        width: 100%;
-        height: 200px;
-        position: absolute;
-        left: 0;
-        top: 0;
-        border: 1px solid rgb(190, 185, 185);
-        overflow-y: auto;
-        background-color: #fff;
-        .search-item {
-          height: 20px;
-          left: 20px;
-          font-size: 13px;
-          padding-left: 4px;
-        }
-      }
+    span {
+      font-size: 13px;
+      margin-top: 15px;
+      line-height: 15px;
+      float: right;
     }
   }
-  .register-button {
-    width: 250px;
+  .register-button,
+  .login-button {
+    width: 120px;
     height: 45px;
     text-align: center;
     line-height: 45px;
@@ -348,12 +316,17 @@ export default {
     background-color: #2e55d6;
     border-radius: 22.5px;
     position: absolute;
+    top: 450px;
     left: 50%;
-    top: 600px;
     transform: translateX(-50%);
     font-size: 15px;
-    letter-spacing: 10px;
   }
+  // .register-button {
+  //   left: 50px;
+  // }
+  // .login-button {
+  //   right: 50px;
+  // }
   .nantong-chy {
     width: 223px;
     height: 29px;
@@ -396,8 +369,6 @@ export default {
       top: 30%;
       transform: translateX(-50%);
       z-index: 999;
-      text-align: center;
-      padding-bottom: 10px;
       .icon-close {
         width: 20px;
         height: 20px;
@@ -418,10 +389,10 @@ export default {
         margin-top: 15px;
       }
       .qrcode {
-        width: 200px;
         margin: 0 auto;
         margin-top: 10px;
         margin-bottom: 20px;
+        text-align: center;
       }
     }
   }

@@ -64,6 +64,11 @@ const routes = [
     path:"/errorPage",
     name:"manaerrorPagege",
     component: resolve => require(["../views/errorPage/Error.vue"], resolve)
+  },
+  {
+    path:"/punchLogin",
+    name:"punchLogin",
+    component: resolve => require(["../views/punchLogin/PunchLogin.vue"], resolve)
   }
  
 ];
