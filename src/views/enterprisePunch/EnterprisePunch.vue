@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */ /* eslint-disable no-console */
 <template>
   <div class="punch-content">
-    <div class="punch" ref="punch" v-show="!isShowMap">
+    <div class="punch" ref="punch">
       <div class="header">
         企业员工复工信息填写
         <div class="back" @click="goBack">
@@ -614,7 +614,6 @@ export default {
       enterpriseAddress: "",
       reworkDate: new Date(),
       otherInfo: "",
-      isShowOutpatient: false,
       isShowHospital: false,
       chosedQuarant: "",
       chosedDate: "3",
@@ -740,28 +739,9 @@ export default {
       isolationValue: new Date(),
       phoneNumber: "",
       dateValue: new Date(),
-      timeValue: this.returnTime(new Date()),
-      chosedHealthIndex: 0,
-      chosedCrossIndex: 0,
-      isChosedHealth: true,
-      isChosedHot: false,
-      isChosedCough: false,
-      isShowMap: false,
-      localPoint: "",
-      clickValue: "",
-      addressValue: "",
-      bdx: "",
-      bdy: "",
-      isShowSuccess: false,
-      isShowReport: false,
-      epidemicArea: "",
-      isShowFunction: false,
-      searchList: [],
       handler: function(e) {
         e.preventDefault();
       },
-      isShowSearchList: false,
-      messageNumber: "",
       isShowGetMessage: true,
       timer: "",
       isShowAreaList: false,
@@ -781,8 +761,6 @@ export default {
         city: "",
         area: ""
       },
-      addressDetail: "",
-      isShowNowIcon: true,
       isWatchHospital: true,
       isWatchSeeMedical: true
     };
@@ -1285,16 +1263,6 @@ export default {
     closeNantongList() {
       this.isShowNantongList = false;
     },
-    choseOutPatient(value) {
-      this.chosedOutpatient = value;
-      this.isShowMedicaIcon = false;
-      this.isShowOutpatient = false;
-    },
-    choseHospital(value) {
-      this.chosedHospital = value;
-      this.isShowHospitalIcon = false;
-      this.isShowHospital = false;
-    },
     openPicker() {
       this.$refs.datepicker.open();
       this.closeTouch();
@@ -1372,21 +1340,6 @@ export default {
       this.enterpriseAddress = "";
       // this.homeAddress = "";
     },
-    choseHealth(index) {
-      if (index === 0) {
-        this.isChosedHealth = true;
-        this.isChosedCough = false;
-        this.isChosedHot = false;
-      }
-      if (index === 1) {
-        this.isChosedCough = !this.isChosedCough;
-        this.isChosedHealth = false;
-      }
-      if (index === 2) {
-        this.isChosedHot = !this.isChosedHot;
-        this.isChosedHealth = false;
-      }
-    },
     hospitalSearch() {
       this.isWatchHospital = true;
     },
@@ -1420,20 +1373,6 @@ export default {
       this.isWatchSeeMedical = false;
       this.isShowSeeMedicalList = false;
       this.seeMedicalName = value;
-    },
-    closeSuccess() {
-      this.isShowSuccess = !this.isShowSuccess;
-      this.openTouch();
-    },
-    closeReport() {
-      this.isShowReport = !this.isShowReport;
-      this.openTouch();
-    },
-    showMap() {
-      window.baseMap.clearOverlays();
-      this.location();
-      this.isShowMap = true;
-      // this.$refs.punch.style.overflowY = "hidden";
     },
     lostblur(value) {
       var vm = this;
@@ -1606,12 +1545,6 @@ export default {
     },
     closeAddress() {
       this.isShowAddressList = false;
-    },
-    closeOutpatient() {
-      this.isShowOutpatient = false;
-    },
-    closeHospital() {
-      this.isShowHospital = false;
     },
     selectProvince() {
       this.isShowProvinceList = true;
