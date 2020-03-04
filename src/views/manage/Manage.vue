@@ -199,7 +199,7 @@ export default {
     return {
       date: new Date(),
       pickerValue: new Date(),
-      chosedIndex: 3,
+      chosedIndex: 3, 
       page: 1,
       pageSize: 10,
       list: [],

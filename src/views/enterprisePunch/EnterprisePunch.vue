@@ -826,7 +826,7 @@ export default {
           vm.chosedValues.area = last.beforeReturnNtCounty;
           vm.beforeBackAddress = last.beforeReturnNtAddress;
         }
-        vm.chosedNantongValue.chosedNantongName = vm.dateValue = last.returnNTDate
+        vm.dateValue = last.returnNTDate
           ? new Date(last.returnNTDate)
           : new Date();
         vm.isShowNantongIcon = last.ntCity ? false : true;
