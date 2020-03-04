@@ -42,6 +42,13 @@
         >
           未申报{{ chosedIndex === 0 ? `(${count})` : "" }}
         </div>
+        <div
+          class="item"
+          :class="chosedIndex === 6 ? 'active' : ''"
+          @click="choseTab(6)"
+        >
+          异常{{ chosedIndex === 6 ? `(${count})` : "" }}
+        </div>
       </div>
       <div class="list">
         <div class="list-header">
@@ -447,7 +454,7 @@ export default {
       border-bottom: 1px solid rgb(199, 197, 197);
       .item {
         // width: 80px;
-        padding: 3px 15px;
+        padding: 3px 6px;
         height: 20px;
         line-height: 20px;
         text-align: center;
@@ -526,7 +533,6 @@ export default {
       background-color: #eee;
       display: flex;
       justify-content: center;
-      margin-bottom: 20px;
       .look-button,
       .punch-button {
         width: 155px;
