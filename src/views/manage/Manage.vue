@@ -186,6 +186,7 @@ import {
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
 import Clipboard from "clipboard";
+import { weixinTransform } from "@/common/data.js";
 export default {
   data() {
     return {
@@ -215,7 +216,7 @@ export default {
     document.getElementsByTagName("title")[0].innerText =
       "开发区企业员工健康申报系统";
     vm.getList();
-    vm.text = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
+    vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
   mounted() {
     const clipboard = new Clipboard(".btn");

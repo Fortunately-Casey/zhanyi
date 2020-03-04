@@ -75,6 +75,7 @@ import { Toast } from "mint-ui";
 import { saveEnterprise, selectEnterpriseNameLib } from "@/api/register";
 import { getURL, blur, debounce } from "@/common/tool/tool";
 import VueQr from "vue-qr";
+import { weixinTransform } from "@/common/data.js";
 export default {
   data() {
     return {
@@ -228,7 +229,7 @@ export default {
       saveEnterprise(params).then(resp => {
         if (resp.data.success) {
           vm.isShowQrcode = true;
-          vm.text = `https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
+          vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${resp.data.data.enterpriseID}`;
         } else {
           Toast({
             message: resp.data.data,

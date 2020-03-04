@@ -644,11 +644,6 @@ export default {
       isShowSelectNantong: false,
       isSverseas: false,
       overseasAddress: "",
-      outpatientList: [
-        {
-          value: "南通瑞慈医院"
-        }
-      ],
       options: [
         {
           label: "嘉福宾馆",
