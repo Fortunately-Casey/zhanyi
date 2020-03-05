@@ -110,7 +110,7 @@ export default {
     },
     toWeiXin() {
       window.location.href =
-        "https://yqfk.ntschy.com/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlace";
+        "https://yqfk.ntschy.com:10000/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlace";
     },
     toRegister() {
       this.$router.push({

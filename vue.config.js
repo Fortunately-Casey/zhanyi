@@ -26,7 +26,7 @@ module.exports = {
     proxy: {
       "/api": {
         /* 目标代理服务器地址 */
-        target: "https://yqfk.ntschy.com",
+        target: "https://yqfk.ntschy.com:10000",
         /* 允许跨域 */
         changeOrigin: true
       }

@@ -348,4 +348,4 @@ export const cityData = [
     ]
   }
 ];
-export const weixinTransform = "https://yqfk.ntschy.com";
+export const weixinTransform = "https://yqfk.ntschy.com:10000";

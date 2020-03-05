@@ -720,7 +720,7 @@ export default {
         vm.enterpriseName = resp.data.data.enterpriseName;
       } else {
         Toast({
-          message: "获取信息失败!",
+          message: "获取企业失败,请联系技术人员!",
           iconClass: "icon icon-success"
         });
       }

@@ -310,7 +310,7 @@ export default {
       }).then(resp => {
         Indicator.close();
         this.isShowDownload = true;
-        vm.downloadUrl = "https://yqfk.ntschy.com" + resp.data.data;
+        vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
       });
     },
     copyAlert() {
