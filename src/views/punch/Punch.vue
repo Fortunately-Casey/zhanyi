@@ -471,7 +471,7 @@ export default {
   created() {
     document.getElementsByTagName("title")[0].innerText = "战疫图·南通";
     this.shareList(
-      "https://yqfk.ntschy.com/swnt.png",
+      "https://yqfk.ntschy.com:10000/swnt.png",
       window.location.href,
       "关注南通疫情，判断您是否为密接者。数据来源：南通市疾病预防控制中心",
       "战疫图 • 南通（持续更新）"

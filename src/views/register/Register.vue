@@ -100,7 +100,7 @@ export default {
     document.getElementsByTagName("title")[0].innerText =
       "开发区企业员工健康申报系统";
     this.shareList(
-      "https://yqfk.ntschy.com/swnt.png",
+      "https://yqfk.ntschy.com:10000/swnt.png",
       window.location.href,
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区分中心",
       "开发区企业员工健康申报系统"

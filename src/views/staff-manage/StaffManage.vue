@@ -41,9 +41,7 @@
           <div class="phone">{{ item.userId?item.userId:item.mobile }}</div>
           <div class="idCard">{{ returnIdCard(item.idCard) }}</div>
           <div class="password" @click.stop="showPassWord(item)">
-              <div class="password-button">
-                  查看密码
-              </div>
+            <div class="password-button">查看密码</div>
           </div>
         </div>
       </div>
@@ -119,7 +117,7 @@ export default {
       handler: function(e) {
         e.preventDefault();
       },
-      chosedPassword:"",
+      chosedPassword: "",
       popupVisible: false
     };
   },
@@ -167,6 +165,8 @@ export default {
     closeEdit() {
       this.isShowEdit = false;
       this.openTouch();
+      this.chosedIndex = "";
+      this.chosedDetail = "";
     },
     deleteUser() {
       var vm = this;
@@ -186,6 +186,8 @@ export default {
               iconClass: "icon icon-success"
             });
             vm.getList();
+            vm.chosedIndex = "";
+            vm.chosedDetail = "";
           } else {
             Toast({
               message: resp.data.data,
@@ -196,8 +198,8 @@ export default {
       });
     },
     showPassWord(item) {
-      this.chosedPassword = item.password;  
-      MessageBox('密码', this.chosedPassword);
+      this.chosedPassword = item.password;
+      MessageBox("密码", this.chosedPassword);
     },
     editConfirm() {
       var vm = this;
@@ -241,9 +243,11 @@ export default {
               message: "账号修改成功!",
               iconClass: "icon icon-success"
             });
-            vm.oldMobile = vm.chosedDetail.userId
+            vm.oldMobile = vm.chosedDetail.userId;
             vm.getList();
             vm.isShowEdit = false;
+            vm.chosedIndex = "";
+            vm.chosedDetail = "";
           } else {
             Toast({
               message: resp.data.data,
@@ -278,6 +282,11 @@ export default {
       if (vm.chosedDetail) {
         vm.isShowEdit = true;
         vm.closeTouch();
+      } else {
+        Toast({
+          message: "请选中要修改的人员！",
+          iconClass: "icon icon-success"
+        });
       }
     },
     lostblur(value) {
