@@ -98,7 +98,7 @@
       <div class="second">
         <div class="item">
           <div class="name">
-            <div class="cross-title">1月23日至今是否离开过南通开发区</div>
+            <div class="cross-title">1月23日至今是否离开过南通</div>
           </div>
         </div>
         <div
