@@ -73,13 +73,9 @@
           <div class="phone">{{ item.mobile }}</div>
           <div class="option">
             <span v-if="item.id === 0">未打卡</span>
-            <mt-button
-              type="primary"
-              size="small"
-              @click.stop="deletePunch(item)"
-              v-else
-              >删除</mt-button
-            >
+            <div class="delete-button" @click.stop="deletePunch(item)" v-else>
+              删除
+            </div>
           </div>
         </div>
       </div>
@@ -502,7 +498,7 @@ export default {
         float: left;
         margin-top: 10px;
         letter-spacing: 2px;
-        margin-left: 15px;
+        margin-left: 10px;
       }
       .active {
         color: #fff;
@@ -527,6 +523,16 @@ export default {
           height: 40px;
           line-height: 40px;
           text-align: center;
+          .delete-button {
+            margin: 0 auto;
+            width: 35px;
+            height: 25px;
+            line-height: 25px;
+            background-color: rgb(45, 127, 233);
+            color: #fff;
+            margin-top: 7.5px;
+            border-radius: 5px;
+          }
         }
         .index {
           width: 10%;
