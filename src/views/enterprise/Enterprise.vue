@@ -1,10 +1,9 @@
 <template>
   <div class="register">
     <div class="logo"></div>
-    <!-- <div class="search-button" @click="toSearchMap"></div>
-    <div class="health-button" @click="toWeiXin"></div> -->
     <div class="registration-button" @click="toRegister"></div>
     <div class="infoManage-button" @click="toQuery"></div>
+    <div class="manage-button" @click="toManage"></div>
     <div class="company-name">
       <div class="nantong-chy"></div>
       <div>技术支持：南通市测绘院有限公司</div>
@@ -114,12 +113,23 @@ export default {
     },
     toRegister() {
       this.$router.push({
-        path:"/register"
-      })
+        path: "/register"
+      });
     },
     toQuery() {
       this.$router.push({
-        path: "/login"
+        path: "/login",
+        query: {
+          type: "punch"
+        }
+      });
+    },
+    toManage() {
+      this.$router.push({
+        path: "/login",
+        query: {
+          type: "manage"
+        }
       });
     }
   },
@@ -143,28 +153,11 @@ export default {
     transform: translateX(-50%);
     background: url("../../assets/image/zhanyi-logo1.png") no-repeat;
   }
-  .search-button,
-  .health-button,
+  .manage-button,
   .registration-button,
   .infoManage-button {
     width: 280px;
     height: 70px;
-  }
-  .search-button {
-    background: url("../../assets/image/searchButton.png") no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    top: 200px;
-    transform: translateX(-50%);
-  }
-  .health-button {
-    background: url("../../assets/image/healthButton.png") no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    top: 290px;
-    transform: translateX(-50%);
   }
   .registration-button {
     background: url("../../assets/image/registration.png") no-repeat;
@@ -180,6 +173,14 @@ export default {
     position: absolute;
     left: 50%;
     top: 290px;
+    transform: translateX(-50%);
+  }
+  .manage-button {
+    background: url("../../assets/image/manage-button.png") no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    left: 50%;
+    top: 380px;
     transform: translateX(-50%);
   }
   .nantong-chy {

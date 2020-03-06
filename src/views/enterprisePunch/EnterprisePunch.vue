@@ -4,10 +4,6 @@
     <div class="punch" ref="punch">
       <div class="header">
         企业员工复工信息填写
-        <!-- <div class="back" @click="goBack">
-          首页
-          <div class="back-icon"></div>
-        </div>-->
       </div>
       <div class="top">
         <div class="item">
@@ -19,7 +15,12 @@
         <div class="item">
           <div class="name">联系电话</div>
           <div class="value">
-            <input type="text" disabled="disabled" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input
+              type="text"
+              disabled="disabled"
+              v-model="phoneNumber"
+              @blur="lostblur('phone')"
+            />
           </div>
         </div>
         <div class="item">
@@ -81,7 +82,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedCough === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedCough === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -110,7 +114,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedLeaveIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedLeaveIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -150,29 +157,43 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
+            <div class="date" @click="openPicker">
+              {{ returnDate(dateValue) }}
+            </div>
           </div>
         </div>
-        <div class="item" style="position:relative;padding:0 20px" @click="showNantong">
+        <div
+          class="item"
+          style="position:relative;padding:0 20px"
+          @click="showNantong"
+        >
           <div class="name" style="padding:0">
             <div class="cross-title" style="letter-spacing:0px">
               {{
-              chosedLeaveIndex === 0
-              ? "现居住地(下拉选择区县)"
-              : "返通居住地(下拉选择区县)"
+                chosedLeaveIndex === 0
+                  ? "现居住地(下拉选择区县)"
+                  : "返通居住地(下拉选择区县)"
               }}
-              <div class="chosedValue" style="height:50px" v-if="isShowSelectNantong">
-                <div
-                  class="value"
-                  style="width:100%;box-sizing:border-box"
-                >{{ chosedNantongValue.chosedNantongName }}</div>
-                <div
-                  class="value"
-                  style="width:100%;box-sizing:border-box"
-                >{{ chosedNantongValue.chosedXian }}</div>
+              <div
+                class="chosedValue"
+                style="height:50px"
+                v-if="isShowSelectNantong"
+              >
+                <div class="value" style="width:100%;box-sizing:border-box">
+                  {{ chosedNantongValue.chosedNantongName }}
+                </div>
+                <div class="value" style="width:100%;box-sizing:border-box">
+                  {{ chosedNantongValue.chosedXian }}
+                </div>
               </div>
             </div>
-            <div class="icon-cross" style="transform:translateX(-20px)" v-if="isShowNantongIcon">></div>
+            <div
+              class="icon-cross"
+              style="transform:translateX(-20px)"
+              v-if="isShowNantongIcon"
+            >
+              >
+            </div>
           </div>
         </div>
         <div class="item">
@@ -200,14 +221,19 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="choseReworkIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="choseReworkIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item reworkTime" v-if="choseReworkIndex === 1">
           <div class="name">复工日期</div>
           <div class="value">
-            <div class="date" @click="openRework">{{ returnDate(reworkDate) }}</div>
+            <div class="date" @click="openRework">
+              {{ returnDate(reworkDate) }}
+            </div>
           </div>
         </div>
       </div>
@@ -226,7 +252,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedSeeMedicalIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -241,7 +270,10 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[0].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 0 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 0 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -258,18 +290,28 @@
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[1].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 1 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
+          <mt-radio
+            v-model="chosedQuarant"
+            :options="options"
+            @change="check"
+          ></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(2)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[2].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 2 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -285,7 +327,9 @@
         <div class="item reworkTime">
           <div class="name">开始隔离日期</div>
           <div class="value">
-            <div class="date" @click="openIsolationDays">{{ returnDate(isolationDays) }}</div>
+            <div class="date" @click="openIsolationDays">
+              {{ returnDate(isolationDays) }}
+            </div>
           </div>
         </div>
         <div class="item">
@@ -294,7 +338,11 @@
           </div>
         </div>
         <div class="item">
-          <mt-radio v-model="chosedDate" :options="dateOptions" @change="checkDate"></mt-radio>
+          <mt-radio
+            v-model="chosedDate"
+            :options="dateOptions"
+            @change="checkDate"
+          ></mt-radio>
         </div>
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
@@ -302,7 +350,11 @@
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedOutpatient.value"
+              >
                 <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
@@ -323,7 +375,9 @@
               v-for="(item, index) in seeMedicalList"
               :key="index"
               @click="setSeeMedical(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -332,7 +386,11 @@
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedHospital.value"
+              >
                 <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
@@ -353,7 +411,9 @@
               v-for="(item, index) in hospitalList"
               :key="index"
               @click="setHospital(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -424,17 +484,30 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item, index) in provinceList" :key="index">
-              <div class="province" v-for="(v, i) in item.items" :key="i" @click="choseProvince(v)">
+              <div
+                class="province"
+                v-for="(v, i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">{{ chosedProvinceName }}</span>
-            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
-            <span class="selectedCityButton" v-else @click="selectCity">{{ chosedCityName }}</span>
-            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+            <span class="seleted-province" @click="selectProvince">{{
+              chosedProvinceName
+            }}</span>
+            <span class="selectCityButton" v-if="!chosedCityName"
+              >选择城市</span
+            >
+            <span class="selectedCityButton" v-else @click="selectCity">{{
+              chosedCityName
+            }}</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect"
+              >选择区域</span
+            >
           </div>
           <div class="select-city" v-if="isShowCityList">
             <div v-for="(item, index) in cityList" :key="index">
@@ -474,7 +547,11 @@
           </div>
           <div class="select-province" v-if="isShowNTArea">
             <div class="select-title">选择区 / 县</div>
-            <div v-for="(item, index) in nantongList" :key="index" v-if="index !== 0">
+            <div
+              v-for="(item, index) in nantongList"
+              :key="index"
+              v-if="index !== 0"
+            >
               <div class="province" @click="choseNanTong(item)">
                 <div class="label" style="width:0"></div>
                 <div class="name">{{ item.name }}</div>
@@ -482,10 +559,9 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowNTArea">
-            <span
-              class="seleted-province"
-              @click="selectNTArea"
-            >{{ selectNantongValue.chosedNantongName }}</span>
+            <span class="seleted-province" @click="selectNTArea">{{
+              selectNantongValue.chosedNantongName
+            }}</span>
             <span class="selectCityButton">选择镇</span>
           </div>
           <div class="select-city" v-if="!isShowNTArea">

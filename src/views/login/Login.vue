@@ -3,18 +3,8 @@
     <div class="logo"></div>
     <div class="title">欢迎您，请登录</div>
     <div class="register-box">
-      <input
-        type="text"
-        placeholder="手机号码"
-        v-model="phoneNumber"
-        @blur="lostblur('phone')"
-      />
-      <input
-        type="password"
-        placeholder="密码"
-        v-model="password"
-        @blur="lostblur"
-      />
+      <input type="number" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
+      <input type="password" placeholder="密码" v-model="password" @blur="lostblur" />
     </div>
     <div class="register-button" @click="login">进入</div>
   </div>
@@ -138,13 +128,23 @@ export default {
             });
             window.localStorage.setItem("phoneNumber", vm.phoneNumber);
             window.localStorage.setItem("password", vm.password);
-            vm.$router.push({
-              path: "/manage",
-              query: {
-                enterpriseID: resp.data.data.enterpriseID
-                // WXID: vm.$route.query.
-              }
-            });
+            if (vm.$route.query.type === "punch") {
+              vm.$router.push({
+                path: "/manage",
+                query: {
+                  enterpriseID: resp.data.data.enterpriseID
+                }
+              });
+            } else {
+              vm.$router.push({
+                path: "/staffManage",
+                query: {
+                  enterpriseID: resp.data.data.enterpriseID,
+                  userID: resp.data.data.mobile,
+                  password: resp.data.data.password
+                }
+              });
+            }
           } else {
             Toast({
               message: "登录失败",

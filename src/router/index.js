@@ -69,6 +69,11 @@ const routes = [
     path:"/punchLogin",
     name:"punchLogin",
     component: resolve => require(["../views/punchLogin/PunchLogin.vue"], resolve)
+  },
+  {
+    path:"/staffManage",
+    name:"staffManage",
+    component: resolve => require(["../views/staff-manage/StaffManage.vue"], resolve)
   }
  
 ];

@@ -4,40 +4,16 @@
     <div class="title" v-show="isRegister">欢迎您，请注册</div>
     <div class="title" v-show="!isRegister">欢迎您，请登录</div>
     <div class="register-box" v-if="isRegister">
-      <input
-        type="text"
-        placeholder="手机号码"
-        v-model="phoneNumber1"
-        @blur="lostblur"
-      />
-      <input
-        type="password"
-        placeholder="密码"
-        v-model="password1"
-        @blur="lostblur"
-      />
-      <input
-        type="password"
-        placeholder="确认密码"
-        v-model="password2"
-        @blur="lostblur"
-      />
+      <input type="number" placeholder="手机号码" v-model="phoneNumber1" @blur="lostblur" />
+      <input type="password" placeholder="密码" v-model="password1" @blur="lostblur" />
+      <input type="password" placeholder="确认密码" v-model="password2" @blur="lostblur" />
       <span @click="isRegister = false">登录</span>
     </div>
     <div class="register-box" v-else>
-      <input
-        type="text"
-        placeholder="手机号码"
-        v-model="phoneNumber2"
-        @blur="lostblur"
-      />
-      <input
-        type="password"
-        placeholder="密码"
-        v-model="loginPassword"
-        @blur="lostblur"
-      />
+      <input type="number" placeholder="手机号码" v-model="phoneNumber2" @blur="lostblur" />
+      <input type="password" placeholder="密码" v-model="loginPassword" @blur="lostblur" />
       <span @click="isRegister = true">注册</span>
+      <span style="margin-right:10px;float:left;color:red" @click="forgetPassWord">忘记密码</span>
     </div>
     <div class="register-button" v-if="isRegister" @click="register">注 册</div>
     <div class="login-button" v-if="!isRegister" @click="login">登 录</div>
@@ -49,6 +25,7 @@ import axios from "axios";
 import { Toast } from "mint-ui";
 import { registerUser, userLogin } from "@/api/punchLogin";
 import { getURL, blur } from "@/common/tool/tool";
+import { MessageBox } from "mint-ui";
 export default {
   data() {
     return {
@@ -153,6 +130,12 @@ export default {
           console.log(err);
         });
     },
+    forgetPassWord() {
+      Toast({
+        message: "请联系企业管理员进行账号修改！",
+        iconClass: "icon icon-success"
+      });
+    },
     login() {
       var vm = this;
       if (vm.loginPassword && vm.phoneNumber2) {
@@ -214,23 +197,25 @@ export default {
           });
           return;
         }
-        registerUser({
-          userId: vm.phoneNumber1,
-          password: vm.password1,
-          enterpriseID: vm.$route.query.enterpriseID
-        }).then(resp => {
-          if (resp.data.success) {
-            Toast({
-              message: "注册成功",
-              iconClass: "icon icon-success"
-            });
-            vm.isRegister = false;
-          } else {
-            Toast({
-              message: resp.data.data,
-              iconClass: "icon icon-success"
-            });
-          }
+        MessageBox.confirm(`确认使用${vm.phoneNumber1}手机号注册吗?`, "账号注册").then(() => {
+          registerUser({
+            userId: vm.phoneNumber1,
+            password: vm.password1,
+            enterpriseID: vm.$route.query.enterpriseID
+          }).then(resp => {
+            if (resp.data.success) {
+              Toast({
+                message: "注册成功",
+                iconClass: "icon icon-success"
+              });
+              vm.isRegister = false;
+            } else {
+              Toast({
+                message: resp.data.data,
+                iconClass: "icon icon-success"
+              });
+            }
+          });
         });
       } else {
         Toast({

@@ -26,7 +26,9 @@ body {
 .anchorBL {
   display: none;
 }
-.picker-items{ width:100% }
+.picker-items {
+  width: 100%;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -54,6 +56,10 @@ input[type="text"]:focus {
   border-bottom: 1px solid #d6362e;
 }
 input[type="password"]:focus {
+  outline: none;
+  border-bottom: 1px solid #d6362e;
+}
+input[type="number"]:focus {
   outline: none;
   border-bottom: 1px solid #d6362e;
 }
