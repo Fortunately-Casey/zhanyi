@@ -2,9 +2,7 @@
 <template>
   <div class="punch-content">
     <div class="punch" ref="punch">
-      <div class="header">
-        企业员工复工信息填写
-      </div>
+      <div class="header">企业员工复工信息填写</div>
       <div class="top">
         <div class="item">
           <div class="name">姓名</div>
@@ -89,7 +87,7 @@
             </div>
           </div>
         </div>
-        <div class="item" v-show="chosedCough === 1">
+        <!-- <div class="item" v-show="chosedCough === 1">
           <input
             type="text"
             v-model="symptomsDetail"
@@ -97,6 +95,12 @@
             class="addressDetail"
             @blur="lostblur"
           />
+        </div>-->
+        <div class="item" v-show="chosedCough === 1">
+          <mt-radio
+            v-model="symptomsDetail"
+            :options="symptomOptions"
+          ></mt-radio>
         </div>
       </div>
       <div class="second">
@@ -496,15 +500,15 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">{{
-              chosedProvinceName
-            }}</span>
+            <span class="seleted-province" @click="selectProvince">
+              {{ chosedProvinceName }}
+            </span>
             <span class="selectCityButton" v-if="!chosedCityName"
               >选择城市</span
             >
-            <span class="selectedCityButton" v-else @click="selectCity">{{
-              chosedCityName
-            }}</span>
+            <span class="selectedCityButton" v-else @click="selectCity">
+              {{ chosedCityName }}
+            </span>
             <span class="selectCityButton" v-if="isShowAreaSelect"
               >选择区域</span
             >
@@ -559,9 +563,9 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowNTArea">
-            <span class="seleted-province" @click="selectNTArea">{{
-              selectNantongValue.chosedNantongName
-            }}</span>
+            <span class="seleted-province" @click="selectNTArea">
+              {{ selectNantongValue.chosedNantongName }}
+            </span>
             <span class="selectCityButton">选择镇</span>
           </div>
           <div class="select-city" v-if="!isShowNTArea">
@@ -658,6 +662,16 @@ export default {
         {
           label: "丽枫酒店",
           value: "丽枫酒店"
+        }
+      ],
+      symptomOptions: [
+        {
+          label: "乏力",
+          value: "乏力"
+        },
+        {
+          label: "腹泻",
+          value: "腹泻"
         }
       ],
       dateOptions: [

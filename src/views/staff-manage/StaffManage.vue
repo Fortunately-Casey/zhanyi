@@ -21,7 +21,9 @@
         <input type="text" v-model="paramEMPIdCard" @blur="lostblur()" />
       </div>
     </div>
-    <div class="search-button" @click="search">查&nbsp;&nbsp;&nbsp;&nbsp;询</div>
+    <div class="search-button" @click="search">
+      查&nbsp;&nbsp;&nbsp;&nbsp;询
+    </div>
     <div class="content">
       <div class="list">
         <div class="list-header">
@@ -51,8 +53,12 @@
         <span @click="next">></span>
       </div>
       <div class="bottom">
-        <div class="delete-button" @click="deleteUser">删&nbsp;&nbsp;&nbsp;&nbsp;除</div>
-        <div class="edit-button" @click="editUser">修&nbsp;&nbsp;&nbsp;&nbsp;改</div>
+        <div class="delete-button" @click="deleteUser">
+          删&nbsp;&nbsp;&nbsp;&nbsp;除
+        </div>
+        <div class="edit-button" @click="editUser">
+          修&nbsp;&nbsp;&nbsp;&nbsp;改
+        </div>
       </div>
       <div class="modal" v-if="isShowEdit">
         <div class="punch-success">
@@ -61,7 +67,11 @@
           <div class="edit-content">
             <div class="edit-item">
               <span>名字</span>
-              <input type="text" v-model="chosedDetail.name" @blur="lostblur()" />
+              <input
+                type="text"
+                v-model="chosedDetail.name"
+                @blur="lostblur()"
+              />
             </div>
             <div class="edit-item">
               <span>年龄</span>
@@ -74,11 +84,19 @@
             </div>
             <div class="edit-item">
               <span>身份证号</span>
-              <input type="text" v-model="chosedDetail.idCard" @blur="lostblur()" />
+              <input
+                type="text"
+                v-model="chosedDetail.idCard"
+                @blur="lostblur()"
+              />
             </div>
             <div class="edit-item">
               <span>账号</span>
-              <input type="number" v-model="chosedDetail.userId" @blur="lostblur()" />
+              <input
+                type="number"
+                v-model="chosedDetail.userId"
+                @blur="lostblur()"
+              />
             </div>
             <!-- <div class="edit-item">
               <span>密码</span>
@@ -186,7 +204,7 @@ export default {
                 message: "账号删除成功!",
                 iconClass: "icon icon-success"
               });
-              if (vm.list.length === 1) {
+              if (vm.list.length === 1 && vm.page !== 1) {
                 vm.page--;
                 vm.getList();
               } else {
