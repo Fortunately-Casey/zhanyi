@@ -34,11 +34,11 @@
           class="item"
           v-for="(item, index) in list"
           :key="index"
-          @click="choseItem(item,index)"
-          :class="index === chosedIndex?'chosed':''"
+          @click="choseItem(item, index)"
+          :class="index === chosedIndex ? 'chosed' : ''"
         >
           <div class="name">{{ item.name }}</div>
-          <div class="phone">{{ item.userId?item.userId:item.mobile }}</div>
+          <div class="phone">{{ item.userId ? item.userId : item.mobile }}</div>
           <div class="idCard">{{ returnIdCard(item.idCard) }}</div>
           <div class="password" @click.stop="showPassWord(item)">
             <div class="password-button">查看密码</div>
@@ -170,32 +170,45 @@ export default {
     },
     deleteUser() {
       var vm = this;
-      MessageBox.confirm("确定执行此操作?", "删除当前账号").then(() => {
-        deleteEnterpriseEMPUser({
-          paramEnterpriseAdminUserId: vm.$route.query.userID,
-          paramEnterpriseAdminPassword: vm.$route.query.password,
-          paramEnterpriseID: vm.$route.query.enterpriseID,
-          paramEMPMobile: vm.chosedDetail.userId
-            ? vm.chosedDetail.userId
-            : vm.chosedDetail.mobile
-        }).then(resp => {
-          if (resp.data.success) {
-            vm.isShowEdit = false;
-            Toast({
-              message: "账号删除成功!",
-              iconClass: "icon icon-success"
-            });
-            vm.getList();
-            vm.chosedIndex = "";
-            vm.chosedDetail = "";
-          } else {
-            Toast({
-              message: resp.data.data,
-              iconClass: "icon icon-success"
-            });
-          }
+      if (vm.chosedDetail) {
+        MessageBox.confirm("确定执行此操作?", "删除当前账号").then(() => {
+          deleteEnterpriseEMPUser({
+            paramEnterpriseAdminUserId: vm.$route.query.userID,
+            paramEnterpriseAdminPassword: vm.$route.query.password,
+            paramEnterpriseID: vm.$route.query.enterpriseID,
+            paramEMPMobile: vm.chosedDetail.userId
+              ? vm.chosedDetail.userId
+              : vm.chosedDetail.mobile
+          }).then(resp => {
+            if (resp.data.success) {
+              vm.isShowEdit = false;
+              Toast({
+                message: "账号删除成功!",
+                iconClass: "icon icon-success"
+              });
+              if (vm.list.length === 1) {
+                vm.page--;
+                vm.getList();
+              } else {
+                vm.getList();
+              }
+
+              vm.chosedIndex = "";
+              vm.chosedDetail = "";
+            } else {
+              Toast({
+                message: resp.data.data,
+                iconClass: "icon icon-success"
+              });
+            }
+          });
         });
-      });
+      } else {
+        Toast({
+          message: "请选中要删除的人员！",
+          iconClass: "icon icon-success"
+        });
+      }
     },
     showPassWord(item) {
       this.chosedPassword = item.password;
@@ -450,12 +463,12 @@ export default {
           font-weight: bold;
           .password-button {
             margin: 0 auto;
-            width: 55px;
+            width: 60px;
             height: 25px;
             line-height: 25px;
             background-color: rgb(45, 127, 233);
             color: #fff;
-            font-size: 12px;
+            font-size: 11px;
             margin-top: 7.5px;
             border-radius: 5px;
           }

@@ -4,16 +4,45 @@
     <div class="title" v-show="isRegister">欢迎您，请注册</div>
     <div class="title" v-show="!isRegister">欢迎您，请登录</div>
     <div class="register-box" v-if="isRegister">
-      <input type="number" placeholder="手机号码" v-model="phoneNumber1" @blur="lostblur" />
-      <input type="password" placeholder="密码" v-model="password1" @blur="lostblur" />
-      <input type="password" placeholder="确认密码" v-model="password2" @blur="lostblur" />
+      <input
+        type="number"
+        placeholder="手机号码"
+        v-model="phoneNumber1"
+        @blur="lostblur"
+      />
+      <input
+        type="password"
+        placeholder="密码"
+        v-model="password1"
+        @blur="lostblur"
+      />
+      <input
+        type="password"
+        placeholder="确认密码"
+        v-model="password2"
+        @blur="lostblur"
+      />
       <span @click="isRegister = false">登录</span>
     </div>
     <div class="register-box" v-else>
-      <input type="number" placeholder="手机号码" v-model="phoneNumber2" @blur="lostblur" />
-      <input type="password" placeholder="密码" v-model="loginPassword" @blur="lostblur" />
+      <input
+        type="number"
+        placeholder="手机号码"
+        v-model="phoneNumber2"
+        @blur="lostblur"
+      />
+      <input
+        type="password"
+        placeholder="密码"
+        v-model="loginPassword"
+        @blur="lostblur"
+      />
       <span @click="isRegister = true">注册</span>
-      <span style="margin-right:10px;float:left;color:red" @click="forgetPassWord">忘记密码</span>
+      <span
+        style="margin-right:10px;float:left;color:red"
+        @click="forgetPassWord"
+        >忘记密码</span
+      >
     </div>
     <div class="register-button" v-if="isRegister" @click="register">注 册</div>
     <div class="login-button" v-if="!isRegister" @click="login">登 录</div>
@@ -197,7 +226,10 @@ export default {
           });
           return;
         }
-        MessageBox.confirm(`确认使用${vm.phoneNumber1}手机号注册吗?`, "账号注册").then(() => {
+        MessageBox.confirm(
+          `确认使用${vm.phoneNumber1}手机号注册吗?`,
+          "账号注册"
+        ).then(() => {
           registerUser({
             userId: vm.phoneNumber1,
             password: vm.password1,

@@ -3,8 +3,18 @@
     <div class="logo"></div>
     <div class="title">欢迎您，请登录</div>
     <div class="register-box">
-      <input type="number" placeholder="手机号码" v-model="phoneNumber" @blur="lostblur('phone')" />
-      <input type="password" placeholder="密码" v-model="password" @blur="lostblur" />
+      <input
+        type="number"
+        placeholder="手机号码"
+        v-model="phoneNumber"
+        @blur="lostblur('phone')"
+      />
+      <input
+        type="password"
+        placeholder="密码"
+        v-model="password"
+        @blur="lostblur"
+      />
     </div>
     <div class="register-button" @click="login">进入</div>
   </div>
