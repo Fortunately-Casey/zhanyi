@@ -97,10 +97,10 @@
           />
         </div>-->
         <div class="item" v-show="chosedCough === 1">
-          <mt-radio
+          <mt-checklist
             v-model="symptomsDetail"
             :options="symptomOptions"
-          ></mt-radio>
+          ></mt-checklist>
         </div>
       </div>
       <div class="second">
@@ -583,7 +583,7 @@
 </template>
 <script>
 import { Todate, blur, debounce, Totime } from "@/common/tool/tool.js";
-import { Toast, Indicator, Radio, MessageBox } from "mint-ui";
+import { Toast, Indicator, Radio, MessageBox, Checklist } from "mint-ui";
 import {
   saveEnterprisePeriodPlace,
   getEnterprise,
@@ -627,7 +627,7 @@ export default {
       seeMedicalList: [],
       isShowHospitalList: false,
       isShowSeeMedicalList: false,
-      symptomsDetail: "",
+      symptomsDetail: [],
       isolationDays: new Date(),
       isShowNantongList: false,
       nantongList: [],
@@ -672,6 +672,18 @@ export default {
         {
           label: "腹泻",
           value: "腹泻"
+        },
+        {
+          label: "咳嗽",
+          value: "咳嗽"
+        },
+        {
+          label: "发热",
+          value: "发热"
+        },
+        {
+          label: "呼吸困难",
+          value: "呼吸困难"
         }
       ],
       dateOptions: [
@@ -831,7 +843,9 @@ export default {
         // vm.temperature = last.temp;
         if (last) {
           vm.chosedCough = last.cough ? 1 : 0;
-          vm.symptomsDetail = last.symptomsDetail;
+          vm.symptomsDetail = last.symptomsDetail
+            ? last.symptomsDetail.split(",")
+            : [];
           vm.chosedLeaveIndex = last.leaveNT ? 1 : 0;
           if (last.overseasAddress) {
             vm.beforeBackAddress = last.overseasAddress;
@@ -981,7 +995,7 @@ export default {
         });
     },
     check() {
-      console.log(this.chosedQuarant);
+      console.log(this.symptomsDetail);
     },
     checkDate() {
       console.log(this.chosedDate);
@@ -1011,7 +1025,7 @@ export default {
       if (vm.chosedSeeMedicalIndex === 3) {
         seekMedicalAddress = vm.hospitalName;
       }
-      if (vm.chosedCough === 1 && vm.symptomsDetail === "") {
+      if (vm.chosedCough === 1 && vm.symptomsDetail === []) {
         if (!vm.username) {
           Toast({
             message: "请输入身体异常状况！",
@@ -1203,7 +1217,8 @@ export default {
         seekMedicalAddress: seekMedicalAddress,
         other: vm.otherInfo,
         currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value,
-        symptomsDetail: vm.symptomsDetail,
+        symptomsDetail:
+          vm.symptomsDetail.length > 0 ? vm.symptomsDetail.join(",") : "",
         isolationDays: vm.chosedSeeMedicalIndex === 1 ? vm.chosedDate : "",
         isolationStartDate:
           vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : "",
@@ -1328,7 +1343,7 @@ export default {
     // 是否咳嗽
     choseCough(index) {
       this.chosedCough = index;
-      this.symptomsDetail = "";
+      this.symptomsDetail = [];
     },
     // 是否离开南通
     choseLeave(index) {
