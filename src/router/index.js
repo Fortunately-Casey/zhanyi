@@ -4,10 +4,9 @@ import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
-const routes = [
-  {
+const routes = [{
     path: "/homeMap",
-    name:"homeMap",
+    name: "homeMap",
     component: resolve => require(["../views/home/HomeMap.vue"], resolve),
   },
   {
@@ -51,31 +50,66 @@ const routes = [
     component: resolve => require(["../views/register/Register.vue"], resolve)
   },
   {
-    path:"/login",
-    name:"login",
+    path: "/login",
+    name: "login",
     component: resolve => require(["../views/login/Login.vue"], resolve)
   },
   {
-    path:"/manage",
-    name:"manage",
+    path: "/manage",
+    name: "manage",
     component: resolve => require(["../views/manage/Manage.vue"], resolve)
   },
   {
-    path:"/errorPage",
-    name:"manaerrorPagege",
+    path: "/errorPage",
+    name: "manaerrorPagege",
     component: resolve => require(["../views/errorPage/Error.vue"], resolve)
   },
   {
-    path:"/punchLogin",
-    name:"punchLogin",
+    path: "/punchLogin",
+    name: "punchLogin",
     component: resolve => require(["../views/punchLogin/PunchLogin.vue"], resolve)
   },
   {
-    path:"/staffManage",
-    name:"staffManage",
+    path: "/staffManage",
+    name: "staffManage",
     component: resolve => require(["../views/staff-manage/StaffManage.vue"], resolve)
+  },
+  {
+    path: "/studentPunch",
+    name: "studentPunch",
+    component: resolve => require(["../views/student-punch/StudentPunch.vue"], resolve)
+  },
+  {
+    path: "/schoolMain",
+    name: "schoolMain",
+    component: resolve => require(["../views/school-main/SchoolMain.vue"], resolve)
+  },
+  {
+    path: "/schoolRegitser",
+    name: "schoolRegitser",
+    component: resolve => require(["../views/school-register/SchoolRegister.vue"], resolve)
+  },
+  {
+    path: "/childrenInfo",
+    name: "childrenInfo",
+    component: resolve => require(["../views/children-info/ChildrenInfo.vue"], resolve)
+  },
+  {
+    path: "/childrenEdit",
+    name: "childrenEdit",
+    component: resolve => require(["../views/children-edit/ChildrenEdit.vue"], resolve)
+  },
+  {
+    path: "/schoolLogin",
+    name: "schoolLogin",
+    component: resolve => require(["../views/school-login/SchoolLogin.vue"], resolve)
+  },
+  {
+    path: "/schoolManage",
+    name: "schoolManage",
+    component: resolve => require(["../views/school-manage/SchoolManage.vue"], resolve)
   }
- 
+
 ];
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {

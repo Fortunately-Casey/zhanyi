@@ -53,15 +53,15 @@ input {
 
 input[type="text"]:focus {
   outline: none;
-  border-bottom: 1px solid #d6362e;
+  border-bottom: 1px solid #16d0a0;
 }
 input[type="password"]:focus {
   outline: none;
-  border-bottom: 1px solid #d6362e;
+  border-bottom: 1px solid #16d0a0;
 }
 input[type="number"]:focus {
   outline: none;
-  border-bottom: 1px solid #d6362e;
+  border-bottom: 1px solid #16d0a0;
 }
 
 /*地图标题*/
@@ -114,7 +114,14 @@ input[type="number"]:focus {
 .mint-radiolist-title {
   display: none !important;
 }
+.mint-checklist-title {
+  display: none !important;
+}
 .mint-radio-label {
+  font-size: 13px !important;
+  font-weight: 40 !important;
+}
+.mint-checklist-label {
   font-size: 13px !important;
   font-weight: 40 !important;
 }
