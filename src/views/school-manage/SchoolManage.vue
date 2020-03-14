@@ -6,56 +6,49 @@
         首页
         <div class="back-icon"></div>
       </div>
-      <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span>
+      <!-- <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span> -->
     </div>
     <div class="content">
+      <div class="class-name">南通市开发区第三中学</div>
       <div class="date" @click="openDate">
         {{ returnDate(date) }}
         <span class="cart"></span>
       </div>
-      <div class="tab">
-        <div
-          class="item"
-          :class="chosedIndex === 3 ? 'active' : ''"
-          @click="choseTab(3)"
-        >
-          全部{{ chosedIndex === 3 ? `(${count})` : "" }}
+      <scroll class="wrapper">
+        <div class="tab">
+          <div
+            class="item"
+            :class="chosedIndex === 3 ? 'active' : ''"
+            @click="choseTab(3)"
+          >全部{{ chosedIndex === 3 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 5 ? 'active' : ''"
+            @click="choseTab(5)"
+          >已审核{{ chosedIndex === 5 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 4 ? 'active' : ''"
+            @click="choseTab(4)"
+          >未审核{{ chosedIndex === 4 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 0 ? 'active' : ''"
+            @click="choseTab(0)"
+          >未申报{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 6 ? 'active' : ''"
+            @click="choseTab(6)"
+          >异常{{ chosedIndex === 6 ? `(${count})` : "" }}</div>
         </div>
-        <div
-          class="item"
-          :class="chosedIndex === 5 ? 'active' : ''"
-          @click="choseTab(5)"
-        >
-          已审核{{ chosedIndex === 5 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 4 ? 'active' : ''"
-          @click="choseTab(4)"
-        >
-          未审核{{ chosedIndex === 4 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 0 ? 'active' : ''"
-          @click="choseTab(0)"
-        >
-          未申报{{ chosedIndex === 0 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 6 ? 'active' : ''"
-          @click="choseTab(6)"
-        >
-          异常{{ chosedIndex === 6 ? `(${count})` : "" }}
-        </div>
-      </div>
+      </scroll>
       <div class="list">
         <div class="list-header">
           <div class="index">序号</div>
           <div class="name">姓名</div>
           <div class="temp">体温</div>
-          <div class="isCough">是否咳嗽</div>
+          <div class="isCough">有无症状</div>
           <div class="phone">联系电话</div>
           <div class="option">操作</div>
         </div>
@@ -73,9 +66,7 @@
           <div class="phone">{{ item.mobile }}</div>
           <div class="option">
             <span v-if="item.id === 0">未打卡</span>
-            <div class="delete-button" @click.stop="deletePunch(item)" v-else>
-              删除
-            </div>
+            <div class="delete-button" @click.stop="deletePunch(item)" v-else>删除</div>
           </div>
         </div>
       </div>
@@ -85,15 +76,13 @@
         <span @click="next">></span>
       </div>
       <div class="bottom">
-        <div class="look-button" @click="download">数据下载</div>
+        <!-- <div class="look-button" @click="download">数据下载</div> -->
         <div
           class="punch-button"
           @click="approvalPeriodPlace"
           v-show="chosedIndex === 5 ? false : true"
-        >
-          审核
-        </div>
-        <div class="import-button" @click="importValue">导入数据</div>
+        >审核</div>
+        <!-- <div class="import-button" @click="importValue">导入数据</div> -->
       </div>
     </div>
     <mt-datetime-picker
@@ -113,12 +102,7 @@
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
-        <vue-qr
-          :text="text"
-          :logoScale="50"
-          :size="250"
-          :logoSrc="imageUrl"
-        ></vue-qr>
+        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl"></vue-qr>
       </div>
     </div>
     <div class="modal" v-show="isShowDetail">
@@ -149,9 +133,9 @@
             <div class="name">返通居住地:</div>
             <div class="value">
               {{
-                chosedDetail.ntCity +
-                  chosedDetail.ntCounty +
-                  chosedDetail.ntAddress
+              chosedDetail.ntCity +
+              chosedDetail.ntCounty +
+              chosedDetail.ntAddress
               }}
             </div>
           </li>
@@ -161,17 +145,9 @@
     <div class="modal" v-show="isShowDownload">
       <div class="punch-detail">
         <div class="icon-close" @click="isShowDownload = false"></div>
-        <div class="download-message">
-          下载今日健康报告信息请复制以下链接到浏览器中打开
-        </div>
+        <div class="download-message">下载今日健康报告信息请复制以下链接到浏览器中打开</div>
         <div class="url-message">{{ downloadUrl }}</div>
-        <button
-          class="btn"
-          :data-clipboard-text="downloadUrl"
-          @click="copyAlert"
-        >
-          复制链接
-        </button>
+        <button class="btn" :data-clipboard-text="downloadUrl" @click="copyAlert">复制链接</button>
       </div>
     </div>
     <div class="modal" v-show="isShowImport">
@@ -179,13 +155,7 @@
         <div class="icon-close" @click="isShowImport = false"></div>
         <div class="download-message">导入数据请复制以下链接到浏览器中打开</div>
         <div class="url-message">{{ importUrl }}</div>
-        <button
-          class="btn"
-          :data-clipboard-text="importUrl"
-          @click="copyImport"
-        >
-          复制链接
-        </button>
+        <button class="btn" :data-clipboard-text="importUrl" @click="copyImport">复制链接</button>
       </div>
     </div>
   </div>
@@ -202,6 +172,7 @@ import {
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
 import Clipboard from "clipboard";
+import Scroll from "@/components/Scroll.vue";
 import { weixinTransform } from "@/common/data.js";
 export default {
   data() {
@@ -412,7 +383,8 @@ export default {
     }
   },
   components: {
-    VueQr
+    VueQr,
+    Scroll
   }
 };
 </script>
@@ -438,7 +410,6 @@ export default {
       left: 15px;
       top: 50%;
       transform: translateY(-50%);
-
       .back-icon {
         width: 8px;
         height: 13px;
@@ -460,7 +431,8 @@ export default {
     }
   }
   .content {
-    .date {
+    .date,
+    .class-name {
       height: 40px;
       border-bottom: 1px solid rgb(199, 197, 197);
       text-align: center;
@@ -481,31 +453,38 @@ export default {
         border-left: 5px solid transparent;
       }
     }
-    .tab {
-      background-color: #fff;
-      height: 40px;
-      border-bottom: 1px solid rgb(199, 197, 197);
-      .item {
-        // width: 80px;
-        padding: 3px 6px;
-        height: 20px;
-        line-height: 20px;
-        text-align: center;
-        font-size: 12px;
-        // color: #fff;
-        // background-color: rgb(226, 118, 118);
-        border-radius: 15px;
-        float: left;
-        margin-top: 10px;
-        letter-spacing: 2px;
-        margin-left: 10px;
-      }
-      .active {
-        color: #fff;
-        background-color: rgba(45, 85, 215, 0.3);
-        color: #16d0a0;
+    .wrapper {
+      width: 100%;
+      overflow: hidden;
+      .tab {
+        width: 450px;
+        background-color: #fff;
+        height: 40px;
+        border-bottom: 1px solid rgb(199, 197, 197);
+        .item {
+          width: 75px;
+          padding: 3px 3px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          font-size: 12px;
+          float: left;
+          color: #aaa;
+          border-radius: 15px;
+          float: left;
+          margin-top: 10px;
+          letter-spacing: 2px;
+          margin-left: 5px;
+        }
+        .active {
+          color: #fff;
+          background-color: #dcfff6;
+          color: #16d0a0;
+          font-weight: bold;
+        }
       }
     }
+
     .list {
       height: 451px;
       background-color: #fff;

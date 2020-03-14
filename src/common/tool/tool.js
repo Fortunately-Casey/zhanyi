@@ -2,7 +2,9 @@
 import startIcon from '@/assets/image/startIcon.png';
 import locationIcon from "@/assets/image/location.png";
 import endIcon from "@/assets/image/record1.png";
-
+import {
+    Toast
+} from "mint-ui";
 
 
 export function Todate(chinadatetime) { //Fri Oct 31 18:00:00 UTC+0800 2008 
@@ -25,7 +27,8 @@ export function getURL(url) {
     if (process.env.NODE_ENV === 'development') {
         _result = `/api${url}`; // 开发环境会自动走代理
     } else if (process.env.NODE_ENV === 'production') {
-        _result = `https://yqfk.ntschy.com:10000/api${url}`; // 正式环境地址
+        // _result = `https://yqfk.ntschy.com:20000/api${url}`; // 正式环境地址
+        _result = `http://192.168.3.153:9090/api${url}`; // 正式环境地址
     }
     return _result;
 }
@@ -134,6 +137,7 @@ export function addMarkerEnd(point, name, mapInit, trackUnit, prePoint, carMk) {
 }
 //获得角度的函数
 export
+
 function getAngle(n, next) {
     var ret
     var w1 = n.lat / 180 * Math.PI
@@ -209,15 +213,27 @@ export default class AddressName {
 }
 
 // 防抖
-export function debounce (fn, delay) {
+export function debounce(fn, delay) {
     let timer = null
     return function () {
         let arg = arguments
-        
+
         clearTimeout(timer)
-        
+
         timer = setTimeout(() => {
             fn.apply(this, arg)
         }, delay)
+    }
+}
+
+// 手机验证
+export function phoneReg(value) {
+    var phoneReg = /^1[3456789]\d{9}$/;
+    if (!phoneReg.test(Number(value))) {
+        Toast({
+            message: "请输入合法手机号！",
+            iconClass: "icon icon-success"
+        });
+        return;
     }
 }

@@ -9,21 +9,100 @@
     </div>
     <div class="title-message">欢迎您，请登录</div>
     <div class="login">
-      <input type="text" placeholder="手机号码" @blur="blur" />
-      <input type="text" placeholder="输入密码" @blur="blur" />
+      <input
+        type="text"
+        placeholder="账号"
+        v-model="phoneNumber"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        placeholder="输入密码"
+        v-model="password"
+        @blur="blur"
+      />
     </div>
-    <div class="login-button" >登录</div>
+    <div class="login-button" @click="login">登录</div>
     <div class="bottom-logo"></div>
   </div>
 </template>
 <script>
 import { blur } from "@/common/tool/tool";
+import { loginEnterprise, loginManageEnterprise } from "@/api/schoolRegister";
+import { Toast } from "mint-ui";
 export default {
   data() {
     return {
+      phoneNumber: "",
+      password: ""
     };
   },
+  created() {
+    if (this.$route.query.type == "class") {
+      this.phoneNumber = window.localStorage.getItem("classNumber");
+      this.password = window.localStorage.getItem("classPassword");
+    } else {
+      this.phoneNumber = window.localStorage.getItem("schoolNumber");
+      this.password = window.localStorage.getItem("schoolPassword");
+    }
+  },
   methods: {
+    login() {
+      var vm = this;
+      if (!vm.phoneNumber || !vm.password) {
+        Toast({
+          message: "手机号跟密码不能为空！",
+          iconClass: "icon icon-success"
+        });
+      }
+      if (this.$route.query.type == "class") {
+        this.loginEnterprise();
+      } else {
+        this.loginManageEnterprise();
+      }
+    },
+    loginEnterprise() {
+      var vm = this;
+      loginEnterprise({
+        mobile: vm.phoneNumber,
+        password: vm.password
+      }).then(resp => {
+        if (resp.data.success) {
+          window.localStorage.setItem("classNumber", vm.phoneNumber);
+          window.localStorage.setItem("classPassword", vm.password);
+          Toast({
+            message: "登录成功！",
+            iconClass: "icon icon-success"
+          });
+        } else {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+        }
+      });
+    },
+    loginManageEnterprise() {
+      var vm = this;
+      loginManageEnterprise({
+        mobile: vm.phoneNumber,
+        password: vm.password
+      }).then(resp => {
+        if (resp.data.success) {
+          window.localStorage.setItem("schoolNumber", vm.phoneNumber);
+          window.localStorage.setItem("schoolPassword", vm.password);
+          Toast({
+            message: "登录成功！",
+            iconClass: "icon icon-success"
+          });
+        } else {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+        }
+      });
+    },
     blur() {
       blur();
     }

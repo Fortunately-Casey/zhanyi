@@ -7,8 +7,8 @@
         <div class="title"></div>
       </div>
     </div>
-    <div class="class-manage-button"></div>
-    <div class="school-manage-button"></div>
+    <div class="class-manage-button" @click="classManage"></div>
+    <div class="school-manage-button" @click="schoolManage"></div>
     <div class="bottom-logo"></div>
   </div>
 </template>
@@ -16,6 +16,24 @@
 export default {
   data() {
     return {};
+  },
+  methods: {
+    classManage() {
+      this.$router.push({
+        path: "/schoolLogin",
+        query: {
+          type: "class"
+        }
+      });
+    },
+    schoolManage() {
+      this.$router.push({
+        path: "/schoolLogin",
+        query: {
+          type: "school"
+        }
+      });
+    }
   }
 };
 </script>

@@ -7,33 +7,147 @@
         <div class="title"></div>
       </div>
     </div>
-    <div class="title-message">{{ isLogin ? "欢迎您，请登录" : "请填写注册信息" }}</div>
+    <div class="title-message">
+      {{ isLogin ? "欢迎您，请登录" : "请填写注册信息" }}
+    </div>
     <div class="login" v-if="isLogin">
-      <input type="text" placeholder="手机号码" @blur="blur" />
-      <input type="text" placeholder="输入密码" @blur="blur" />
+      <input
+        type="number"
+        v-model="loginPhone"
+        placeholder="手机号码"
+        pattern="[0-9]*"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        v-model="loginPassword"
+        placeholder="输入密码"
+        @blur="blur"
+      />
     </div>
     <div class="register" v-else>
-      <input type="text" placeholder="手机号码" @blur="blur" />
-      <input type="text" placeholder="输入密码" @blur="blur" />
-      <input type="text" placeholder="确认密码" @blur="blur" />
+      <input
+        type="number"
+        v-model="registerPhone"
+        placeholder="手机号码"
+        pattern="[0-9]*"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        v-model="registerPassword"
+        placeholder="输入密码"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        v-model="confirmPassword"
+        placeholder="确认密码"
+        @blur="blur"
+      />
     </div>
     <div class="register-text" v-if="isLogin" @click="register">注册</div>
-    <div class="login-button" v-if="isLogin">登录</div>
-    <div class="register-button" v-else>注册</div>
+    <div class="register-text" v-if="!isLogin" @click="login">登录</div>
+    <div class="login-button" v-if="isLogin" @click="schoolLogin">登录</div>
+    <div class="register-button" v-else @click="schoolRegister">注册</div>
     <div class="bottom-logo"></div>
   </div>
 </template>
 <script>
 import { blur } from "@/common/tool/tool";
+import { Toast } from "mint-ui";
+import { registerSysUser, sysUserLogin } from "@/api/schoolRegister.js";
 export default {
   data() {
     return {
-      isLogin: true
+      isLogin: true,
+      loginPhone: "",
+      loginPassword: "",
+      registerPhone: "",
+      registerPassword: "",
+      confirmPassword: ""
     };
+  },
+  created() {
+    var parentNumber = window.localStorage.getItem("parentNumber");
+    var parentPassword = window.localStorage.getItem("parentPassword");
+    if (parentNumber) {
+      this.loginPhone = parentNumber;
+    }
+    if (parentPassword) {
+      this.loginPassword = parentPassword;
+    }
   },
   methods: {
     register() {
       this.isLogin = false;
+    },
+    login() {
+      this.isLogin = true;
+    },
+    schoolLogin() {
+      var vm = this;
+      if (!vm.loginPhone || !vm.loginPassword) {
+        Toast({
+          message: "手机号码跟密码不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      sysUserLogin({
+        userID: vm.loginPhone,
+        password: vm.loginPassword
+      }).then(resp => {
+        if (resp.data.success) {
+          Toast({
+            message: "登录成功！",
+            iconClass: "icon icon-success"
+          });
+          window.localStorage.setItem("parentNumber", vm.loginPhone);
+          window.localStorage.setItem("parentPassword", vm.loginPassword);
+          vm.$router.push({
+            path: "childrenInfo",
+            query: {
+              userID: resp.data.data.userID
+            }
+          });
+        } else {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+        }
+      });
+    },
+    schoolRegister() {
+      var vm = this;
+      if (!vm.registerPhone || !vm.registerPassword || !vm.confirmPassword) {
+        Toast({
+          message: "手机号码跟密码不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (vm.registerPassword != vm.confirmPassword) {
+        Toast({
+          message: "两次输入的密码不一致！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      // phoneReg(vm.registerPhone);
+      registerSysUser({
+        userID: vm.registerPhone,
+        password: vm.registerPassword
+      }).then(resp => {
+        Toast({
+          message: resp.data.data,
+          iconClass: "icon icon-success"
+        });
+        if (resp.data.success) {
+          vm.isLogin = true;
+        }
+      });
     },
     blur() {
       blur();

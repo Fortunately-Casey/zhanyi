@@ -5,20 +5,20 @@
     </div>
     <scroll ref="wrapper" :listenScroll="true" :pullup="true" :data="childList" class="wrapper">
       <ul class="child-list">
-        <li class="child" v-for="(item,index) in 5" :key="index">
-          <div class="left">
+        <li class="child" v-for="(item, index) in childList" :key="index">
+          <div class="left" @click="editChildren(item)">
             <div class="child-name">
-              <div class="child-logo boy"></div>
-              <div class="name">王子易</div>
+              <div class="child-logo" :class="item.sex === '男' ? 'boy' : 'girl'"></div>
+              <div class="name">{{ item.name }}</div>
             </div>
             <div class="child-values">
-              <div class="value">三年级2班</div>
-              <div class="value">南通市东方小学</div>
-              <div class="value">320623199509244538</div>
+              <div class="value">{{ item.enterpriseName }}</div>
+              <div class="value">{{ item.parentEnterpriseName }}</div>
+              <div class="value">{{ item.idCard }}</div>
             </div>
           </div>
-          <div class="right" @click="childPunch">
-            <div class="punch-icon" ></div>
+          <div class="right" @click="childPunch(item.idCard)">
+            <div class="punch-icon"></div>
           </div>
         </li>
       </ul>
@@ -28,22 +28,60 @@
 </template>
 <script>
 import Scroll from "../../components/Scroll";
+import { getEnterpriseUserBySysUserID } from "@/api/schoolRegister.js";
+import { Indicator } from "mint-ui";
 export default {
   data() {
     return {
       childList: []
     };
   },
+  created() {
+    this.getEnterpriseUserBySysUserID();
+  },
   methods: {
-    addChild() {
-      this.$router.push({
-        path: "/childrenEdit"
+    // 获取子女列表
+    getEnterpriseUserBySysUserID() {
+      var vm = this;
+      Indicator.open();
+      getEnterpriseUserBySysUserID({
+        sysUserID: vm.$route.query.userID
+      }).then(resp => {
+        Indicator.close();
+        if (resp.data.success) {
+          vm.childList = resp.data.data;
+        }
       });
     },
-    childPunch() {
+    // 修改子女信息
+    editChildren(item) {
       this.$router.push({
-        path:"/enterprisePunch"
-      })
+        path: "/childrenEdit",
+        query: {
+          type: "edit",
+          userID: this.$route.query.userID,
+          idCard: item.idCard
+        }
+      });
+    },
+    // 添加子女
+    addChild() {
+      this.$router.push({
+        path: "/childrenEdit",
+        query: {
+          type: "add",
+          userID: this.$route.query.userID
+        }
+      });
+    },
+    // 子女打卡
+    childPunch(idCard) {
+      this.$router.push({
+        path: "/enterprisePunch",
+        query: {
+          idCard: idCard
+        }
+      });
     }
   },
   components: {
@@ -77,7 +115,7 @@ export default {
     overflow: hidden;
     .child-list {
       margin: 0;
-      padding: 0;
+      padding: 0 0 10px 0;
       list-style: none;
       .child {
         width: 335px;

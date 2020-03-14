@@ -29,17 +29,17 @@ export function getEnterprise(params) {
 }
 
 
-// 获取企业信息
-export function getEnterpriseUser(params) {
-  const url = getURL("/enterprise/getEnterpriseUser")
-  return axios.get(url, {
-    params:params
-  }).then((resp) => {
-      return Promise.resolve(resp)
-  }).catch((err) => {
-      console.log(err)
-  })
-}
+// // 获取企业信息
+// export function getEnterpriseUser(params) {
+//   const url = getURL("/enterprise/getEnterpriseUser")
+//   return axios.get(url, {
+//     params:params
+//   }).then((resp) => {
+//       return Promise.resolve(resp)
+//   }).catch((err) => {
+//       console.log(err)
+//   })
+// }
 
 // 医院/诊所模糊查询
 export function getHospitalList(params) {
@@ -67,6 +67,18 @@ export function getCountyArea(params) {
 // 获取镇
 export function getTownArea(params) {
   const url = getURL("/enterprise/getTownArea")
+  return axios.get(url, {
+    params:params
+  }).then((resp) => {
+      return Promise.resolve(resp)
+  }).catch((err) => {
+      console.log(err)
+  })
+}
+
+// 获取子女基本信息跟子女最新打卡信息
+export function getEnterpriseUser(params) {
+  const url = getURL("/enterprise/getEnterpriseUser")
   return axios.get(url, {
     params:params
   }).then((resp) => {

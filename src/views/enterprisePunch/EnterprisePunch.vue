@@ -1,30 +1,22 @@
-/* eslint-disable no-undef */ /* eslint-disable no-console */
 <template>
   <div class="punch-content">
     <div class="punch" ref="punch">
-      <div class="header">健康打卡</div>
+      <div class="header">
+        <div class="back" @click="goBack">
+          <div class="back-icon"></div>首页
+        </div>健康打卡
+      </div>
       <div class="top">
         <div class="item">
           <div class="name">姓名</div>
           <div class="value">
-            <input type="text" v-model="username" @blur="lostblur()" />
+            <input type="text" v-model="username" disabled @blur="lostblur()" />
           </div>
         </div>
-        <!-- <div class="item">
-          <div class="name">联系电话</div>
-          <div class="value">
-            <input
-              type="text"
-              disabled="disabled"
-              v-model="phoneNumber"
-              @blur="lostblur('phone')"
-            />
-          </div>
-        </div>-->
         <div class="item">
           <div class="name">性别</div>
           <div class="value">
-            <input type="text" disabled="disabled" v-model="phoneNumber" @blur="lostblur('phone')" />
+            <input type="text" disabled="disabled" v-model="sex" />
           </div>
         </div>
         <div class="item">
@@ -41,23 +33,15 @@
         <div class="item">
           <div class="name">学校</div>
           <div class="value">
-            <input type="text" v-model="age" @blur="lostblur('age')" />
+            <input type="text" v-model="schoolName" disabled />
           </div>
         </div>
         <div class="item">
           <div class="name">班级</div>
-          <div class="value"></div>
+          <div class="value">
+            <input type="text" v-model="className" disabled />
+          </div>
         </div>
-        <!-- <div class="item">
-          <input
-            type="text"
-            v-model="enterpriseName"
-            disabled="disabled"
-            placeholder="输入企业名称"
-            @blur="lostblur"
-            class="addressDetail"
-          />
-        </div>-->
         <div class="nantong-address">
           <div class="address">
             <div class="click-value">
@@ -65,10 +49,10 @@
             </div>
           </div>
           <div class="chosedvalue">
-            <div class="address">{{"崇川区"}}</div>
-            <div class="address">{{"观音山街道"}}</div>
+            <div class="address">{{ chosedNantongValue.chosedNantongName }}</div>
+            <div class="address">{{ chosedNantongValue.chosedXian }}</div>
           </div>
-          <input type="text" placeholder="详细地址：道路、门牌号、楼栋号、单元号" />
+          <input type="text" disabled v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" />
         </div>
       </div>
       <div class="first">
@@ -102,15 +86,6 @@
             </div>
           </div>
         </div>
-        <!-- <div class="item" v-show="chosedCough === 1">
-          <input
-            type="text"
-            v-model="symptomsDetail"
-            placeholder="请输入身体异常状况"
-            class="addressDetail"
-            @blur="lostblur"
-          />
-        </div>-->
         <div class="item" v-show="chosedCough === 1">
           <mt-checklist v-model="symptomsDetail" :options="symptomOptions"></mt-checklist>
         </div>
@@ -166,71 +141,14 @@
           />
         </div>
       </div>
-      <div class="fourth" >
+      <div class="fourth">
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
             <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
           </div>
         </div>
-        <!-- <div class="item" style="position:relative;padding:0 20px" @click="showNantong">
-          <div class="name" style="padding:0">
-            <div class="cross-title" style="letter-spacing:0px">
-              {{
-              chosedLeaveIndex === 0
-              ? "现居住地(下拉选择区县)"
-              : "返通居住地(下拉选择区县)"
-              }}
-              <div class="chosedValue" style="height:50px" v-if="isShowSelectNantong">
-                <div
-                  class="value"
-                  style="width:100%;box-sizing:border-box"
-                >{{ chosedNantongValue.chosedNantongName }}</div>
-                <div
-                  class="value"
-                  style="width:100%;box-sizing:border-box"
-                >{{ chosedNantongValue.chosedXian }}</div>
-              </div>
-            </div>
-            <div class="icon-cross" style="transform:translateX(-20px)" v-if="isShowNantongIcon">></div>
-          </div>
-        </div>
-        <div class="item">
-          <input
-            type="text"
-            v-model="nantongAddress"
-            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
-            class="addressDetail"
-            @blur="lostblur"
-          />
-        </div> -->
       </div>
-      <!-- <div class="fifth">
-        <div class="item">
-          <div class="name">
-            <div class="cross-title">是否复工</div>
-          </div>
-        </div>
-        <div
-          class="item"
-          v-for="(item, index) in crossList"
-          :key="index"
-          @click="choseRework(index)"
-        >
-          <div class="name">
-            <div class="cross-item">
-              {{ item.value }}
-              <div class="chosed-icon" v-if="choseReworkIndex === index ? true : false"></div>
-            </div>
-          </div>
-        </div>
-        <div class="item reworkTime" v-if="choseReworkIndex === 1">
-          <div class="name">复工日期</div>
-          <div class="value">
-            <div class="date" @click="openRework">{{ returnDate(reworkDate) }}</div>
-          </div>
-        </div>
-      </div> -->
       <div class="seventh">
         <div class="item">
           <div class="name">
@@ -451,9 +369,17 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">{{ chosedProvinceName }}</span>
+            <span class="seleted-province" @click="selectProvince">
+              {{
+              chosedProvinceName
+              }}
+            </span>
             <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
-            <span class="selectedCityButton" v-else @click="selectCity">{{ chosedCityName }}</span>
+            <span class="selectedCityButton" v-else @click="selectCity">
+              {{
+              chosedCityName
+              }}
+            </span>
             <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
           </div>
           <div class="select-city" v-if="isShowCityList">
@@ -502,10 +428,11 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowNTArea">
-            <span
-              class="seleted-province"
-              @click="selectNTArea"
-            >{{ selectNantongValue.chosedNantongName }}</span>
+            <span class="seleted-province" @click="selectNTArea">
+              {{
+              selectNantongValue.chosedNantongName
+              }}
+            </span>
             <span class="selectCityButton">选择镇</span>
           </div>
           <div class="select-city" v-if="!isShowNTArea">
@@ -543,7 +470,10 @@ export default {
       weixin: "",
       username: "",
       idCard: "",
-      age: "",
+      schoolName: "",
+      className: "",
+      sex: "",
+      nowAddress: "",
       enterpriseName: "",
       temperature: "",
       chosedCough: 0,
@@ -551,8 +481,10 @@ export default {
       beforeBackAddress: "",
       nantongAddress: "",
       choseReworkIndex: 0,
+      enterpriseID: "",
       chosedQuarantineIndex: "",
       chosedSeeMedicalIndex: 0,
+      periodPlaceor: "",
       enterpriseAddress: "",
       reworkDate: new Date(),
       otherInfo: "",
@@ -754,33 +686,26 @@ export default {
         vm.searchSeeMedica();
       }, 500)
     );
-
-    getEnterprise({
-      enterpriseID: vm.$route.query.enterpriseID
-    }).then(resp => {
-      if (resp.data.success && resp.data.data) {
-        vm.enterpriseName = resp.data.data.enterpriseName;
-      } else {
-        Toast({
-          message: "获取企业失败,请联系技术人员!",
-          iconClass: "icon icon-success"
-        });
-      }
-    });
+    var parentNumber = window.localStorage.getItem("parentNumber");
+    this.periodPlaceor = parentNumber;
     // 获取用户信息
     getEnterpriseUser({
-      wxID: vm.$route.query.WxId
+      idCard: vm.$route.query.idCard
     }).then(resp => {
       if (resp.data.success && resp.data.data) {
         var last = resp.data.data.lastPeriodPlace;
         vm.username = resp.data.data.name;
-        // vm.phoneNumber = resp.data.data.mobile;
+        vm.sex = resp.data.data.sex;
         vm.idCard = resp.data.data.idCard;
         if (vm.idCard) {
           vm.isDisableIDcard = true;
         }
-        vm.age = resp.data.data.age;
-        // vm.temperature = last.temp;
+        vm.enterpriseID = resp.data.data.enterpriseID;
+        vm.schoolName = resp.data.data.parentEnterpriseName;
+        vm.className = resp.data.data.enterpriseName;
+        vm.chosedNantongValue.chosedNantongName = resp.data.data.currCounty;
+        vm.chosedNantongValue.chosedXian = resp.data.data.currStreet;
+        vm.nowAddress = resp.data.data.currAddress;
         if (last) {
           vm.chosedCough = last.cough ? 1 : 0;
           vm.symptomsDetail = last.symptomsDetail
@@ -801,14 +726,7 @@ export default {
             ? new Date(last.returnNTDate)
             : new Date();
           vm.isShowNantongIcon = last.ntCity ? false : true;
-          vm.chosedNantongValue.chosedNantongName = last.ntCity;
-          vm.chosedNantongValue.chosedXian = last.ntCounty;
           vm.isShowSelectNantong = true;
-          vm.nantongAddress = last.ntAddress;
-          vm.choseReworkIndex = last.recoveryWork ? 1 : 0;
-          vm.reworkDate = last.recoveryWorkDate
-            ? new Date(last.recoveryWorkDate)
-            : new Date();
           if (last.currStatus === "正常") {
             vm.chosedSeeMedicalIndex = 0;
           } else if (last.currStatus === "隔离中") {
@@ -856,9 +774,7 @@ export default {
       vm.nantongList = resp.data.data;
     });
   },
-  mounted() {
-    // alert(this.$route.query)
-  },
+  mounted() {},
   methods: {
     shareList(imgUrl, link, desc, title) {
       // var url = encodeURIComponent(link)
@@ -940,7 +856,7 @@ export default {
     checkDate() {
       console.log(this.chosedDate);
     },
-    // 企业打卡
+    // 健康打卡
     saveEnterprisePeriodPlace() {
       var vm = this;
       var isolationAddress, seekMedicalAddress;
@@ -1000,29 +916,6 @@ export default {
         });
         return;
       }
-      if (!vm.age) {
-        Toast({
-          message: "年龄不能为空！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-
-      if (!vm.age) {
-        Toast({
-          message: "年龄不能为空！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-
-      if (!vm.enterpriseName) {
-        Toast({
-          message: "企业名称不能为空！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
 
       if (!vm.temperature) {
         Toast({
@@ -1045,25 +938,6 @@ export default {
           iconClass: "icon icon-success"
         });
         return false;
-      }
-      var ageReg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
-      if (!ageReg.test(Number(vm.age))) {
-        Toast({
-          message: "请输入正确年龄！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (
-        !vm.nantongAddress ||
-        !vm.chosedNantongValue.chosedNantongName ||
-        !vm.chosedNantongValue.chosedXian
-      ) {
-        Toast({
-          message: "居住地不能为空！",
-          iconClass: "icon icon-success"
-        });
-        return;
       }
 
       if (vm.chosedLeaveIndex === 1) {
@@ -1131,14 +1005,12 @@ export default {
         name: vm.username,
         mobile: vm.phoneNumber,
         idCard: vm.idCard,
-        age: vm.age,
-        wxID: vm.$route.query.WxId,
-        enterpriseID: vm.$route.query.enterpriseID,
-        enterpriseName: vm.enterpriseName,
+        enterpriseID: vm.enterpriseID,
+        enterpriseName: vm.className,
         temp: vm.temperature,
         cough: vm.chosedCough === 0 ? false : true,
         leaveNT: vm.chosedLeaveIndex === 0 ? false : true,
-        ntAddress: vm.nantongAddress,
+        periodPlaceor: vm.periodPlaceor,
         returnNTDate:
           vm.chosedLeaveIndex === 0 ? "" : vm.returnDate(vm.dateValue),
         beforeReturnNtProvince: vm.chosedValues.province,
@@ -1146,9 +1018,6 @@ export default {
         beforeReturnNtCounty: vm.chosedValues.area,
         beforeReturnNtAddress: vm.isSverseas ? "" : vm.beforeBackAddress,
         overseasAddress: vm.isSverseas ? vm.beforeBackAddress : "",
-        recoveryWork: vm.choseReworkIndex === 0 ? false : true,
-        recoveryWorkDate:
-          vm.choseReworkIndex === 0 ? "" : vm.returnDate(vm.reworkDate),
         isolationType:
           vm.chosedQuarantineIndex === ""
             ? ""
@@ -1161,9 +1030,7 @@ export default {
           vm.symptomsDetail.length > 0 ? vm.symptomsDetail.join(",") : "",
         isolationDays: vm.chosedSeeMedicalIndex === 1 ? vm.chosedDate : "",
         isolationStartDate:
-          vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : "",
-        ntCity: vm.chosedNantongValue.chosedNantongName,
-        ntCounty: vm.chosedNantongValue.chosedXian
+          vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : ""
       };
 
       MessageBox.confirm("", {
@@ -1363,7 +1230,10 @@ export default {
     },
     goBack() {
       this.$router.push({
-        path: "/enterPrise"
+        path: "/childrenInfo",
+        query: {
+          userID: this.periodPlaceor
+        }
       });
     },
     changeStr(str, index, changeStr) {
@@ -1613,7 +1483,7 @@ export default {
       text-align: center;
       font-size: 16px;
       position: relative;
-
+      text-align: center;
       .back {
         width: 60px;
         height: 30px;
@@ -1687,6 +1557,7 @@ export default {
             text-align: right;
             text-align: end;
             font-size: 14px;
+            width: 200px;
           }
           .getVerification {
             color: #2e55d6;
@@ -1748,7 +1619,7 @@ export default {
           }
         }
         .chosedvalue {
-          .address{
+          .address {
             height: 30px;
             line-height: 30px;
             text-align: right;
