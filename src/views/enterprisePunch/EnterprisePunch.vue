@@ -328,19 +328,6 @@
         @cancel="closeDate"
       ></mt-datetime-picker>
       <mt-datetime-picker
-        ref="reworkPicker"
-        v-model="reworkValue"
-        type="date"
-        year-format="{value} 年"
-        month-format="{value} 月"
-        date-format="{value} 日"
-        :endDate="new Date()"
-        :closeOnClickModal="false"
-        :startDate="new Date('2020/1/1')"
-        @confirm="confirmRework"
-        @cancel="closeRework"
-      ></mt-datetime-picker>
-      <mt-datetime-picker
         ref="isolationPicker"
         v-model="isolationValue"
         type="date"
@@ -453,11 +440,8 @@ import { Todate, blur, debounce, Totime } from "@/common/tool/tool.js";
 import { Toast, Indicator, Radio, MessageBox, Checklist } from "mint-ui";
 import {
   saveEnterprisePeriodPlace,
-  getEnterprise,
   getEnterpriseUser,
-  getHospitalList,
-  getTownArea,
-  getCountyArea
+  getHospitalList
 } from "@/api/enterprisePunch.js";
 import wx from "weixin-js-sdk";
 import axios from "axios";
@@ -474,19 +458,15 @@ export default {
       className: "",
       sex: "",
       nowAddress: "",
-      enterpriseName: "",
       temperature: "",
       chosedCough: 0,
       chosedLeaveIndex: 0,
       beforeBackAddress: "",
-      nantongAddress: "",
-      choseReworkIndex: 0,
       enterpriseID: "",
       chosedQuarantineIndex: "",
       chosedSeeMedicalIndex: 0,
       periodPlaceor: "",
       enterpriseAddress: "",
-      reworkDate: new Date(),
       otherInfo: "",
       isShowHospital: false,
       chosedQuarant: "",
@@ -626,9 +606,8 @@ export default {
       chosedOutpatient: {},
       chosedHospital: {},
       pickerValue: new Date(),
-      reworkValue: new Date(),
       isolationValue: new Date(),
-      phoneNumber: this.$route.query.WxId,
+      phoneNumber: "",
       dateValue: new Date(),
       handler: function(e) {
         e.preventDefault();
@@ -1122,9 +1101,6 @@ export default {
     closeDate() {
       this.openTouch();
     },
-    closeRework() {
-      this.openTouch();
-    },
     returnDate(value) {
       return Todate(value);
     },
@@ -1133,10 +1109,6 @@ export default {
     },
     confirmDate(value) {
       this.dateValue = value;
-      this.openTouch();
-    },
-    confirmRework(value) {
-      this.reworkDate = value;
       this.openTouch();
     },
     confirmIsolation(value) {
@@ -1156,17 +1128,13 @@ export default {
     choseLeave(index) {
       this.chosedLeaveIndex = index;
     },
-    // 是否复工
-    choseRework(index) {
-      this.choseReworkIndex = index;
-    },
     // 选择隔离方式
     choseQuarantine(index) {
       this.chosedQuarantineIndex = index;
       this.homeAddress =
         this.chosedNantongValue.chosedNantongName +
         this.chosedNantongValue.chosedXian +
-        this.nantongAddress;
+        this.nowAddress;
     },
     //选择就诊方式
     choseSeeMedical(index) {

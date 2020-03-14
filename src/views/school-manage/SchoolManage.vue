@@ -9,7 +9,7 @@
       <!-- <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span> -->
     </div>
     <div class="content">
-      <div class="class-name">南通市开发区第三中学</div>
+      <div class="class-name">{{ className }}</div>
       <div class="date" @click="openDate">
         {{ returnDate(date) }}
         <span class="cart"></span>
@@ -35,7 +35,7 @@
             class="item"
             :class="chosedIndex === 0 ? 'active' : ''"
             @click="choseTab(0)"
-          >未申报{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
+          >未打卡{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
           <div
             class="item"
             :class="chosedIndex === 6 ? 'active' : ''"
@@ -63,10 +63,18 @@
           <div class="name">{{ item.name }}</div>
           <div class="temp">{{ item.temp }}</div>
           <div class="isCough">{{ returnCough(item.cough) }}</div>
-          <div class="phone">{{ item.mobile }}</div>
+          <div class="phone">{{ item.sysUserID }}</div>
           <div class="option">
-            <span v-if="item.id === 0">未打卡</span>
-            <div class="delete-button" @click.stop="deletePunch(item)" v-else>删除</div>
+            <div
+              class="dangerStatus"
+              :class="item.dangerousFlag === 'Dangerous' ? 'error' : 'normal'"
+              v-if="chosedIndex === 6"
+              @click.stop="changeDanger(item)"
+            >{{ item.dangerousFlag === "Dangerous" ? "异常" : "正常" }}</div>
+            <div v-else>
+              <span v-if="item.id === 0">未打卡</span>
+              <div class="delete-button" @click.stop="deletePunch(item)" v-else>删除</div>
+            </div>
           </div>
         </div>
       </div>
@@ -165,10 +173,10 @@ import { Todate } from "@/common/tool/tool.js";
 import { MessageBox } from "mint-ui";
 import {
   getEnterprisePeriodPlaceList,
-  approvalPeriodPlace,
   deleteEnterprisePeriodPlace,
-  exportEnterprisePeriodPlaceList
-} from "@/api/register";
+  updateEnterprisePeriodPlaceDangerousFlag,
+  approvalPeriodPlace
+} from "@/api/manage.js";
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
 import Clipboard from "clipboard";
@@ -197,13 +205,19 @@ export default {
       isShowDownload: false,
       downloadUrl: "",
       isShowImport: false,
-      importUrl: ""
+      importUrl: "",
+      phoneNumber: "",
+      password: "",
+      className: ""
     };
   },
   created() {
     var vm = this;
     document.getElementsByTagName("title")[0].innerText =
       "开发区企业员工健康申报系统";
+    vm.phoneNumber = window.localStorage.getItem("classNumber");
+    vm.password = window.localStorage.getItem("classPassword");
+    vm.className = vm.$route.query.enterpriseName;
     vm.getList();
     vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
@@ -216,7 +230,7 @@ export default {
     },
     goBack() {
       this.$router.push({
-        path: "/enterPrise"
+        path: "/schoolMain"
       });
     },
     confirmDate(value) {
@@ -253,7 +267,9 @@ export default {
           enterprisePeriodPlaceID: item.id,
           enterpriseID: vm.$route.query.enterpriseID
         };
+        Indicator.open();
         deleteEnterprisePeriodPlace(params).then(resp => {
+          Indicator.close();
           if (resp.data.success) {
             Toast({
               message: "删除成功！",
@@ -270,15 +286,43 @@ export default {
         });
       });
     },
+    changeDanger(item) {
+      var vm = this;
+      Indicator.open();
+      updateEnterprisePeriodPlaceDangerousFlag({
+        enterprisePeriodPlaceID: item.id,
+        enterpriseID: vm.$route.query.enterpriseID,
+        dangerousFlag:
+          item.dangerousFlag === "Dangerous" ? "Normal" : "Dangerous"
+      }).then(resp => {
+        Indicator.close();
+        if (resp.data.success) {
+          Toast({
+            message: "修改成功！",
+            iconClass: "icon icon-success"
+          });
+          vm.page = 1;
+          vm.getList();
+        } else {
+          Toast({
+            message: "修改失败！",
+            iconClass: "icon icon-success"
+          });
+        }
+      });
+    },
     getList() {
       var vm = this;
       Indicator.open();
       getEnterprisePeriodPlaceList({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date),
-        status: vm.chosedIndex,
-        page: vm.page,
-        pageSize: vm.pageSize
+        paramPeriodPlaceDate: vm.returnDate(vm.date),
+        paramStatus: vm.chosedIndex,
+        paramPage: vm.page,
+        paramPageSize: vm.pageSize,
+        paramEnterpriseAdminUserId: vm.phoneNumber,
+        paramEnterpriseAdminPassword: vm.password,
+        paramEnterpriseID: vm.$route.query.enterpriseID,
+        paramParentEnterpriseID: vm.$route.query.parentEnterpriseID
       }).then(resp => {
         Indicator.close();
         vm.list = resp.data.data;
@@ -303,17 +347,17 @@ export default {
       vm.getList();
     },
     download() {
-      var vm = this;
-      Indicator.open();
-      exportEnterprisePeriodPlaceList({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date),
-        status: vm.chosedIndex
-      }).then(resp => {
-        Indicator.close();
-        this.isShowDownload = true;
-        vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
-      });
+      // var vm = this;
+      // Indicator.open();
+      // exportEnterprisePeriodPlaceList({
+      //   enterpriseID: vm.$route.query.enterpriseID,
+      //   periodPlaceDate: vm.returnDate(vm.date),
+      //   status: vm.chosedIndex
+      // }).then(resp => {
+      //   Indicator.close();
+      //   this.isShowDownload = true;
+      //   vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
+      // });
     },
     copyAlert() {
       Toast({
@@ -331,13 +375,15 @@ export default {
       var vm = this;
       Indicator.open();
       approvalPeriodPlace({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date)
+        paramEnterpriseAdminUserId: vm.phoneNumber,
+        paramEnterpriseAdminPassword: vm.password,
+        paramEnterpriseID: vm.$route.query.enterpriseID,
+        paramPeriodPlaceDate: vm.returnDate(vm.date)
       }).then(resp => {
         Indicator.close();
         if (resp.data.success) {
           Toast({
-            message: "审核成功",
+            message: resp.data.data,
             iconClass: "icon icon-success"
           });
         } else {
@@ -512,6 +558,21 @@ export default {
             margin-top: 7.5px;
             border-radius: 5px;
           }
+          .dangerStatus {
+            margin: 0 auto;
+            width: 35px;
+            height: 25px;
+            line-height: 25px;
+            color: #fff;
+            margin-top: 7.5px;
+            border-radius: 5px;
+          }
+          .normal {
+            background-color: rgb(45, 217, 233);
+          }
+          .error {
+            background-color: rgb(245, 27, 27);
+          }
         }
         .index {
           width: 10%;
@@ -533,7 +594,7 @@ export default {
         }
       }
       .hot {
-        background-color: #f65235;
+        background-color: rgb(245, 122, 100);
         .temp {
           color: #16d0a0;
         }
@@ -607,7 +668,6 @@ export default {
       .red-message {
         width: 100%;
         text-align: center;
-        /* padding-left: 20px; */
         height: 40px;
         line-height: 40px;
         font-size: 14px;

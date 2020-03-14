@@ -1,63 +1,26 @@
 <template>
   <div class="manage">
     <div class="header">
-      健康管理
+      {{ type === "Group" ? "班级管理" : "学校管理" }}
       <div class="back" @click="goBack">
         首页
         <div class="back-icon"></div>
       </div>
-      <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span>
+      <!-- <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span> -->
     </div>
     <div class="content">
+      <div class="class-name">{{ titleName }}</div>
       <div class="date" @click="openDate">
         {{ returnDate(date) }}
         <span class="cart"></span>
       </div>
-      <div class="tab">
-        <div
-          class="item"
-          :class="chosedIndex === 3 ? 'active' : ''"
-          @click="choseTab(3)"
-        >
-          全部{{ chosedIndex === 3 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 5 ? 'active' : ''"
-          @click="choseTab(5)"
-        >
-          已审核{{ chosedIndex === 5 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 4 ? 'active' : ''"
-          @click="choseTab(4)"
-        >
-          未审核{{ chosedIndex === 4 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 0 ? 'active' : ''"
-          @click="choseTab(0)"
-        >
-          未申报{{ chosedIndex === 0 ? `(${count})` : "" }}
-        </div>
-        <div
-          class="item"
-          :class="chosedIndex === 6 ? 'active' : ''"
-          @click="choseTab(6)"
-        >
-          异常{{ chosedIndex === 6 ? `(${count})` : "" }}
-        </div>
-      </div>
       <div class="list">
         <div class="list-header">
           <div class="index">序号</div>
-          <div class="name">姓名</div>
-          <div class="temp">体温</div>
-          <div class="isCough">是否咳嗽</div>
-          <div class="phone">联系电话</div>
-          <div class="option">操作</div>
+          <div class="name">{{ type === "Group" ? "班级" : "学校" }}</div>
+          <div class="shouldPunch">应打卡</div>
+          <div class="punchCount">实打卡</div>
+          <div class="waring">异常</div>
         </div>
         <div
           class="item"
@@ -66,16 +29,12 @@
           :key="index"
           @click="choseItem(item)"
         >
-          <div class="index">{{ item.number }}</div>
-          <div class="name">{{ item.name }}</div>
-          <div class="temp">{{ item.temp }}</div>
-          <div class="isCough">{{ returnCough(item.cough) }}</div>
-          <div class="phone">{{ item.mobile }}</div>
-          <div class="option">
-            <span v-if="item.id === 0">未打卡</span>
-            <div class="delete-button" @click.stop="deletePunch(item)" v-else>
-              删除
-            </div>
+          <div class="index">{{ index + 1 }}</div>
+          <div class="name">{{ item.enterpriseName }}</div>
+          <div class="shouldPunch">{{ item.allCount }}</div>
+          <div class="punchCount">{{ item.periodPlaceCount }}</div>
+          <div class="waring" :class="item.abnormalCount == 0 ? '' : 'error'">
+            {{ item.abnormalCount }}
           </div>
         </div>
       </div>
@@ -84,7 +43,7 @@
         {{ page }}页
         <span @click="next">></span>
       </div>
-      <div class="bottom">
+      <!-- <div class="bottom">
         <div class="look-button" @click="download">数据下载</div>
         <div
           class="punch-button"
@@ -94,7 +53,7 @@
           审核
         </div>
         <div class="import-button" @click="importValue">导入数据</div>
-      </div>
+      </div>-->
     </div>
     <mt-datetime-picker
       ref="datepicker"
@@ -109,16 +68,11 @@
       @confirm="confirmDate"
       @cancel="closeDate"
     ></mt-datetime-picker>
-    <div class="modal" v-show="isShowQrcode">
+    <!-- <div class="modal" v-show="isShowQrcode">
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
-        <vue-qr
-          :text="text"
-          :logoScale="50"
-          :size="250"
-          :logoSrc="imageUrl"
-        ></vue-qr>
+        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl"></vue-qr>
       </div>
     </div>
     <div class="modal" v-show="isShowDetail">
@@ -149,9 +103,9 @@
             <div class="name">返通居住地:</div>
             <div class="value">
               {{
-                chosedDetail.ntCity +
-                  chosedDetail.ntCounty +
-                  chosedDetail.ntAddress
+              chosedDetail.ntCity +
+              chosedDetail.ntCounty +
+              chosedDetail.ntAddress
               }}
             </div>
           </li>
@@ -161,17 +115,9 @@
     <div class="modal" v-show="isShowDownload">
       <div class="punch-detail">
         <div class="icon-close" @click="isShowDownload = false"></div>
-        <div class="download-message">
-          下载今日健康报告信息请复制以下链接到浏览器中打开
-        </div>
+        <div class="download-message">下载今日健康报告信息请复制以下链接到浏览器中打开</div>
         <div class="url-message">{{ downloadUrl }}</div>
-        <button
-          class="btn"
-          :data-clipboard-text="downloadUrl"
-          @click="copyAlert"
-        >
-          复制链接
-        </button>
+        <button class="btn" :data-clipboard-text="downloadUrl" @click="copyAlert">复制链接</button>
       </div>
     </div>
     <div class="modal" v-show="isShowImport">
@@ -179,29 +125,19 @@
         <div class="icon-close" @click="isShowImport = false"></div>
         <div class="download-message">导入数据请复制以下链接到浏览器中打开</div>
         <div class="url-message">{{ importUrl }}</div>
-        <button
-          class="btn"
-          :data-clipboard-text="importUrl"
-          @click="copyImport"
-        >
-          复制链接
-        </button>
+        <button class="btn" :data-clipboard-text="importUrl" @click="copyImport">复制链接</button>
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 <script>
 import { Todate } from "@/common/tool/tool.js";
 import { MessageBox } from "mint-ui";
-import {
-  getEnterprisePeriodPlaceList,
-  approvalPeriodPlace,
-  deleteEnterprisePeriodPlace,
-  exportEnterprisePeriodPlaceList
-} from "@/api/register";
+import { getEnterpriseBaseList, getEnterpriseGroupList } from "@/api/manage.js";
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
 import Clipboard from "clipboard";
+import Scroll from "@/components/Scroll.vue";
 import { weixinTransform } from "@/common/data.js";
 export default {
   data() {
@@ -226,13 +162,21 @@ export default {
       isShowDownload: false,
       downloadUrl: "",
       isShowImport: false,
-      importUrl: ""
+      importUrl: "",
+      phoneNumber: "",
+      password: "",
+      titleName: "",
+      type: ""
     };
   },
   created() {
     var vm = this;
     document.getElementsByTagName("title")[0].innerText =
       "开发区企业员工健康申报系统";
+    this.phoneNumber = window.localStorage.getItem("schoolNumber");
+    this.password = window.localStorage.getItem("schoolPassword");
+    this.titleName = this.$route.query.enterpriseName;
+    this.type = this.$route.query.type;
     vm.getList();
     vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
@@ -245,7 +189,7 @@ export default {
     },
     goBack() {
       this.$router.push({
-        path: "/enterPrise"
+        path: "/schoolMain"
       });
     },
     confirmDate(value) {
@@ -275,37 +219,62 @@ export default {
       this.importUrl = `http://119.3.194.191:8089/#/importStaff?name=${this.list[0].enterpriseName}&id=${this.$route.query.enterpriseID}`;
       this.isShowImport = true;
     },
-    deletePunch(item) {
-      var vm = this;
-      MessageBox.confirm("确定执行此操作?", "删除当前记录").then(() => {
-        var params = {
-          enterprisePeriodPlaceID: item.id,
-          enterpriseID: vm.$route.query.enterpriseID
-        };
-        deleteEnterprisePeriodPlace(params).then(resp => {
-          if (resp.data.success) {
-            Toast({
-              message: "删除成功！",
-              iconClass: "icon icon-success"
-            });
-            vm.page = 1;
-            vm.getList();
-          } else {
-            Toast({
-              message: "删除失败！",
-              iconClass: "icon icon-success"
-            });
-          }
-        });
-      });
-    },
+    // deletePunch(item) {
+    //   var vm = this;
+    //   MessageBox.confirm("确定执行此操作?", "删除当前记录").then(() => {
+    //     var params = {
+    //       enterprisePeriodPlaceID: item.id,
+    //       enterpriseID: vm.$route.query.enterpriseID
+    //     };
+    //     deleteEnterprisePeriodPlace(params).then(resp => {
+    //       if (resp.data.success) {
+    //         Toast({
+    //           message: "删除成功！",
+    //           iconClass: "icon icon-success"
+    //         });
+    //         vm.page = 1;
+    //         vm.getList();
+    //       } else {
+    //         Toast({
+    //           message: "删除失败！",
+    //           iconClass: "icon icon-success"
+    //         });
+    //       }
+    //     });
+    //   });
+    // },
     getList() {
+      if (this.$route.query.type === "Group") {
+        this.getSchoolManage();
+      } else if (this.$route.query.type === "Root") {
+        this.getControlManage();
+      }
+    },
+    getSchoolManage() {
       var vm = this;
       Indicator.open();
-      getEnterprisePeriodPlaceList({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date),
-        status: vm.chosedIndex,
+      getEnterpriseBaseList({
+        paramEnterpriseID: vm.$route.query.enterpriseID,
+        paramEnterpriseAdminUserId: vm.phoneNumber,
+        paramEnterpriseAdminPassword: vm.password,
+        paramPeriodPlaceDate: vm.returnDate(vm.date),
+        page: vm.page,
+        pageSize: vm.pageSize
+      }).then(resp => {
+        Indicator.close();
+        vm.list = resp.data.data;
+        vm.maxPage = resp.data.page.pageCount;
+        vm.count = resp.data.page.totalCount;
+      });
+    },
+    getControlManage() {
+      var vm = this;
+      Indicator.open();
+      getEnterpriseGroupList({
+        paramEnterpriseID: vm.$route.query.enterpriseID,
+        paramCenterAdminUserId: vm.phoneNumber,
+        paramCenterAdminPassword: vm.password,
+        paramPeriodPlaceDate: vm.returnDate(vm.date),
         page: vm.page,
         pageSize: vm.pageSize
       }).then(resp => {
@@ -331,19 +300,19 @@ export default {
       vm.page++;
       vm.getList();
     },
-    download() {
-      var vm = this;
-      Indicator.open();
-      exportEnterprisePeriodPlaceList({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date),
-        status: vm.chosedIndex
-      }).then(resp => {
-        Indicator.close();
-        this.isShowDownload = true;
-        vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
-      });
-    },
+    // download() {
+    //   var vm = this;
+    //   Indicator.open();
+    //   exportEnterprisePeriodPlaceList({
+    //     enterpriseID: vm.$route.query.enterpriseID,
+    //     periodPlaceDate: vm.returnDate(vm.date),
+    //     status: vm.chosedIndex
+    //   }).then(resp => {
+    //     Indicator.close();
+    //     this.isShowDownload = true;
+    //     vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
+    //   });
+    // },
     copyAlert() {
       Toast({
         message: "复制成功！",
@@ -412,7 +381,8 @@ export default {
     }
   },
   components: {
-    VueQr
+    VueQr,
+    Scroll
   }
 };
 </script>
@@ -423,7 +393,7 @@ export default {
   background-color: #eee;
   .header {
     height: 40px;
-    background-color: #2e55d6;
+    background-color: #16d0a0;
     color: #fff;
     line-height: 40px;
     text-align: center;
@@ -438,7 +408,6 @@ export default {
       left: 15px;
       top: 50%;
       transform: translateY(-50%);
-
       .back-icon {
         width: 8px;
         height: 13px;
@@ -460,11 +429,12 @@ export default {
     }
   }
   .content {
-    .date {
+    .date,
+    .class-name {
       height: 40px;
       border-bottom: 1px solid rgb(199, 197, 197);
       text-align: center;
-      color: #2e55d6;
+      color: #16d0a0;
       font-size: 14px;
       line-height: 40px;
       background-color: #fff;
@@ -476,36 +446,43 @@ export default {
         margin-left: 2px;
         vertical-align: middle;
         border-top: 5px dashed;
-        border-top: 5px solid #2e55d6;
+        border-top: 5px solid #16d0a0;
         border-right: 5px solid transparent;
         border-left: 5px solid transparent;
       }
     }
-    .tab {
-      background-color: #fff;
-      height: 40px;
-      border-bottom: 1px solid rgb(199, 197, 197);
-      .item {
-        // width: 80px;
-        padding: 3px 6px;
-        height: 20px;
-        line-height: 20px;
-        text-align: center;
-        font-size: 12px;
-        // color: #fff;
-        // background-color: rgb(226, 118, 118);
-        border-radius: 15px;
-        float: left;
-        margin-top: 10px;
-        letter-spacing: 2px;
-        margin-left: 10px;
-      }
-      .active {
-        color: #fff;
-        background-color: rgba(45, 85, 215, 0.3);
-        color: #2e55d6;
+    .wrapper {
+      width: 100%;
+      overflow: hidden;
+      .tab {
+        width: 450px;
+        background-color: #fff;
+        height: 40px;
+        border-bottom: 1px solid rgb(199, 197, 197);
+        .item {
+          width: 75px;
+          padding: 3px 3px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          font-size: 12px;
+          float: left;
+          color: #aaa;
+          border-radius: 15px;
+          float: left;
+          margin-top: 10px;
+          letter-spacing: 2px;
+          margin-left: 5px;
+        }
+        .active {
+          color: #fff;
+          background-color: #dcfff6;
+          color: #16d0a0;
+          font-weight: bold;
+        }
       }
     }
+
     .list {
       height: 451px;
       background-color: #fff;
@@ -515,10 +492,9 @@ export default {
         height: 40px;
         .index,
         .name,
-        .temp,
-        .isCough,
-        .phone,
-        .option {
+        .shouldPunch,
+        .punchCount,
+        .waring {
           float: left;
           height: 40px;
           line-height: 40px;
@@ -535,28 +511,28 @@ export default {
           }
         }
         .index {
-          width: 10%;
+          width: 15%;
         }
         .name {
-          width: 18%;
+          width: 40%;
         }
-        .temp {
-          width: 12%;
-        }
-        .isCough {
-          width: 20%;
-        }
-        .phone {
-          width: 25%;
-        }
-        .option {
+        .shouldPunch {
           width: 15%;
+        }
+        .punchCount {
+          width: 15%;
+        }
+        .waring {
+          width: 15%;
+        }
+        .error {
+          color: #16d0a0;
         }
       }
       .hot {
         background-color: #f65235;
         .temp {
-          color: #2e55d6;
+          color: #16d0a0;
         }
       }
     }
@@ -582,7 +558,7 @@ export default {
         width: 95px;
         height: 40px;
         border-radius: 20px;
-        background-color: #2e55d6;
+        background-color: #16d0a0;
         text-align: center;
         line-height: 40px;
         color: #fff;
@@ -690,7 +666,7 @@ export default {
         margin-bottom: 10px;
         padding: 0 15px;
         word-break: break-all;
-        color: #2e55d6;
+        color: #16d0a0;
         text-align: left;
       }
     }

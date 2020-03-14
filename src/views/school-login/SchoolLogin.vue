@@ -9,18 +9,8 @@
     </div>
     <div class="title-message">欢迎您，请登录</div>
     <div class="login">
-      <input
-        type="text"
-        placeholder="账号"
-        v-model="phoneNumber"
-        @blur="blur"
-      />
-      <input
-        type="password"
-        placeholder="输入密码"
-        v-model="password"
-        @blur="blur"
-      />
+      <input type="text" placeholder="账号" v-model="phoneNumber" @blur="blur" />
+      <input type="password" placeholder="输入密码" v-model="password" @blur="blur" />
     </div>
     <div class="login-button" @click="login">登录</div>
     <div class="bottom-logo"></div>
@@ -74,6 +64,14 @@ export default {
             message: "登录成功！",
             iconClass: "icon icon-success"
           });
+          this.$router.push({
+            path: "/schoolManage",
+            query: {
+              enterpriseID: resp.data.data.enterpriseID,
+              parentEnterpriseID: resp.data.data.parentEnterpriseID,
+              enterpriseName: resp.data.data.enterpriseName
+            }
+          });
         } else {
           Toast({
             message: resp.data.data,
@@ -94,6 +92,14 @@ export default {
           Toast({
             message: "登录成功！",
             iconClass: "icon icon-success"
+          });
+          this.$router.push({
+            path: "/manage",
+            query: {
+              enterpriseID: resp.data.data.enterpriseID,
+              type: resp.data.data.level,
+              enterpriseName: resp.data.data.enterpriseName
+            }
           });
         } else {
           Toast({
