@@ -123,7 +123,7 @@
           </li>
           <li>
             <div class="name">手机号:</div>
-            <div class="value">{{ chosedDetail.mobile }}</div>
+            <div class="value">{{ chosedDetail.sysUserID }}</div>
           </li>
           <li>
             <div class="name">体温:</div>
@@ -213,8 +213,6 @@ export default {
   },
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText =
-      "开发区企业员工健康申报系统";
     vm.phoneNumber = window.localStorage.getItem("classNumber");
     vm.password = window.localStorage.getItem("classPassword");
     vm.className = vm.$route.query.enterpriseName;

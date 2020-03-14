@@ -1,5 +1,5 @@
 <template>
-  <div class="school-register">
+  <div class="school-register" :style="{ height: bodyHeight + 'px' }">
     <div class="top-bg">
       <div class="top-box">
         <div class="ball"></div>
@@ -65,7 +65,9 @@ export default {
       loginPassword: "",
       registerPhone: "",
       registerPassword: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      isShowBottomBG: true,
+      bodyHeight: ""
     };
   },
   created() {
@@ -77,6 +79,9 @@ export default {
     if (parentPassword) {
       this.loginPassword = parentPassword;
     }
+  },
+  mounted() {
+    this.bodyHeight = document.documentElement.clientHeight;
   },
   methods: {
     register() {
@@ -252,10 +257,12 @@ export default {
     height: 61px;
     background: url("../../assets/image/area-logo.png") no-repeat;
     background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 88%;
+    margin: 0 auto;
+    margin-top: 130px;
+    // position: absolute;
+    // left: 50%;
+    // transform: translateX(-50%);
+    // top: 88%;
   }
 }
 </style>

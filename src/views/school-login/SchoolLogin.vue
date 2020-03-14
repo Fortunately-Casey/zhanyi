@@ -1,5 +1,5 @@
 <template>
-  <div class="school-register">
+  <div class="school-register" :style="{ height: bodyHeight + 'px' }">
     <div class="top-bg">
       <div class="top-box">
         <div class="ball"></div>
@@ -9,8 +9,18 @@
     </div>
     <div class="title-message">欢迎您，请登录</div>
     <div class="login">
-      <input type="text" placeholder="账号" v-model="phoneNumber" @blur="blur" />
-      <input type="password" placeholder="输入密码" v-model="password" @blur="blur" />
+      <input
+        type="text"
+        placeholder="账号"
+        v-model="phoneNumber"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        placeholder="输入密码"
+        v-model="password"
+        @blur="blur"
+      />
     </div>
     <div class="login-button" @click="login">登录</div>
     <div class="bottom-logo"></div>
@@ -19,12 +29,13 @@
 <script>
 import { blur } from "@/common/tool/tool";
 import { loginEnterprise, loginManageEnterprise } from "@/api/schoolRegister";
-import { Toast } from "mint-ui";
+import { Toast,Indicator  } from "mint-ui";
 export default {
   data() {
     return {
       phoneNumber: "",
-      password: ""
+      password: "",
+      bodyHeight: ""
     };
   },
   created() {
@@ -35,6 +46,9 @@ export default {
       this.phoneNumber = window.localStorage.getItem("schoolNumber");
       this.password = window.localStorage.getItem("schoolPassword");
     }
+  },
+  mounted() {
+    this.bodyHeight = document.documentElement.clientHeight;
   },
   methods: {
     login() {
@@ -53,10 +67,12 @@ export default {
     },
     loginEnterprise() {
       var vm = this;
+      Indicator.open();
       loginEnterprise({
         mobile: vm.phoneNumber,
         password: vm.password
       }).then(resp => {
+        Indicator.close();
         if (resp.data.success) {
           window.localStorage.setItem("classNumber", vm.phoneNumber);
           window.localStorage.setItem("classPassword", vm.password);
@@ -82,10 +98,12 @@ export default {
     },
     loginManageEnterprise() {
       var vm = this;
+      Indicator.open();
       loginManageEnterprise({
         mobile: vm.phoneNumber,
         password: vm.password
       }).then(resp => {
+        Indicator.close();
         if (resp.data.success) {
           window.localStorage.setItem("schoolNumber", vm.phoneNumber);
           window.localStorage.setItem("schoolPassword", vm.password);
@@ -200,10 +218,8 @@ export default {
     height: 61px;
     background: url("../../assets/image/area-logo.png") no-repeat;
     background-size: 100% 100%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 88%;
+    margin: 0 auto;
+    margin-top: 130px;
   }
 }
 </style>

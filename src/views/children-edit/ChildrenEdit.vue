@@ -50,7 +50,7 @@
         <div class="item">{{ chosedValue.area }}</div>
         <div class="item">{{ chosedValue.xian }}</div>
       </div>
-      <input type="text" v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" />
+      <input type="text" v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" @blur="blur" />
     </div>
     <div class="save-button" @click="saveInfo">保存</div>
     <div class="modal" v-if="isShowSchoolList">
@@ -323,7 +323,17 @@ export default {
         });
         return;
       }
-
+      var userNumberReg =
+        // /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+        // /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        /^[0-9a-zA-Z]*$/g;
+      if (!userNumberReg.test(vm.idCard)) {
+        Toast({
+          message: "请输入合法身份证号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       if (!vm.chosedValue.area || !vm.chosedValue.xian || !vm.nowAddress) {
         Toast({
           message: "请填写完整的现居住地!",
@@ -426,6 +436,13 @@ export default {
     },
     showClassList() {
       var vm = this;
+      if (!vm.schoolName) {
+        Toast({
+          message: "请先选择学校！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       // 获取班级列表
       Indicator.open();
       getEnterpriseListV2({

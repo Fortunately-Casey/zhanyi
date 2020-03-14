@@ -3,8 +3,10 @@
     <div class="punch" ref="punch">
       <div class="header">
         <div class="back" @click="goBack">
-          <div class="back-icon"></div>首页
-        </div>健康打卡
+          <div class="back-icon"></div>
+          首页
+        </div>
+        健康打卡
       </div>
       <div class="top">
         <div class="item">
@@ -49,10 +51,17 @@
             </div>
           </div>
           <div class="chosedvalue">
-            <div class="address">{{ chosedNantongValue.chosedNantongName }}</div>
+            <div class="address">
+              {{ chosedNantongValue.chosedNantongName }}
+            </div>
             <div class="address">{{ chosedNantongValue.chosedXian }}</div>
           </div>
-          <input type="text" disabled v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" />
+          <input
+            type="text"
+            disabled
+            v-model="nowAddress"
+            placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+          />
         </div>
       </div>
       <div class="first">
@@ -82,12 +91,18 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedCough === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedCough === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
         <div class="item" v-show="chosedCough === 1">
-          <mt-checklist v-model="symptomsDetail" :options="symptomOptions"></mt-checklist>
+          <mt-checklist
+            v-model="symptomsDetail"
+            :options="symptomOptions"
+          ></mt-checklist>
         </div>
       </div>
       <div class="second">
@@ -105,7 +120,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedLeaveIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedLeaveIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -145,7 +163,9 @@
         <div class="item" v-if="chosedLeaveIndex === 1">
           <div class="name">返通日期</div>
           <div class="value">
-            <div class="date" @click="openPicker">{{ returnDate(dateValue) }}</div>
+            <div class="date" @click="openPicker">
+              {{ returnDate(dateValue) }}
+            </div>
           </div>
         </div>
       </div>
@@ -164,7 +184,10 @@
           <div class="name">
             <div class="cross-item">
               {{ item.value }}
-              <div class="chosed-icon" v-if="chosedSeeMedicalIndex === index ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedSeeMedicalIndex === index ? true : false"
+              ></div>
             </div>
           </div>
         </div>
@@ -175,15 +198,15 @@
             <div class="cross-title">隔离方式</div>
           </div>
         </div>
-        <div class="item" @click="choseQuarantine(0)">
+        <!-- <div class="item" @click="choseQuarantine(0)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[0].value }}
               <div class="chosed-icon" v-if="chosedQuarantineIndex === 0 ? true : false"></div>
             </div>
           </div>
-        </div>
-        <div class="item" v-show="chosedQuarantineIndex === 0">
+        </div>-->
+        <!-- <div class="item" v-show="chosedQuarantineIndex === 0">
           <input
             type="text"
             v-model="enterpriseAddress"
@@ -191,27 +214,37 @@
             class="addressDetail"
             @blur="lostblur"
           />
+        </div>-->
+        <div class="item" @click="choseQuarantine(0)">
+          <div class="name">
+            <div class="cross-item">
+              {{ quarantineList[0].value }}
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 0 ? true : false"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="item" v-if="chosedQuarantineIndex === 0">
+          <mt-radio
+            v-model="chosedQuarant"
+            :options="options"
+            @change="check"
+          ></mt-radio>
         </div>
         <div class="item" @click="choseQuarantine(1)">
           <div class="name">
             <div class="cross-item">
               {{ quarantineList[1].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 1 ? true : false"></div>
+              <div
+                class="chosed-icon"
+                v-if="chosedQuarantineIndex === 1 ? true : false"
+              ></div>
             </div>
           </div>
         </div>
-        <div class="item" v-if="chosedQuarantineIndex === 1">
-          <mt-radio v-model="chosedQuarant" :options="options" @change="check"></mt-radio>
-        </div>
-        <div class="item" @click="choseQuarantine(2)">
-          <div class="name">
-            <div class="cross-item">
-              {{ quarantineList[2].value }}
-              <div class="chosed-icon" v-if="chosedQuarantineIndex === 2 ? true : false"></div>
-            </div>
-          </div>
-        </div>
-        <div class="item" v-show="chosedQuarantineIndex === 2">
+        <div class="item" v-show="chosedQuarantineIndex === 1">
           <input
             type="text"
             v-model="homeAddress"
@@ -223,24 +256,30 @@
         <div class="item reworkTime">
           <div class="name">开始隔离日期</div>
           <div class="value">
-            <div class="date" @click="openIsolationDays">{{ returnDate(isolationDays) }}</div>
+            <div class="date" @click="openIsolationDays">
+              {{ returnDate(isolationDays) }}
+            </div>
           </div>
         </div>
-        <div class="item">
+        <!-- <div class="item">
           <div class="name">
             <div class="cross-title">隔离期限</div>
           </div>
         </div>
         <div class="item">
           <mt-radio v-model="chosedDate" :options="dateOptions" @change="checkDate"></mt-radio>
-        </div>
+        </div>-->
       </div>
       <div class="sixth" v-if="chosedSeeMedicalIndex === 2">
         <div class="item">
           <div class="name">
             <div class="cross-title">
               发热门诊
-              <div class="chosedValue" style="height:40px" v-if="chosedOutpatient.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedOutpatient.value"
+              >
                 <div class="value">{{ chosedOutpatient.value }}</div>
               </div>
             </div>
@@ -261,7 +300,9 @@
               v-for="(item, index) in seeMedicalList"
               :key="index"
               @click="setSeeMedical(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -270,7 +311,11 @@
           <div class="name">
             <div class="cross-title">
               定点医院
-              <div class="chosedValue" style="height:40px" v-if="chosedHospital.value">
+              <div
+                class="chosedValue"
+                style="height:40px"
+                v-if="chosedHospital.value"
+              >
                 <div class="value">{{ chosedHospital.value }}</div>
               </div>
             </div>
@@ -291,7 +336,9 @@
               v-for="(item, index) in hospitalList"
               :key="index"
               @click="setHospital(item)"
-            >{{ item }}</div>
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
       </div>
@@ -349,25 +396,30 @@
           <div class="select-province" v-if="isShowProvinceList">
             <div class="select-title">选择省份/地区</div>
             <div v-for="(item, index) in provinceList" :key="index">
-              <div class="province" v-for="(v, i) in item.items" :key="i" @click="choseProvince(v)">
+              <div
+                class="province"
+                v-for="(v, i) in item.items"
+                :key="i"
+                @click="choseProvince(v)"
+              >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
               </div>
             </div>
           </div>
           <div class="selected" v-if="!isShowProvinceList">
-            <span class="seleted-province" @click="selectProvince">
-              {{
+            <span class="seleted-province" @click="selectProvince">{{
               chosedProvinceName
-              }}
-            </span>
-            <span class="selectCityButton" v-if="!chosedCityName">选择城市</span>
-            <span class="selectedCityButton" v-else @click="selectCity">
-              {{
+            }}</span>
+            <span class="selectCityButton" v-if="!chosedCityName"
+              >选择城市</span
+            >
+            <span class="selectedCityButton" v-else @click="selectCity">{{
               chosedCityName
-              }}
-            </span>
-            <span class="selectCityButton" v-if="isShowAreaSelect">选择区域</span>
+            }}</span>
+            <span class="selectCityButton" v-if="isShowAreaSelect"
+              >选择区域</span
+            >
           </div>
           <div class="select-city" v-if="isShowCityList">
             <div v-for="(item, index) in cityList" :key="index">
@@ -407,7 +459,11 @@
           </div>
           <div class="select-province" v-if="isShowNTArea">
             <div class="select-title">选择区 / 县</div>
-            <div v-for="(item, index) in nantongList" :key="index" v-if="index !== 0">
+            <div
+              v-for="(item, index) in nantongList"
+              :key="index"
+              v-if="index !== 0"
+            >
               <div class="province" @click="choseNanTong(item)">
                 <div class="label" style="width:0"></div>
                 <div class="name">{{ item.name }}</div>
@@ -415,11 +471,9 @@
             </div>
           </div>
           <div class="selected" v-if="!isShowNTArea">
-            <span class="seleted-province" @click="selectNTArea">
-              {{
+            <span class="seleted-province" @click="selectNTArea">{{
               selectNantongValue.chosedNantongName
-              }}
-            </span>
+            }}</span>
             <span class="selectCityButton">选择镇</span>
           </div>
           <div class="select-city" v-if="!isShowNTArea">
@@ -463,7 +517,7 @@ export default {
       chosedLeaveIndex: 0,
       beforeBackAddress: "",
       enterpriseID: "",
-      chosedQuarantineIndex: "",
+      chosedQuarantineIndex: 0,
       chosedSeeMedicalIndex: 0,
       periodPlaceor: "",
       enterpriseAddress: "",
@@ -577,9 +631,6 @@ export default {
       ],
       quarantineList: [
         {
-          value: "企业隔离"
-        },
-        {
           value: "集中隔离"
         },
         {
@@ -638,10 +689,8 @@ export default {
   },
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText =
-      "开发区企业员工健康申报系统";
     this.shareList(
-      "https://yqfk.ntschy.com:10000/swnt.png",
+      "https://yqfk.ntschy.com:20000/swnt.png",
       window.location.href,
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区分中心",
       "开发区企业员工健康申报系统"
@@ -710,12 +759,8 @@ export default {
             vm.chosedSeeMedicalIndex = 0;
           } else if (last.currStatus === "隔离中") {
             vm.chosedSeeMedicalIndex = 1;
-            if (last.isolationType === "企业隔离") {
+            if (last.isolationType === "集中隔离") {
               vm.chosedQuarantineIndex = 0;
-              vm.enterpriseAddress = last.isolationAddress;
-              vm.homeAddress = "";
-            } else if (last.isolationType === "集中隔离") {
-              vm.chosedQuarantineIndex = 1;
               vm.chosedQuarant = last.isolationAddress;
               vm.enterpriseAddress = "";
               vm.homeAddress = "";
@@ -723,12 +768,12 @@ export default {
               vm.homeAddress = last.isolationAddress;
               vm.enterpriseAddress = "";
               vm.chosedQuarant = "";
-              vm.chosedQuarantineIndex = 2;
+              vm.chosedQuarantineIndex = 1;
             }
             vm.isolationDays = last.isolationStartDate
               ? new Date(last.isolationStartDate)
               : new Date();
-            vm.chosedDate = String(last.isolationDays);
+            // vm.chosedDate = String(last.isolationDays);
           } else if (last.currStatus === "发热门诊留观") {
             vm.chosedSeeMedicalIndex = 2;
             vm.isWatchSeeMedical = false;
@@ -844,10 +889,8 @@ export default {
         vm.chosedQuarantineIndex = "";
       } else {
         if (vm.chosedQuarantineIndex === 0) {
-          isolationAddress = vm.enterpriseAddress;
-        } else if (vm.chosedQuarantineIndex === 1) {
           isolationAddress = vm.chosedQuarant;
-        } else if (vm.chosedQuarantineIndex === 2) {
+        } else if (vm.chosedQuarantineIndex === 1) {
           isolationAddress = vm.homeAddress;
         }
       }
@@ -944,15 +987,6 @@ export default {
         }
       }
       if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 0) {
-        if (!vm.enterpriseAddress) {
-          Toast({
-            message: "请填写完整的隔离地址!",
-            iconClass: "icon icon-success"
-          });
-          return;
-        }
-      }
-      if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 1) {
         if (!vm.chosedQuarant) {
           Toast({
             message: "请填写完整的隔离地址!",
@@ -961,7 +995,7 @@ export default {
           return;
         }
       }
-      if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 2) {
+      if (vm.chosedSeeMedicalIndex === 1 && vm.chosedQuarantineIndex === 1) {
         if (!vm.homeAddress) {
           Toast({
             message: "请填写完整的隔离地址!",
@@ -1007,7 +1041,6 @@ export default {
         currStatus: vm.seekMedicalList[vm.chosedSeeMedicalIndex].value,
         symptomsDetail:
           vm.symptomsDetail.length > 0 ? vm.symptomsDetail.join(",") : "",
-        isolationDays: vm.chosedSeeMedicalIndex === 1 ? vm.chosedDate : "",
         isolationStartDate:
           vm.chosedSeeMedicalIndex === 1 ? vm.returnDate(vm.isolationDays) : ""
       };
@@ -1136,8 +1169,13 @@ export default {
         this.chosedNantongValue.chosedXian +
         this.nowAddress;
     },
-    //选择就诊方式
+    //选择状态
     choseSeeMedical(index) {
+      if (index === 1) {
+        this.chosedQuarantineIndex = 0;
+      } else {
+        this.chosedQuarantineIndex = 1;
+      }
       this.chosedSeeMedicalIndex = index;
       this.isWatchHospital = false;
       this.isWatchSeeMedical = false;

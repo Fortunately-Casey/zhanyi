@@ -171,8 +171,6 @@ export default {
   },
   created() {
     var vm = this;
-    document.getElementsByTagName("title")[0].innerText =
-      "开发区企业员工健康申报系统";
     this.phoneNumber = window.localStorage.getItem("schoolNumber");
     this.password = window.localStorage.getItem("schoolPassword");
     this.titleName = this.$route.query.enterpriseName;
