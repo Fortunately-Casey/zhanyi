@@ -22,8 +22,16 @@
             </div>
             <div class="child-values">
               <div class="value">
-                {{ item.enterpriseName
-                }}<span class="punch-status">{{ "已打卡" }}</span>
+                {{ item.enterpriseName }}
+                <span
+                  class="punch-status"
+                  :class="
+                    returnPunchStatus(item.lastPeriodplaceTime) === '已打卡'
+                      ? 'isPunch'
+                      : ''
+                  "
+                  >{{ returnPunchStatus(item.lastPeriodplaceTime) }}</span
+                >
               </div>
               <div class="value">{{ item.parentEnterpriseName }}</div>
               <div class="value">{{ item.idCard }}</div>
@@ -42,6 +50,7 @@
 import Scroll from "../../components/Scroll";
 import { getEnterpriseUserBySysUserID } from "@/api/schoolRegister.js";
 import { Indicator } from "mint-ui";
+import { Todate } from "@/common/tool/tool";
 export default {
   data() {
     return {
@@ -75,6 +84,19 @@ export default {
           idCard: item.idCard
         }
       });
+    },
+    returnPunchStatus(date) {
+      if (date) {
+        let nowDate = Todate(new Date());
+        let punchDate = date.substr(0, 10);
+        if (nowDate == punchDate) {
+          return "已打卡";
+        } else {
+          return "未打卡";
+        }
+      } else {
+        return "未打卡";
+      }
     },
     // 添加子女
     addChild() {

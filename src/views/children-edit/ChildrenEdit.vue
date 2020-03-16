@@ -23,7 +23,7 @@
       <div class="item">
         <div class="name userId">身份证号</div>
         <div class="edit-value">
-          <input type="number" v-model="idCard" pattern="[0-9]*" @blur="blur" placeholder="输入身份证号" />
+          <input  v-model="idCard" @blur="blur" placeholder="输入身份证号" />
         </div>
       </div>
       <div class="item" @click="showSchoolList">
@@ -366,6 +366,7 @@ export default {
             message: "修改成功!",
             iconClass: "icon icon-success"
           });
+          vm.goBack();
         } else {
           Toast({
             message: resp.data.data,

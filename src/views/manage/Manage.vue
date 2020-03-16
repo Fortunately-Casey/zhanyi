@@ -33,8 +33,8 @@
           <div class="name">{{ item.enterpriseName }}</div>
           <div class="shouldPunch">{{ item.allCount }}</div>
           <div class="punchCount">{{ item.periodPlaceCount }}</div>
-          <div class="waring" :class="item.abnormalCount == 0 ? '' : 'error'">
-            {{ item.abnormalCount }}
+          <div class="waring" :class="item.dangerousCount == 0 ? '' : 'error'">
+            {{ item.dangerousCount }}
           </div>
         </div>
       </div>

@@ -126,6 +126,10 @@
             <div class="value">{{ chosedDetail.sysUserID }}</div>
           </li>
           <li>
+            <div class="name">密码:</div>
+            <div class="value">{{ chosedDetail.sysPassword }}</div>
+          </li>
+          <li>
             <div class="name">体温:</div>
             <div class="value">{{ chosedDetail.temp }}</div>
           </li>
@@ -141,9 +145,10 @@
             <div class="name">返通居住地:</div>
             <div class="value">
               {{
-              chosedDetail.ntCity +
-              chosedDetail.ntCounty +
-              chosedDetail.ntAddress
+              chosedDetail.currCity +
+              chosedDetail.currCounty +
+              chosedDetail.currStreet +
+              chosedDetail.currAddress
               }}
             </div>
           </li>
@@ -594,7 +599,7 @@ export default {
       .hot {
         background-color: rgb(245, 122, 100);
         .temp {
-          color: #16d0a0;
+          color: #fff;
         }
       }
     }
@@ -603,10 +608,13 @@ export default {
       line-height: 30px;
       text-align: center;
       font-size: 15px;
-      margin-top: 10px;
+      background-color: #eee;
+      padding-top: 10px;
       span {
-        display: inline-block;
+        height: 30px;
+        line-height: 30px;
         width: 50px;
+        padding: 0 10px;
         text-align: center;
       }
     }

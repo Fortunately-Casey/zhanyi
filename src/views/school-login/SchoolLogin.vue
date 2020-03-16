@@ -29,7 +29,7 @@
 <script>
 import { blur } from "@/common/tool/tool";
 import { loginEnterprise, loginManageEnterprise } from "@/api/schoolRegister";
-import { Toast,Indicator  } from "mint-ui";
+import { Toast, Indicator  } from "mint-ui";
 export default {
   data() {
     return {
@@ -55,9 +55,10 @@ export default {
       var vm = this;
       if (!vm.phoneNumber || !vm.password) {
         Toast({
-          message: "手机号跟密码不能为空！",
+          message: "账号跟密码不能为空！",
           iconClass: "icon icon-success"
         });
+        return;
       }
       if (this.$route.query.type == "class") {
         this.loginEnterprise();
