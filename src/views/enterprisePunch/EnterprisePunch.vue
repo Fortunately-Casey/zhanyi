@@ -44,8 +44,8 @@
         </div>
         <div class="nantong-address">
           <div class="address">
-            <div class="click-value">
-              <div class="name">现居住地</div>
+            <div class="click-value" style="font-weight:bold;color:#2c3e50;">
+              <div class="name">在通居住地</div>
             </div>
           </div>
           <div class="chosedvalue">
@@ -93,7 +93,7 @@
       <div class="second">
         <div class="item">
           <div class="name">
-            <div class="cross-title">1月23日至今是否离开过南通</div>
+            <div class="cross-title">3月2日至今是否离开过南通</div>
           </div>
         </div>
         <div
@@ -1107,6 +1107,13 @@ export default {
     // 是否离开南通
     choseLeave(index) {
       this.chosedLeaveIndex = index;
+      this.chosedValues = {
+        province: "",
+        city: "",
+        area: ""
+      };
+      this.beforeBackAddress = "";
+      this.isShowSelectValue = false;
     },
     // 选择隔离方式
     choseQuarantine(index) {

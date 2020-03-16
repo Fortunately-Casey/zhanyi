@@ -8,6 +8,7 @@
       </div>
     </div>
     <div class="class-manage-button" @click="classManage"></div>
+    <!-- <div class="teacger-punch-button" @click="teacherRegister"></div> -->
     <div class="school-manage-button" @click="schoolManage"></div>
     <div class="bottom-logo"></div>
   </div>
@@ -23,6 +24,15 @@ export default {
         path: "/schoolLogin",
         query: {
           type: "class"
+        }
+      });
+    },
+    // 教职工打卡
+    teacherRegister() {
+      this.$router.push({
+        path: "/schoolRegitser",
+        query: {
+          type: "teacher"
         }
       });
     },
@@ -88,7 +98,8 @@ export default {
     }
   }
   .class-manage-button,
-  .school-manage-button {
+  .school-manage-button,
+  .teacger-punch-button {
     width: 294px;
     height: 84px;
     margin: 0 auto;
@@ -97,6 +108,11 @@ export default {
     background: url("../../assets/image/class-manage.png") no-repeat;
     background-size: 100% 100%;
     margin-top: 140px;
+  }
+  .teacger-punch-button {
+    background: url("../../assets/image/teacher-register.png") no-repeat;
+    background-size: 100% 100%;
+    margin-top: 10px;
   }
   .school-manage-button {
     background: url("../../assets/image/school-manage.png") no-repeat;

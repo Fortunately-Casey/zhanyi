@@ -7,44 +7,15 @@
         <div class="title"></div>
       </div>
     </div>
-    <div class="title-message">
-      {{ isLogin ? "欢迎您，请登录" : "请填写注册信息" }}
-    </div>
+    <div class="title-message">{{ isLogin ? "欢迎您，请登录" : "请填写注册信息" }}</div>
     <div class="login" v-if="isLogin">
-      <input
-        type="number"
-        v-model="loginPhone"
-        placeholder="手机号码"
-        pattern="[0-9]*"
-        @blur="blur"
-      />
-      <input
-        type="password"
-        v-model="loginPassword"
-        placeholder="输入密码"
-        @blur="blur"
-      />
+      <input type="number" v-model="loginPhone" placeholder="手机号码" pattern="[0-9]*" @blur="blur" />
+      <input type="password" v-model="loginPassword" placeholder="输入密码" @blur="blur" />
     </div>
     <div class="register" v-else>
-      <input
-        type="number"
-        v-model="registerPhone"
-        placeholder="手机号码"
-        pattern="[0-9]*"
-        @blur="blur"
-      />
-      <input
-        type="password"
-        v-model="registerPassword"
-        placeholder="输入密码"
-        @blur="blur"
-      />
-      <input
-        type="password"
-        v-model="confirmPassword"
-        placeholder="确认密码"
-        @blur="blur"
-      />
+      <input type="number" v-model="registerPhone" placeholder="手机号码" pattern="[0-9]*" @blur="blur" />
+      <input type="password" v-model="registerPassword" placeholder="输入密码" @blur="blur" />
+      <input type="password" v-model="confirmPassword" placeholder="确认密码" @blur="blur" />
     </div>
     <div class="register-text" v-if="isLogin" @click="register">注册</div>
     <div class="register-text" v-if="!isLogin" @click="login">登录</div>
@@ -66,7 +37,6 @@ export default {
       registerPhone: "",
       registerPassword: "",
       confirmPassword: "",
-      isShowBottomBG: true,
       bodyHeight: ""
     };
   },
@@ -91,10 +61,30 @@ export default {
       this.isLogin = true;
     },
     schoolLogin() {
+      if (this.$route.query.type === "teacher") {
+        this.teacherLogin();
+      } else {
+        this.parentLogin();
+      }
+    },
+    //教师登录
+    teacherLogin() {
+      alert("教师登录");
+    },
+    //家长登录
+    parentLogin() {
       var vm = this;
       if (!vm.loginPhone || !vm.loginPassword) {
         Toast({
           message: "手机号码跟密码不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      var phoneReg = /^1[3456789]\d{9}$/;
+      if (!phoneReg.test(Number(vm.loginPhone))) {
+        Toast({
+          message: "请输入合法手机号！",
           iconClass: "icon icon-success"
         });
         return;
@@ -140,7 +130,14 @@ export default {
         });
         return;
       }
-      // phoneReg(vm.registerPhone);
+      var phoneReg = /^1[3456789]\d{9}$/;
+      if (!phoneReg.test(Number(vm.registerPhone))) {
+        Toast({
+          message: "请输入合法手机号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       registerSysUser({
         userID: vm.registerPhone,
         password: vm.registerPassword
@@ -252,13 +249,19 @@ export default {
     text-align: center;
     line-height: 42px;
   }
+  .login-button {
+    margin-bottom: 130px;
+  }
+  .register-button {
+    margin-bottom: 85px;
+  }
   .bottom-logo {
     width: 307px;
     height: 61px;
     background: url("../../assets/image/area-logo.png") no-repeat;
     background-size: 100% 100%;
     margin: 0 auto;
-    margin-top: 130px;
+    // margin-top: 130px;
     // position: absolute;
     // left: 50%;
     // transform: translateX(-50%);
