@@ -4,10 +4,9 @@ import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
-const routes = [
-  {
-    path:"/",
-    redirect:'/schoolMain'
+const routes = [{
+    path: "/",
+    redirect: '/schoolMain'
   },
   {
     path: "/enterprisePunch",
@@ -53,8 +52,17 @@ const routes = [
     path: "/schoolManage",
     name: "schoolManage",
     component: resolve => require(["../views/school-manage/SchoolManage.vue"], resolve)
-  }
-
+  },
+  {
+    path: "/teacherInfo",
+    name: "teacherInfo",
+    component: resolve => require(["../views/teacher-info/TeacherInfo.vue"], resolve)
+  },
+  {
+    path: "/teacherEdit",
+    name: "teacherEdit",
+    component: resolve => require(["../views/teacher-edit/TeacherEdit.vue"], resolve)
+  },
 ];
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {

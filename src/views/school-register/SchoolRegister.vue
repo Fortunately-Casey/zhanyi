@@ -26,8 +26,12 @@
 </template>
 <script>
 import { blur } from "@/common/tool/tool";
-import { Toast } from "mint-ui";
-import { registerSysUser, sysUserLogin } from "@/api/schoolRegister.js";
+import { Toast, Indicator } from "mint-ui";
+import {
+  registerSysUser,
+  sysUserLogin,
+  teacherLogin
+} from "@/api/schoolRegister.js";
 export default {
   data() {
     return {
@@ -41,13 +45,24 @@ export default {
     };
   },
   created() {
-    var parentNumber = window.localStorage.getItem("parentNumber");
-    var parentPassword = window.localStorage.getItem("parentPassword");
-    if (parentNumber) {
-      this.loginPhone = parentNumber;
-    }
-    if (parentPassword) {
-      this.loginPassword = parentPassword;
+    if (this.$route.query.type === "teacher") {
+      var teacherNumber = window.localStorage.getItem("teacherNumber");
+      var teacherPassword = window.localStorage.getItem("teacherPassword");
+      if (teacherNumber) {
+        this.loginPhone = teacherNumber;
+      }
+      if (teacherPassword) {
+        this.loginPassword = teacherPassword;
+      }
+    } else {
+      var parentNumber = window.localStorage.getItem("parentNumber");
+      var parentPassword = window.localStorage.getItem("parentPassword");
+      if (parentNumber) {
+        this.loginPhone = parentNumber;
+      }
+      if (parentPassword) {
+        this.loginPassword = parentPassword;
+      }
     }
   },
   mounted() {
@@ -69,7 +84,48 @@ export default {
     },
     //教师登录
     teacherLogin() {
-      alert("教师登录");
+      var vm = this;
+      if (!vm.loginPhone || !vm.loginPassword) {
+        Toast({
+          message: "手机号码跟密码不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      var phoneReg = /^1[3456789]\d{9}$/;
+      if (!phoneReg.test(Number(vm.loginPhone))) {
+        Toast({
+          message: "请输入合法手机号！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      Indicator.open();
+      teacherLogin({
+        userID: vm.loginPhone,
+        password: vm.loginPassword
+      }).then(resp => {
+        Indicator.close();
+        if (resp.data.success) {
+          Toast({
+            message: "登录成功！",
+            iconClass: "icon icon-success"
+          });
+          window.localStorage.setItem("teacherNumber", vm.loginPhone);
+          window.localStorage.setItem("teacherPassword", vm.loginPassword);
+          vm.$router.push({
+            path: "teacherInfo",
+            query: {
+              userID: resp.data.data.userID
+            }
+          });
+        } else {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+        }
+      });
     },
     //家长登录
     parentLogin() {

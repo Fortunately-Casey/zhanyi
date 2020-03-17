@@ -441,7 +441,8 @@ import { Toast, Indicator, Radio, MessageBox, Checklist } from "mint-ui";
 import {
   saveEnterprisePeriodPlace,
   getEnterpriseUser,
-  getHospitalList
+  getHospitalList,
+  directEnterprisePeriodPlace
 } from "@/api/enterprisePunch.js";
 import wx from "weixin-js-sdk";
 import axios from "axios";
@@ -660,8 +661,13 @@ export default {
         vm.searchSeeMedica();
       }, 500)
     );
-    var parentNumber = window.localStorage.getItem("parentNumber");
-    this.periodPlaceor = parentNumber;
+    if (this.$route.query.type === "teacher") {
+      var teacherNumber = window.localStorage.getItem("teacherNumber");
+      this.periodPlaceor = teacherNumber;
+    } else {
+      var parentNumber = window.localStorage.getItem("parentNumber");
+      this.periodPlaceor = parentNumber;
+    }
     // 获取用户信息
     getEnterpriseUser({
       idCard: vm.$route.query.idCard
@@ -996,21 +1002,40 @@ export default {
         title: "打卡"
       }).then(() => {
         Indicator.open();
-        saveEnterprisePeriodPlace(params).then(resp => {
-          Indicator.close();
-          if (resp.data.success) {
-            Toast({
-              message: resp.data.data,
-              iconClass: "icon icon-success"
-            });
-            vm.goBack();
-          } else {
-            Toast({
-              message: "打卡失败!",
-              iconClass: "icon icon-success"
-            });
-          }
-        });
+        directEnterprisePeriodPlace;
+        if (vm.$route.query.type === "teacher") {
+          directEnterprisePeriodPlace(params).then(resp => {
+            Indicator.close();
+            if (resp.data.success) {
+              Toast({
+                message: resp.data.data,
+                iconClass: "icon icon-success"
+              });
+              vm.goBack();
+            } else {
+              Toast({
+                message: "打卡失败!",
+                iconClass: "icon icon-success"
+              });
+            }
+          });
+        } else {
+          saveEnterprisePeriodPlace(params).then(resp => {
+            Indicator.close();
+            if (resp.data.success) {
+              Toast({
+                message: resp.data.data,
+                iconClass: "icon icon-success"
+              });
+              vm.goBack();
+            } else {
+              Toast({
+                message: "打卡失败!",
+                iconClass: "icon icon-success"
+              });
+            }
+          });
+        }
       });
     },
     // 获取短信验证码
@@ -1189,12 +1214,21 @@ export default {
       blur();
     },
     goBack() {
-      this.$router.push({
-        path: "/childrenInfo",
-        query: {
-          userID: this.periodPlaceor
-        }
-      });
+      if (this.$route.query.type === "teacher") {
+        this.$router.push({
+          path: "/teacherInfo",
+          query: {
+            userID: this.periodPlaceor
+          }
+        });
+      } else {
+        this.$router.push({
+          path: "/childrenInfo",
+          query: {
+            userID: this.periodPlaceor
+          }
+        });
+      }
     },
     changeStr(str, index, changeStr) {
       return (

@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="class-manage-button" @click="classManage"></div>
-    <!-- <div class="teacger-punch-button" @click="teacherRegister"></div> -->
+    <div class="teacger-punch-button" @click="teacherRegister"></div>
     <div class="school-manage-button" @click="schoolManage"></div>
     <div class="bottom-logo"></div>
   </div>
