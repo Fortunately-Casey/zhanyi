@@ -7,15 +7,44 @@
         <div class="title"></div>
       </div>
     </div>
-    <div class="title-message">{{ isLogin ? "欢迎您，请登录" : "请填写注册信息" }}</div>
+    <div class="title-message">
+      {{ isLogin ? "欢迎您，请登录" : "请填写注册信息" }}
+    </div>
     <div class="login" v-if="isLogin">
-      <input type="number" v-model="loginPhone" placeholder="手机号码" pattern="[0-9]*" @blur="blur" />
-      <input type="password" v-model="loginPassword" placeholder="输入密码" @blur="blur" />
+      <input
+        type="number"
+        v-model="loginPhone"
+        placeholder="手机号码"
+        pattern="[0-9]*"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        v-model="loginPassword"
+        placeholder="输入密码"
+        @blur="blur"
+      />
     </div>
     <div class="register" v-else>
-      <input type="number" v-model="registerPhone" placeholder="手机号码" pattern="[0-9]*" @blur="blur" />
-      <input type="password" v-model="registerPassword" placeholder="输入密码" @blur="blur" />
-      <input type="password" v-model="confirmPassword" placeholder="确认密码" @blur="blur" />
+      <input
+        type="number"
+        v-model="registerPhone"
+        placeholder="手机号码"
+        pattern="[0-9]*"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        v-model="registerPassword"
+        placeholder="输入密码"
+        @blur="blur"
+      />
+      <input
+        type="password"
+        v-model="confirmPassword"
+        placeholder="确认密码"
+        @blur="blur"
+      />
     </div>
     <div class="register-text" v-if="isLogin" @click="register">注册</div>
     <div class="register-text" v-if="!isLogin" @click="login">登录</div>

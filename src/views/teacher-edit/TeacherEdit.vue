@@ -2,7 +2,8 @@
   <div class="children-edit">
     <div class="header">
       <div class="back" @click="goBack">
-        <div class="back-icon"></div>首页
+        <div class="back-icon"></div>
+        首页
       </div>
       <!-- <div class="delete" v-if="isShowDelete" @click="deleteChild">删除</div> -->
       {{ title }}
@@ -11,7 +12,12 @@
       <div class="item">
         <div class="name">姓名</div>
         <div class="edit-value">
-          <input type="text" v-model="childName" @blur="blur" placeholder="输入姓名" />
+          <input
+            type="text"
+            v-model="childName"
+            @blur="blur"
+            placeholder="输入姓名"
+          />
         </div>
       </div>
       <div class="item" @click="isShowSexList = true">
@@ -29,13 +35,24 @@
       <div class="item" @click="showSchoolList">
         <div class="name">学校</div>
         <div class="edit-value">
-          <input type="text" placeholder="选择学校" v-model="schoolName" disabled />
+          <input
+            type="text"
+            style="width:260px"
+            placeholder="选择学校"
+            v-model="schoolName"
+            disabled
+          />
         </div>
       </div>
       <div class="item" @click="showClassList">
         <div class="name">班级</div>
         <div class="edit-value">
-          <input type="text" placeholder="选择班级" v-model="classInfo.enterpriseName" disabled />
+          <input
+            type="text"
+            placeholder="选择班级"
+            v-model="classInfo.enterpriseName"
+            disabled
+          />
         </div>
       </div>
     </div>
@@ -50,7 +67,12 @@
         <div class="item">{{ chosedValue.area }}</div>
         <div class="item">{{ chosedValue.xian }}</div>
       </div>
-      <input type="text" v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" @blur="blur" />
+      <input
+        type="text"
+        v-model="nowAddress"
+        placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+        @blur="blur"
+      />
     </div>
     <div class="save-button" @click="saveInfo">保存</div>
     <div class="modal" v-if="isShowSchoolList">
@@ -65,7 +87,9 @@
               v-for="(item, index) in schoolList"
               @click="choseSchool(item)"
               :key="index"
-            >{{ item.enterpriseName }}</li>
+            >
+              {{ item.enterpriseName }}
+            </li>
           </ul>
         </scroll>
       </div>
@@ -82,7 +106,9 @@
               v-for="(item, index) in classList"
               @click="choseClass(item)"
               :key="index"
-            >{{ item.enterpriseName }}</li>
+            >
+              {{ item.enterpriseName }}
+            </li>
           </ul>
         </scroll>
       </div>
@@ -95,7 +121,13 @@
         </div>
         <scroll class="wrapper">
           <ul>
-            <li v-for="(item, index) in sexList" @click="choseSex(item)" :key="index">{{ item }}</li>
+            <li
+              v-for="(item, index) in sexList"
+              @click="choseSex(item)"
+              :key="index"
+            >
+              {{ item }}
+            </li>
           </ul>
         </scroll>
       </div>

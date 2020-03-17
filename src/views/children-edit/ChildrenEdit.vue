@@ -38,6 +38,7 @@
           <input
             type="text"
             placeholder="选择学校"
+            style="width:260px"
             v-model="schoolName"
             disabled
           />

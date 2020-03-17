@@ -21,7 +21,7 @@
               "
             >{{ returnPunchStatus(teacherInfo.lastPeriodplaceTime) }}</span>
           </div>
-          <div class="value">{{ teacherInfo.parentEnterpriseName }}</div>
+          <div class="value schoolName">{{ teacherInfo.parentEnterpriseName }}</div>
           <div class="value">{{ teacherInfo.idCard }}</div>
         </div>
       </div>
@@ -170,6 +170,11 @@ export default {
       .child-values {
         width: 185px;
         padding-top: 10px;
+        .schoolName {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
         .value {
           height: 30px;
           line-height: 30px;

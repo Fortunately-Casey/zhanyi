@@ -1,32 +1,56 @@
 <template>
   <div class="manage">
     <div class="header">
-      {{ type === "Group" ? "班级管理" : "学校管理" }}
+      教职工打卡管理
       <div class="back" @click="goBack">
-        首页
+        返回
         <div class="back-icon"></div>
       </div>
       <!-- <span class="qrcode" @click="isShowQrcode = true">打卡二维码</span> -->
-      <span
-        class="teacher-punchList"
-        @click="teacherPunchList"
-        v-if="isShowTeacherList"
-        >教职工打卡记录</span
-      >
     </div>
     <div class="content">
-      <div class="class-name">{{ titleName }}</div>
+      <div class="class-name">{{ className }}</div>
       <div class="date" @click="openDate">
         {{ returnDate(date) }}
         <span class="cart"></span>
       </div>
+      <scroll class="wrapper">
+        <div class="tab">
+          <div
+            class="item"
+            :class="chosedIndex === 3 ? 'active' : ''"
+            @click="choseTab(3)"
+          >全部{{ chosedIndex === 3 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 5 ? 'active' : ''"
+            @click="choseTab(5)"
+          >已审核{{ chosedIndex === 5 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 4 ? 'active' : ''"
+            @click="choseTab(4)"
+          >未审核{{ chosedIndex === 4 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 0 ? 'active' : ''"
+            @click="choseTab(0)"
+          >未打卡{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
+          <div
+            class="item"
+            :class="chosedIndex === 6 ? 'active' : ''"
+            @click="choseTab(6)"
+          >异常{{ chosedIndex === 6 ? `(${count})` : "" }}</div>
+        </div>
+      </scroll>
       <div class="list">
         <div class="list-header">
           <div class="index">序号</div>
-          <div class="name">{{ type === "Group" ? "班级" : "学校" }}</div>
-          <div class="shouldPunch">应打卡</div>
-          <div class="punchCount">实打卡</div>
-          <div class="waring">异常</div>
+          <div class="name">姓名</div>
+          <div class="temp">体温</div>
+          <div class="isCough">有无症状</div>
+          <div class="phone">联系电话</div>
+          <div class="option">操作</div>
         </div>
         <div
           class="item"
@@ -35,12 +59,22 @@
           :key="index"
           @click="choseItem(item)"
         >
-          <div class="index">{{ index + 1 }}</div>
-          <div class="name">{{ item.enterpriseName }}</div>
-          <div class="shouldPunch">{{ item.allCount }}</div>
-          <div class="punchCount">{{ item.periodPlaceCount }}</div>
-          <div class="waring" :class="item.dangerousCount == 0 ? '' : 'error'">
-            {{ item.dangerousCount }}
+          <div class="index">{{ item.number }}</div>
+          <div class="name">{{ item.name }}</div>
+          <div class="temp">{{ item.temp }}</div>
+          <div class="isCough">{{ returnCough(item.cough) }}</div>
+          <div class="phone">{{ item.sysUserID }}</div>
+          <div class="option">
+            <div
+              class="dangerStatus"
+              :class="item.dangerousFlag === 'Dangerous' ? 'error' : 'normal'"
+              v-if="chosedIndex === 6"
+              @click.stop="changeDanger(item)"
+            >{{ item.dangerousFlag === "Dangerous" ? "异常" : "正常" }}</div>
+            <div v-else>
+              <span v-if="item.id === 0">未打卡</span>
+              <div class="delete-button" @click.stop="deletePunch(item)" v-else>删除</div>
+            </div>
           </div>
         </div>
       </div>
@@ -49,17 +83,15 @@
         {{ page }}页
         <span @click="next">></span>
       </div>
-      <!-- <div class="bottom">
-        <div class="look-button" @click="download">数据下载</div>
+      <div class="bottom">
+        <!-- <div class="look-button" @click="download">数据下载</div> -->
         <div
           class="punch-button"
           @click="approvalPeriodPlace"
           v-show="chosedIndex === 5 ? false : true"
-        >
-          审核
-        </div>
-        <div class="import-button" @click="importValue">导入数据</div>
-      </div>-->
+        >审核</div>
+        <!-- <div class="import-button" @click="importValue">导入数据</div> -->
+      </div>
     </div>
     <mt-datetime-picker
       ref="datepicker"
@@ -74,7 +106,7 @@
       @confirm="confirmDate"
       @cancel="closeDate"
     ></mt-datetime-picker>
-    <!-- <div class="modal" v-show="isShowQrcode">
+    <div class="modal" v-show="isShowQrcode">
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
@@ -91,7 +123,11 @@
           </li>
           <li>
             <div class="name">手机号:</div>
-            <div class="value">{{ chosedDetail.mobile }}</div>
+            <div class="value">{{ chosedDetail.sysUserID }}</div>
+          </li>
+          <li>
+            <div class="name">密码:</div>
+            <div class="value">{{ chosedDetail.sysPassword }}</div>
           </li>
           <li>
             <div class="name">体温:</div>
@@ -109,9 +145,10 @@
             <div class="name">返通居住地:</div>
             <div class="value">
               {{
-              chosedDetail.ntCity +
-              chosedDetail.ntCounty +
-              chosedDetail.ntAddress
+              chosedDetail.currCity +
+              chosedDetail.currCounty +
+              chosedDetail.currStreet +
+              chosedDetail.currAddress
               }}
             </div>
           </li>
@@ -133,13 +170,19 @@
         <div class="url-message">{{ importUrl }}</div>
         <button class="btn" :data-clipboard-text="importUrl" @click="copyImport">复制链接</button>
       </div>
-    </div>-->
+    </div>
   </div>
 </template>
 <script>
 import { Todate } from "@/common/tool/tool.js";
 import { MessageBox } from "mint-ui";
-import { getEnterpriseBaseList, getEnterpriseGroupList } from "@/api/manage.js";
+import {
+  getEnterprisePeriodPlaceList,
+  deleteEnterprisePeriodPlace,
+  updateEnterprisePeriodPlaceDangerousFlag,
+  approvalPeriodPlace
+} from "@/api/manage.js";
+import { getSpecialEnterprise } from "@/api/schoolRegister.js";
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
 import Clipboard from "clipboard";
@@ -150,7 +193,8 @@ export default {
     return {
       date: new Date(),
       pickerValue: new Date(),
-      isShowTeacherList: true,
+      enterpriseID: "",
+      parentEnterpriseID: "",
       chosedIndex: 3,
       page: 1,
       pageSize: 10,
@@ -172,30 +216,37 @@ export default {
       importUrl: "",
       phoneNumber: "",
       password: "",
-      titleName: "",
-      type: ""
+      className: ""
     };
   },
   created() {
     var vm = this;
-    this.phoneNumber = window.localStorage.getItem("schoolNumber");
-    this.password = window.localStorage.getItem("schoolPassword");
-    this.titleName = this.$route.query.enterpriseName;
-    this.type = this.$route.query.type;
-    vm.getList();
-    vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
+    vm.getSpecialEnterprise();
   },
   mounted() {
     const clipboard = new Clipboard(".btn");
   },
   methods: {
+    getSpecialEnterprise() {
+      var vm = this;
+      Indicator.open();
+      getSpecialEnterprise({
+        enterpriseID: this.$route.query.enterpriseID
+      }).then(resp => {
+        Indicator.close();
+        vm.className = resp.data.data.enterpriseName;
+        vm.phoneNumber = resp.data.data.adminUserID;
+        vm.password = resp.data.data.password;
+        vm.enterpriseID = resp.data.data.enterpriseID;
+        vm.parentEnterpriseID = resp.data.data.parentEnterpriseID;
+        vm.getList();
+      });
+    },
     returnDate(value) {
       return Todate(value);
     },
     goBack() {
-      this.$router.push({
-        path: "/schoolMain"
-      });
+      this.$router.go(-1);
     },
     confirmDate(value) {
       this.date = value;
@@ -224,79 +275,74 @@ export default {
       this.importUrl = `http://119.3.194.191:8089/#/importStaff?name=${this.list[0].enterpriseName}&id=${this.$route.query.enterpriseID}`;
       this.isShowImport = true;
     },
-    // deletePunch(item) {
-    //   var vm = this;
-    //   MessageBox.confirm("确定执行此操作?", "删除当前记录").then(() => {
-    //     var params = {
-    //       enterprisePeriodPlaceID: item.id,
-    //       enterpriseID: vm.$route.query.enterpriseID
-    //     };
-    //     deleteEnterprisePeriodPlace(params).then(resp => {
-    //       if (resp.data.success) {
-    //         Toast({
-    //           message: "删除成功！",
-    //           iconClass: "icon icon-success"
-    //         });
-    //         vm.page = 1;
-    //         vm.getList();
-    //       } else {
-    //         Toast({
-    //           message: "删除失败！",
-    //           iconClass: "icon icon-success"
-    //         });
-    //       }
-    //     });
-    //   });
-    // },
-    getList() {
-      if (this.$route.query.type === "Group") {
-        this.isShowTeacherList = true;
-        this.getSchoolManage();
-      } else if (this.$route.query.type === "Root") {
-        this.isShowTeacherList = false;
-        this.getControlManage();
-      }
+    deletePunch(item) {
+      var vm = this;
+      MessageBox.confirm("确定执行此操作?", "删除当前记录").then(() => {
+        var params = {
+          enterprisePeriodPlaceID: item.id,
+          enterpriseID: vm.enterpriseID
+        };
+        Indicator.open();
+        deleteEnterprisePeriodPlace(params).then(resp => {
+          Indicator.close();
+          if (resp.data.success) {
+            Toast({
+              message: "删除成功！",
+              iconClass: "icon icon-success"
+            });
+            vm.page = 1;
+            vm.getList();
+          } else {
+            Toast({
+              message: "删除失败！",
+              iconClass: "icon icon-success"
+            });
+          }
+        });
+      });
     },
-    getSchoolManage() {
+    changeDanger(item) {
       var vm = this;
       Indicator.open();
-      getEnterpriseBaseList({
-        paramEnterpriseID: vm.$route.query.enterpriseID,
+      updateEnterprisePeriodPlaceDangerousFlag({
+        enterprisePeriodPlaceID: item.id,
+        enterpriseID: vm.enterpriseID,
+        dangerousFlag:
+          item.dangerousFlag === "Dangerous" ? "Normal" : "Dangerous"
+      }).then(resp => {
+        Indicator.close();
+        if (resp.data.success) {
+          Toast({
+            message: "修改成功！",
+            iconClass: "icon icon-success"
+          });
+          vm.page = 1;
+          vm.getList();
+        } else {
+          Toast({
+            message: "修改失败！",
+            iconClass: "icon icon-success"
+          });
+        }
+      });
+    },
+    getList() {
+      var vm = this;
+      Indicator.open();
+      getEnterprisePeriodPlaceList({
+        paramPeriodPlaceDate: vm.returnDate(vm.date),
+        paramStatus: vm.chosedIndex,
+        paramPage: vm.page,
+        paramPageSize: vm.pageSize,
         paramEnterpriseAdminUserId: vm.phoneNumber,
         paramEnterpriseAdminPassword: vm.password,
-        paramPeriodPlaceDate: vm.returnDate(vm.date),
-        page: vm.page,
-        pageSize: vm.pageSize
+        paramEnterpriseID: vm.enterpriseID,
+        paramParentEnterpriseID: vm.parentEnterpriseID
       }).then(resp => {
         Indicator.close();
         vm.list = resp.data.data;
         vm.maxPage = resp.data.page.pageCount;
         vm.count = resp.data.page.totalCount;
-      });
-    },
-    getControlManage() {
-      var vm = this;
-      Indicator.open();
-      getEnterpriseGroupList({
-        paramEnterpriseID: vm.$route.query.enterpriseID,
-        paramCenterAdminUserId: vm.phoneNumber,
-        paramCenterAdminPassword: vm.password,
-        paramPeriodPlaceDate: vm.returnDate(vm.date),
-        page: vm.page,
-        pageSize: vm.pageSize
-      }).then(resp => {
-        Indicator.close();
-        vm.list = resp.data.data;
-        vm.maxPage = resp.data.page.pageCount;
-        vm.count = resp.data.page.totalCount;
-      });
-    },
-    teacherPunchList() {
-      this.$router.push({
-        path: "/teacherPunchList",
-        query: {
-          enterpriseID: this.$route.query.enterpriseID
-        }
       });
     },
     prev() {
@@ -315,19 +361,19 @@ export default {
       vm.page++;
       vm.getList();
     },
-    // download() {
-    //   var vm = this;
-    //   Indicator.open();
-    //   exportEnterprisePeriodPlaceList({
-    //     enterpriseID: vm.$route.query.enterpriseID,
-    //     periodPlaceDate: vm.returnDate(vm.date),
-    //     status: vm.chosedIndex
-    //   }).then(resp => {
-    //     Indicator.close();
-    //     this.isShowDownload = true;
-    //     vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
-    //   });
-    // },
+    download() {
+      // var vm = this;
+      // Indicator.open();
+      // exportEnterprisePeriodPlaceList({
+      //   enterpriseID: vm.$route.query.enterpriseID,
+      //   periodPlaceDate: vm.returnDate(vm.date),
+      //   status: vm.chosedIndex
+      // }).then(resp => {
+      //   Indicator.close();
+      //   this.isShowDownload = true;
+      //   vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
+      // });
+    },
     copyAlert() {
       Toast({
         message: "复制成功！",
@@ -344,13 +390,15 @@ export default {
       var vm = this;
       Indicator.open();
       approvalPeriodPlace({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date)
+        paramEnterpriseAdminUserId: vm.phoneNumber,
+        paramEnterpriseAdminPassword: vm.password,
+        paramEnterpriseID: vm.enterpriseID,
+        paramPeriodPlaceDate: vm.returnDate(vm.date)
       }).then(resp => {
         Indicator.close();
         if (resp.data.success) {
           Toast({
-            message: "审核成功",
+            message: resp.data.data,
             iconClass: "icon icon-success"
           });
         } else {
@@ -434,7 +482,7 @@ export default {
         transform: translateY(-50%);
       }
     }
-    .teacher-punchList {
+    .qrcode {
       position: absolute;
       right: 10px;
       top: 50%;
@@ -507,9 +555,10 @@ export default {
         height: 40px;
         .index,
         .name,
-        .shouldPunch,
-        .punchCount,
-        .waring {
+        .temp,
+        .isCough,
+        .phone,
+        .option {
           float: left;
           height: 40px;
           line-height: 40px;
@@ -524,30 +573,45 @@ export default {
             margin-top: 7.5px;
             border-radius: 5px;
           }
+          .dangerStatus {
+            margin: 0 auto;
+            width: 35px;
+            height: 25px;
+            line-height: 25px;
+            color: #fff;
+            margin-top: 7.5px;
+            border-radius: 5px;
+          }
+          .normal {
+            background-color: rgb(45, 217, 233);
+          }
+          .error {
+            background-color: rgb(245, 27, 27);
+          }
         }
         .index {
-          width: 15%;
+          width: 10%;
         }
         .name {
-          width: 40%;
+          width: 18%;
         }
-        .shouldPunch {
+        .temp {
+          width: 12%;
+        }
+        .isCough {
+          width: 20%;
+        }
+        .phone {
+          width: 25%;
+        }
+        .option {
           width: 15%;
-        }
-        .punchCount {
-          width: 15%;
-        }
-        .waring {
-          width: 15%;
-        }
-        .error {
-          color: #16d0a0;
         }
       }
       .hot {
-        background-color: #f65235;
+        background-color: rgb(245, 122, 100);
         .temp {
-          color: #16d0a0;
+          color: #fff;
         }
       }
     }
@@ -556,10 +620,13 @@ export default {
       line-height: 30px;
       text-align: center;
       font-size: 15px;
-      margin-top: 10px;
+      background-color: #eee;
+      padding-top: 10px;
       span {
-        display: inline-block;
+        height: 30px;
+        line-height: 30px;
         width: 50px;
+        padding: 0 10px;
         text-align: center;
       }
     }
@@ -619,7 +686,6 @@ export default {
       .red-message {
         width: 100%;
         text-align: center;
-        /* padding-left: 20px; */
         height: 40px;
         line-height: 40px;
         font-size: 14px;

@@ -1,7 +1,5 @@
 import axios from "axios";
-import {
-  getURL
-} from "@/common/tool/tool";
+import { getURL } from "@/common/tool/tool";
 
 // 家长注册
 export function registerSysUser(params) {
@@ -199,12 +197,26 @@ export function getTeacherBySysUserID(params) {
     });
 }
 
-
 //修改教师基本信息
 export function updateTeacherInfo(params) {
   const url = getURL("/enterpriseManage/updateEnterpriseEMPUser");
   return axios
     .post(url, params)
+    .then(resp => {
+      return Promise.resolve(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+//获取教务处信息
+export function getSpecialEnterprise(params) {
+  const url = getURL("/enterpriseManage/getSpecialEnterprise");
+  return axios
+    .get(url, {
+      params: params
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })

@@ -63,6 +63,11 @@ const routes = [{
     name: "teacherEdit",
     component: resolve => require(["../views/teacher-edit/TeacherEdit.vue"], resolve)
   },
+  {
+    path: "/teacherPunchList",
+    name: "teacherPunchList",
+    component: resolve => require(["../views/teacher-punchList/TeacherPunchList.vue"], resolve)
+  },
 ];
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
