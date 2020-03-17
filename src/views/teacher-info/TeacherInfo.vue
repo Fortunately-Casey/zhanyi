@@ -3,15 +3,18 @@
     <div class="top-bg">
       <div class="title"></div>
     </div>
-    <div class="child">
+    <div class="teacher" v-if="!isShowAddButton">
       <div class="left" @click="editTeacher(teacherInfo)">
-        <div class="child-name">
-          <div class="child-logo" :class="teacherInfo.sex === '男' ? 'man' : 'women'"></div>
+        <div class="teacher-name">
+          <div
+            class="teacher-logo"
+            :class="teacherInfo.sex === '男' ? 'man' : 'women'"
+          ></div>
           <div class="name">{{ teacherInfo.name }}</div>
         </div>
-        <div class="child-values">
+        <div class="teacher-values">
           <div class="value">
-            {{ teacherInfo.enterpriseName }}
+            教职工
             <span
               class="punch-status"
               :class="
@@ -19,13 +22,16 @@
                   ? 'isPunch'
                   : ''
               "
-            >{{ returnPunchStatus(teacherInfo.lastPeriodplaceTime) }}</span>
+              >{{ returnPunchStatus(teacherInfo.lastPeriodplaceTime) }}</span
+            >
           </div>
-          <div class="value schoolName">{{ teacherInfo.parentEnterpriseName }}</div>
+          <div class="value schoolName">
+            {{ teacherInfo.parentEnterpriseName }}
+          </div>
           <div class="value">{{ teacherInfo.idCard }}</div>
         </div>
       </div>
-      <div class="right" @click="childPunch(teacherInfo.idCard)">
+      <div class="right" @click="teacherPunch(teacherInfo.idCard)">
         <div class="punch-icon"></div>
       </div>
     </div>
@@ -47,7 +53,7 @@ export default {
     this.getTeacherBySysUserID();
   },
   methods: {
-    // 获取子女列表
+    // 获取个人信息
     getTeacherBySysUserID() {
       var vm = this;
       Indicator.open();
@@ -63,7 +69,7 @@ export default {
         }
       });
     },
-    // 修改子女信息
+    // 修改个人信息
     editTeacher(item) {
       this.$router.push({
         path: "/teacherEdit",
@@ -87,7 +93,7 @@ export default {
         return "未打卡";
       }
     },
-    // 添加子女
+    // 添加个人信息
     addInfo() {
       this.$router.push({
         path: "/teacherEdit",
@@ -98,7 +104,7 @@ export default {
       });
     },
     // 教师打卡
-    childPunch(idCard) {
+    teacherPunch(idCard) {
       this.$router.push({
         path: "/enterprisePunch",
         query: {
@@ -132,7 +138,7 @@ export default {
       background-size: 100% 100%;
     }
   }
-  .child {
+  .teacher {
     width: 335px;
     height: 108px;
     margin: 10px auto;
@@ -145,9 +151,9 @@ export default {
       width: 255px;
       border-radius: 8px 0 0 8px;
       display: flex;
-      .child-name {
+      .teacher-name {
         width: 70px;
-        .child-logo {
+        .teacher-logo {
           width: 40px;
           height: 40px;
           margin: 15px auto;
@@ -167,7 +173,7 @@ export default {
           font-weight: bold;
         }
       }
-      .child-values {
+      .teacher-values {
         width: 185px;
         padding-top: 10px;
         .schoolName {

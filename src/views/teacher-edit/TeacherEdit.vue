@@ -44,7 +44,7 @@
           />
         </div>
       </div>
-      <div class="item" @click="showClassList">
+      <!-- <div class="item" @click="showClassList">
         <div class="name">班级</div>
         <div class="edit-value">
           <input
@@ -54,7 +54,7 @@
             disabled
           />
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="now-address">
       <div class="address">
