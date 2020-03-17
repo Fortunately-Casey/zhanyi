@@ -364,6 +364,7 @@ export default {
     getList() {
       var vm = this;
       Indicator.open();
+      console.log(vm.phoneNumber,vm.password);
       getEnterprisePeriodPlaceList({
         paramPeriodPlaceDate: vm.returnDate(vm.date),
         paramStatus: vm.chosedIndex,

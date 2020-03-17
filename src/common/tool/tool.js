@@ -8,11 +8,15 @@ import {
 
 
 export function Todate(chinadatetime) { //Fri Oct 31 18:00:00 UTC+0800 2008 
-    var d = new Date(chinadatetime);
-    var month = (d.getMonth() + 1) >= 10 ? (d.getMonth() + 1) : "0" + (d.getMonth() + 1);
-    var date = d.getDate() >= 10 ? d.getDate() : "0" + d.getDate();
-    var datetime = d.getFullYear() + '-' + month + '-' + date;
-    return datetime;
+    if (chinadatetime) {
+        var d = new Date(chinadatetime);
+        var month = (d.getMonth() + 1) >= 10 ? (d.getMonth() + 1) : "0" + (d.getMonth() + 1);
+        var date = d.getDate() >= 10 ? d.getDate() : "0" + d.getDate();
+        var datetime = d.getFullYear() + '-' + month + '-' + date;
+        return datetime;
+    } else {
+        return "";
+    }
 }
 
 export function blur() {
@@ -27,8 +31,8 @@ export function getURL(url) {
     if (process.env.NODE_ENV === 'development') {
         _result = `/api${url}`; // 开发环境会自动走代理
     } else if (process.env.NODE_ENV === 'production') {
-        _result = `https://yqfk.ntschy.com:20000/api${url}`; // 正式环境地址
-        // _result = `"http://192.168.3.153:9090"/api${url}`; // 正式环境地址
+        // _result = `https://yqfk.ntschy.com:20000/api${url}`; // 正式环境地址
+        _result = `"http://192.168.3.153:9090"/api${url}`; // 正式环境地址
     }
     return _result;
 }

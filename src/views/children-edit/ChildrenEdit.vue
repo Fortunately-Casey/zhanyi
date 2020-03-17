@@ -2,8 +2,7 @@
   <div class="children-edit">
     <div class="header">
       <div class="back" @click="goBack">
-        <div class="back-icon"></div>
-        首页
+        <div class="back-icon"></div>首页
       </div>
       <div class="delete" v-if="isShowDelete" @click="deleteChild">删除</div>
       {{ title }}
@@ -12,12 +11,7 @@
       <div class="item">
         <div class="name">姓名</div>
         <div class="edit-value">
-          <input
-            type="text"
-            v-model="childName"
-            @blur="blur"
-            placeholder="输入姓名"
-          />
+          <input type="text" v-model="childName" @blur="blur" placeholder="输入姓名" />
         </div>
       </div>
       <div class="item" @click="isShowSexList = true">
@@ -35,24 +29,13 @@
       <div class="item" @click="showSchoolList">
         <div class="name">学校</div>
         <div class="edit-value">
-          <input
-            type="text"
-            placeholder="选择学校"
-            style="width:260px"
-            v-model="schoolName"
-            disabled
-          />
+          <input type="text" placeholder="选择学校" style="width:260px" v-model="schoolName" disabled />
         </div>
       </div>
       <div class="item" @click="showClassList">
         <div class="name">班级</div>
         <div class="edit-value">
-          <input
-            type="text"
-            placeholder="选择班级"
-            v-model="className"
-            disabled
-          />
+          <input type="text" placeholder="选择班级" v-model="className" disabled />
         </div>
       </div>
     </div>
@@ -67,12 +50,7 @@
         <div class="item">{{ chosedValue.area }}</div>
         <div class="item">{{ chosedValue.xian }}</div>
       </div>
-      <input
-        type="text"
-        v-model="nowAddress"
-        placeholder="详细地址：道路、门牌号、楼栋号、单元号"
-        @blur="blur"
-      />
+      <input type="text" v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" @blur="blur" />
     </div>
     <div class="save-button" @click="saveInfo">保存</div>
     <div class="modal" v-if="isShowSchoolList">
@@ -81,15 +59,22 @@
           选择学校
           <div class="icon-close" @click="closeSchoolList"></div>
         </div>
+        <div class="tab">
+          <div
+            class="item"
+            v-for="(item, index) in enterpriseList"
+            :key="index"
+            :class="enterpriseType === item.id?'chosed':''"
+            @click="choseSchoolType(item.id)"
+          >{{ item.name }}</div>
+        </div>
         <scroll class="wrapper">
           <ul>
             <li
               v-for="(item, index) in schoolList"
               @click="choseSchool(item)"
               :key="index"
-            >
-              {{ item.enterpriseName }}
-            </li>
+            >{{ item.enterpriseName }}</li>
           </ul>
         </scroll>
       </div>
@@ -106,9 +91,7 @@
               v-for="(item, index) in classList"
               @click="choseClass(item)"
               :key="index"
-            >
-              {{ item.enterpriseName }}
-            </li>
+            >{{ item.enterpriseName }}</li>
           </ul>
         </scroll>
       </div>
@@ -121,13 +104,7 @@
         </div>
         <scroll class="wrapper">
           <ul>
-            <li
-              v-for="(item, index) in sexList"
-              @click="choseSex(item)"
-              :key="index"
-            >
-              {{ item }}
-            </li>
+            <li v-for="(item, index) in sexList" @click="choseSex(item)" :key="index">{{ item }}</li>
           </ul>
         </scroll>
       </div>
@@ -173,7 +150,30 @@ export default {
       sex: "",
       isShowSexList: false,
       isShowDelete: false,
-      nowAddress: ""
+      nowAddress: "",
+      enterpriseType: 1,
+      enterpriseList: [
+        {
+          id: 1,
+          name: "幼儿园"
+        },
+        {
+          id: 2,
+          name: "小学"
+        },
+        {
+          id: 3,
+          name: "初中"
+        },
+        {
+          id: 4,
+          name: "高中"
+        },
+        {
+          id: 5,
+          name: "综合"
+        }
+      ]
     };
   },
   created() {
@@ -187,11 +187,7 @@ export default {
     }
     var vm = this;
     // 获取学校列表
-    getEnterpriseListV2({
-      level: "Group"
-    }).then(resp => {
-      vm.schoolList = resp.data.data;
-    });
+    vm.getEnterpriseListV2();
   },
   methods: {
     // 获取子女信息
@@ -237,6 +233,22 @@ export default {
           this.addChild();
         }
       });
+    },
+    getEnterpriseListV2() {
+      var vm = this;
+      Indicator.open();
+      getEnterpriseListV2({
+        level: "Group",
+        enterpriseType: vm.enterpriseType
+      }).then(resp => {
+        Indicator.close();
+        vm.schoolList = resp.data.data;
+      });
+    },
+    choseSchoolType(id) {
+      var vm = this;
+      vm.enterpriseType = id;
+      vm.getEnterpriseListV2();
     },
     // 新增子女
     addChild() {
@@ -699,8 +711,24 @@ export default {
           transform: translateY(-50%);
         }
       }
+      .tab {
+        height: 30px;
+        display: flex;
+        .item {
+          height: 30px;
+          text-align: center;
+          line-height: 30px;
+          font-size: 14px;
+          flex: 1;
+        }
+        .chosed{
+          border-radius: 15px;
+          color: #fff;
+          background-color: #16d0a0;
+        }
+      }
       .wrapper {
-        height: 400px;
+        height: 370px;
         overflow: hidden;
         ul {
           list-style: none;
