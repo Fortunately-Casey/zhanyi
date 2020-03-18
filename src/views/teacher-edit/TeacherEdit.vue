@@ -1,38 +1,51 @@
 <template>
-  <div class="children-edit">
-    <div class="header">
-      <div class="back" @click="goBack">
-        <div class="back-icon"></div>首页
-      </div>
-      <!-- <div class="delete" v-if="isShowDelete" @click="deleteChild">删除</div> -->
-      {{ title }}
-    </div>
-    <div class="content">
-      <div class="item">
-        <div class="name">姓名</div>
-        <div class="edit-value">
-          <input type="text" v-model="childName" @blur="blur" placeholder="输入姓名" />
+  <transition name="slide">
+    <div class="teacher-edit">
+      <div class="header">
+        <div class="back" @click="goBack">
+          <div class="back-icon"></div>
+          首页
         </div>
+        <!-- <div class="delete" v-if="isShowDelete" @click="deleteChild">删除</div> -->
+        {{ title }}
       </div>
-      <div class="item" @click="isShowSexList = true">
-        <div class="name">性别</div>
-        <div class="edit-value">
-          <input type="text" v-model="sex" placeholder="选择性别" disabled />
+      <div class="content">
+        <div class="item">
+          <div class="name">姓名</div>
+          <div class="edit-value">
+            <input
+              type="text"
+              v-model="childName"
+              @blur="blur"
+              placeholder="输入姓名"
+            />
+          </div>
         </div>
-      </div>
-      <div class="item">
-        <div class="name userId">身份证号</div>
-        <div class="edit-value">
-          <input v-model="idCard" @blur="blur" placeholder="输入身份证号" />
+        <div class="item" @click="isShowSexList = true">
+          <div class="name">性别</div>
+          <div class="edit-value">
+            <input type="text" v-model="sex" placeholder="选择性别" disabled />
+          </div>
         </div>
-      </div>
-      <div class="item" @click="showSchoolList">
-        <div class="name">学校</div>
-        <div class="edit-value">
-          <input type="text" style="width:230px" placeholder="选择学校" v-model="schoolName" disabled />
+        <div class="item">
+          <div class="name userId">身份证号</div>
+          <div class="edit-value">
+            <input v-model="idCard" @blur="blur" placeholder="输入身份证号" />
+          </div>
         </div>
-      </div>
-      <!-- <div class="item" @click="showClassList">
+        <div class="item" @click="showSchoolList">
+          <div class="name">学校</div>
+          <div class="edit-value">
+            <input
+              type="text"
+              style="width:230px"
+              placeholder="选择学校"
+              v-model="schoolName"
+              disabled
+            />
+          </div>
+        </div>
+        <!-- <div class="item" @click="showClassList">
         <div class="name">班级</div>
         <div class="edit-value">
           <input
@@ -42,84 +55,102 @@
             disabled
           />
         </div>
-      </div>-->
-    </div>
-    <div class="now-address">
-      <div class="address">
-        <div class="click-value">
-          <div class="name">在通居住地</div>
-          <div class="icon-cross" @click="openNanTong">></div>
-        </div>
+        </div>-->
       </div>
-      <div class="chosedvalue" v-show="chosedValue">
-        <div class="item">{{ chosedValue.area }}</div>
-        <div class="item">{{ chosedValue.xian }}</div>
+      <div class="now-address">
+        <div class="address">
+          <div class="click-value">
+            <div class="name">在通居住地</div>
+            <div class="icon-cross" @click="openNanTong">></div>
+          </div>
+        </div>
+        <div class="chosedvalue" v-show="chosedValue">
+          <div class="item">{{ chosedValue.area }}</div>
+          <div class="item">{{ chosedValue.xian }}</div>
+        </div>
+        <input
+          type="text"
+          v-model="nowAddress"
+          placeholder="详细地址：道路、门牌号、楼栋号、单元号"
+          @blur="blur"
+        />
       </div>
-      <input type="text" v-model="nowAddress" placeholder="详细地址：道路、门牌号、楼栋号、单元号" @blur="blur" />
-    </div>
-    <div class="save-button" @click="saveInfo">保存</div>
-    <div class="modal" v-if="isShowSchoolList">
-      <div class="list">
-        <div class="list-top">
-          选择学校
-          <div class="icon-close" @click="closeSchoolList"></div>
-        </div>
-        <div class="tab">
-          <div
-            class="item"
-            v-for="(item, index) in enterpriseList"
-            :key="index"
-            :class="enterpriseType === item.id ? 'chosed' : ''"
-            @click="choseSchoolType(item.id)"
-          >{{ item.name }}</div>
-        </div>
-        <scroll class="wrapper" ref="schoolWrapper">
-          <ul>
-            <li
-              v-for="(item, index) in schoolList"
-              @click="choseSchool(item)"
+      <div class="save-button" @click="saveInfo">保存</div>
+      <div class="modal" v-if="isShowSchoolList">
+        <div class="list">
+          <div class="list-top">
+            选择学校
+            <div class="icon-close" @click="closeSchoolList"></div>
+          </div>
+          <div class="tab">
+            <div
+              class="item"
+              v-for="(item, index) in enterpriseList"
               :key="index"
-            >{{ item.enterpriseName }}</li>
-          </ul>
-        </scroll>
-      </div>
-    </div>
-    <div class="modal" v-if="isShowClassList">
-      <div class="list">
-        <div class="list-top">
-          选择班级
-          <div class="icon-close" @click="closeClassList"></div>
+              :class="enterpriseType === item.id ? 'chosed' : ''"
+              @click="choseSchoolType(item.id)"
+            >
+              {{ item.name }}
+            </div>
+          </div>
+          <scroll class="wrapper" ref="schoolWrapper">
+            <ul>
+              <li
+                v-for="(item, index) in schoolList"
+                @click="choseSchool(item)"
+                :key="index"
+              >
+                {{ item.enterpriseName }}
+              </li>
+            </ul>
+          </scroll>
         </div>
-        <scroll class="wrapper">
-          <ul>
-            <li
-              v-for="(item, index) in classList"
-              @click="choseClass(item)"
-              :key="index"
-            >{{ item.enterpriseName }}</li>
-          </ul>
-        </scroll>
       </div>
-    </div>
-    <div class="modal" v-if="isShowSexList">
-      <div class="sex">
-        <div class="list-top">
-          选择性别
-          <div class="icon-close" @click="closeSexList"></div>
+      <div class="modal" v-if="isShowClassList">
+        <div class="list">
+          <div class="list-top">
+            选择班级
+            <div class="icon-close" @click="closeClassList"></div>
+          </div>
+          <scroll class="wrapper">
+            <ul>
+              <li
+                v-for="(item, index) in classList"
+                @click="choseClass(item)"
+                :key="index"
+              >
+                {{ item.enterpriseName }}
+              </li>
+            </ul>
+          </scroll>
         </div>
-        <scroll class="wrapper">
-          <ul>
-            <li v-for="(item, index) in sexList" @click="choseSex(item)" :key="index">{{ item }}</li>
-          </ul>
-        </scroll>
       </div>
+      <div class="modal" v-if="isShowSexList">
+        <div class="sex">
+          <div class="list-top">
+            选择性别
+            <div class="icon-close" @click="closeSexList"></div>
+          </div>
+          <scroll class="wrapper">
+            <ul>
+              <li
+                v-for="(item, index) in sexList"
+                @click="choseSex(item)"
+                :key="index"
+              >
+                {{ item }}
+              </li>
+            </ul>
+          </scroll>
+        </div>
+      </div>
+      <nantong-area
+        :isShow="isShowNantongList"
+        @choseNantong="choseNantong"
+        @closeNantong="closeNantong"
+      ></nantong-area>
     </div>
-    <nantong-area
-      :isShow="isShowNantongList"
-      @choseNantong="choseNantong"
-      @closeNantong="closeNantong"
-    ></nantong-area>
-  </div>
+  </transition>
 </template>
 <script>
 import Scroll from "../../components/Scroll";
@@ -537,7 +568,16 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.children-edit {
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translate3d(100%, 0, 0);
+}
+.teacher-edit {
   position: absolute;
   top: 0;
   bottom: 0;

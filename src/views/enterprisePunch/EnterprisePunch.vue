@@ -382,7 +382,9 @@
         </div>
       </div>
       <div class="bottom">
-        <div class="punch-button" @click="saveEnterprisePeriodPlace">打卡</div>
+        <div class="punch-button" @click="saveEnterprisePeriodPlace">
+          打卡
+        </div>
       </div>
       <mt-datetime-picker
         ref="datepicker"
@@ -715,7 +717,7 @@ export default {
   created() {
     var vm = this;
     this.shareList(
-      "https://yqfk.ntschy.com:20000/swnt.png",
+      "https://yqfk.ntkfqjy.com:20000/swnt.png",
       window.location.href,
       "落实外防输入，推动精准复工。版权所有：南通市疾病预防控制中心开发区分中心",
       "开发区企业员工健康申报系统"
