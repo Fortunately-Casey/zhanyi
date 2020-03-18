@@ -9,7 +9,11 @@
         <div class="select-title">选择区 / 县</div>
         <scroll class="wrapper1">
           <ul>
-            <li v-for="(item, index) in nantongList" :key="index" v-if="index !== 0">
+            <li
+              v-for="(item, index) in nantongList"
+              :key="index"
+              v-if="index !== 0"
+            >
               <div class="province" @click="choseNanTong(item)">
                 <div class="label" style="width:0"></div>
                 <div class="name">{{ item.name }}</div>
@@ -20,9 +24,7 @@
       </div>
       <div class="selected" v-show="!isShowNTArea">
         <span class="seleted-province" @click="selectNTArea">
-          {{
-          selectNantongValue.chosedNantongArea
-          }}
+          {{ selectNantongValue.chosedNantongArea }}
         </span>
         <span class="selectCityButton">选择镇</span>
       </div>

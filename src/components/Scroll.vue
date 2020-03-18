@@ -4,7 +4,7 @@
     <!--分发内容-->
   </div>
 </template>
- 
+
 <script type="text/ecmascript-6">
 import BScroll from "better-scroll"; //引入better-scroll
 
@@ -120,6 +120,5 @@ export default {
   }
 };
 </script>
- 
-<style scoped lang="less">
-</style>
+
+<style scoped lang="less"></style>

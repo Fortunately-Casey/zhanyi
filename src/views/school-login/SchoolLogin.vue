@@ -29,7 +29,7 @@
 <script>
 import { blur } from "@/common/tool/tool";
 import { loginEnterprise, loginManageEnterprise } from "@/api/schoolRegister";
-import { Toast, Indicator  } from "mint-ui";
+import { Toast, Indicator } from "mint-ui";
 export default {
   data() {
     return {
@@ -173,8 +173,8 @@ export default {
         top: -5px;
       }
       .title {
-        width: 176px;
-        height: 24px;
+        width: 123px;
+        height: 58px;
         background: url("../../assets/image/school-title.png") no-repeat;
         background-size: 100% 100%;
         position: absolute;

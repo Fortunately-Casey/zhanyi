@@ -86,3 +86,29 @@ export function getEnterpriseGroupList(params) {
       console.log(err);
     });
 }
+
+// 学校查看异常人员
+export function getEnterprisePeriodPlaceListV2(params) {
+  const url = getURL("/enterpriseManage/getEnterprisePeriodPlaceListV2");
+  return axios
+    .post(url, params)
+    .then(resp => {
+      return Promise.resolve(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+// 疾控中心查看异常人员
+export function getEnterprisePeriodPlaceListV3(params) {
+  const url = getURL("/enterpriseManage/getEnterprisePeriodPlaceListV3");
+  return axios
+    .post(url, params)
+    .then(resp => {
+      return Promise.resolve(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}

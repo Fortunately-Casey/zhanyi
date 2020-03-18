@@ -74,11 +74,33 @@
       @confirm="confirmDate"
       @cancel="closeDate"
     ></mt-datetime-picker>
-    <!-- <div class="modal" v-show="isShowQrcode">
-      <div class="punch-success">
-        <div class="icon-close" @click="isShowQrcode = false"></div>
-        <div class="red-message">长按分享二维码</div>
-        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl"></vue-qr>
+    <div class="modal" v-if="isShowErrorList">
+      <div class="warning-list">
+        <div class="icon-close" @click="isShowErrorList = false"></div>
+        <div class="red-message">异常人员</div>
+        <div class="error-header">
+          <div class="name">姓名</div>
+          <div class="temp">体温</div>
+          <div class="symptom">组织</div>
+          <div class="status">状态</div>
+          <div class="phone">电话</div>
+        </div>
+        <scroll class="wrapper">
+          <div class="error-list">
+            <div
+              class="error-item"
+              v-for="(item, index) in errorList"
+              :key="index"
+              @click="choseErrorDetail(item)"
+            >
+              <div class="name">{{ item.name }}</div>
+              <div class="temp">{{ item.temp }}</div>
+              <div class="symptom">{{ item.enterpriseName }}</div>
+              <div class="status">{{ item.currStatus }}</div>
+              <div class="phone">{{ item.sysUserID }}</div>
+            </div>
+          </div>
+        </scroll>
       </div>
     </div>
     <div class="modal" v-show="isShowDetail">
@@ -91,7 +113,11 @@
           </li>
           <li>
             <div class="name">手机号:</div>
-            <div class="value">{{ chosedDetail.mobile }}</div>
+            <div class="value">{{ chosedDetail.sysUserID }}</div>
+          </li>
+          <li>
+            <div class="name">密码:</div>
+            <div class="value">{{ chosedDetail.sysPassword }}</div>
           </li>
           <li>
             <div class="name">体温:</div>
@@ -105,41 +131,30 @@
             <div class="name">状态:</div>
             <div class="value">{{ chosedDetail.currStatus }}</div>
           </li>
-          <li>
-            <div class="name">返通居住地:</div>
-            <div class="value">
-              {{
-              chosedDetail.ntCity +
-              chosedDetail.ntCounty +
-              chosedDetail.ntAddress
-              }}
-            </div>
-          </li>
         </ul>
+        <div
+          class="option-button"
+          :class="
+            chosedDetail.dangerousFlag == 'Dangerous' ? 'dangerous' : 'normal'
+          "
+          @click="changeStatus"
+        >
+          {{ chosedDetail.dangerousFlag == "Dangerous" ? "异常" : "正常" }}
+        </div>
       </div>
     </div>
-    <div class="modal" v-show="isShowDownload">
-      <div class="punch-detail">
-        <div class="icon-close" @click="isShowDownload = false"></div>
-        <div class="download-message">下载今日健康报告信息请复制以下链接到浏览器中打开</div>
-        <div class="url-message">{{ downloadUrl }}</div>
-        <button class="btn" :data-clipboard-text="downloadUrl" @click="copyAlert">复制链接</button>
-      </div>
-    </div>
-    <div class="modal" v-show="isShowImport">
-      <div class="punch-detail">
-        <div class="icon-close" @click="isShowImport = false"></div>
-        <div class="download-message">导入数据请复制以下链接到浏览器中打开</div>
-        <div class="url-message">{{ importUrl }}</div>
-        <button class="btn" :data-clipboard-text="importUrl" @click="copyImport">复制链接</button>
-      </div>
-    </div>-->
   </div>
 </template>
 <script>
 import { Todate } from "@/common/tool/tool.js";
 import { MessageBox } from "mint-ui";
-import { getEnterpriseBaseList, getEnterpriseGroupList } from "@/api/manage.js";
+import {
+  getEnterpriseBaseList,
+  getEnterpriseGroupList,
+  getEnterprisePeriodPlaceListV2,
+  getEnterprisePeriodPlaceListV3,
+  updateEnterprisePeriodPlaceDangerousFlag
+} from "@/api/manage.js";
 import { Toast, Indicator } from "mint-ui";
 import VueQr from "vue-qr";
 import Clipboard from "clipboard";
@@ -173,7 +188,10 @@ export default {
       phoneNumber: "",
       password: "",
       titleName: "",
-      type: ""
+      type: "",
+      isShowErrorList: false,
+      errorList: [],
+      chosedEnterpriseID: ""
     };
   },
   created() {
@@ -208,8 +226,76 @@ export default {
       this.getList();
     },
     choseItem(item) {
+      this.chosedEnterpriseID = item.enterpriseID;
+      if (this.$route.query.type === "Root") {
+        this.getManageErrorList(item);
+      } else {
+        this.getSchoolErrorList(item);
+      }
+    },
+    choseErrorDetail(item) {
       this.chosedDetail = item;
       this.isShowDetail = true;
+    },
+    getManageErrorList(item) {
+      var vm = this;
+      Indicator.open();
+      getEnterprisePeriodPlaceListV3({
+        paramPeriodPlaceDate: vm.returnDate(vm.date),
+        paramStatus: 6,
+        paramPage: 1,
+        paramPageSize: 5000,
+        paramEnterpriseAdminUserId: vm.phoneNumber,
+        paramEnterpriseAdminPassword: vm.password,
+        paramEnterpriseID: item.enterpriseID,
+        paramParentEnterpriseID: vm.$route.query.enterpriseID
+      }).then(resp => {
+        Indicator.close();
+        vm.errorList = resp.data.data;
+        this.isShowErrorList = true;
+      });
+    },
+    getSchoolErrorList(item) {
+      var vm = this;
+      Indicator.open();
+      getEnterprisePeriodPlaceListV2({
+        paramPeriodPlaceDate: vm.returnDate(vm.date),
+        paramStatus: 6,
+        paramPage: 1,
+        paramPageSize: 5000,
+        paramEnterpriseAdminUserId: vm.phoneNumber,
+        paramEnterpriseAdminPassword: vm.password,
+        paramEnterpriseID: item.enterpriseID,
+        paramParentEnterpriseID: vm.$route.query.enterpriseID
+      }).then(resp => {
+        Indicator.close();
+        vm.errorList = resp.data.data;
+        this.isShowErrorList = true;
+      });
+    },
+    changeStatus() {
+      var vm = this;
+      updateEnterprisePeriodPlaceDangerousFlag({
+        enterprisePeriodPlaceID: vm.chosedDetail.id,
+        enterpriseID: vm.chosedDetail.enterpriseID,
+        dangerousFlag:
+          vm.chosedDetail.dangerousFlag === "Dangerous" ? "Normal" : "Dangerous"
+      }).then(resp => {
+        if (resp.data.success) {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+          vm.isShowDetail = false;
+          vm.isShowErrorList = false;
+          vm.getList();
+        } else {
+          Toast({
+            message: "更新失败",
+            iconClass: "icon icon-success"
+          });
+        }
+      });
     },
     returnCough(value) {
       if (value === null) {
@@ -529,7 +615,10 @@ export default {
           width: 15%;
         }
         .name {
-          width: 40%;
+          width: 43%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
         .shouldPunch {
           width: 15%;
@@ -538,7 +627,7 @@ export default {
           width: 15%;
         }
         .waring {
-          width: 15%;
+          width: 12%;
         }
         .error {
           color: #16d0a0;
@@ -669,6 +758,21 @@ export default {
           }
         }
       }
+      .option-button {
+        margin: 0 auto;
+        width: 60px;
+        height: 25px;
+        line-height: 25px;
+        border-radius: 12.5px;
+      }
+      .dangerous {
+        background-color: rgb(238, 70, 70);
+        color: #fff;
+      }
+      .normal {
+        background-color: rgb(20, 119, 231);
+        color: #fff;
+      }
       .download-message {
         margin-top: 30px;
         padding: 0 15px;
@@ -683,6 +787,101 @@ export default {
         word-break: break-all;
         color: #16d0a0;
         text-align: left;
+      }
+    }
+    .warning-list {
+      width: 100%;
+      height: 60%;
+      background-color: #fff;
+      border: 1px solid rgb(196, 193, 193);
+      border-radius: 5px;
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      transform: translateX(-50%);
+      z-index: 999;
+      .icon-close {
+        width: 20px;
+        height: 20px;
+        background: url("../../assets/image/icon-close.png") no-repeat;
+        background-size: 100% 100%;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+      .red-message {
+        width: 100%;
+        text-align: center;
+        /* padding-left: 20px; */
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        color: red;
+        margin-top: 15px;
+      }
+      .error-header {
+        height: 20px;
+        .name,
+        .temp,
+        .symptom,
+        .status,
+        .phone {
+          float: left;
+          height: 20px;
+          line-height: 20px;
+          font-size: 8px;
+          text-align: center;
+        }
+        .name {
+          width: 15%;
+        }
+        .temp {
+          width: 10%;
+        }
+        .symptom {
+          width: 25%;
+        }
+        .status {
+          width: 25%;
+        }
+        .phone {
+          width: 25%;
+        }
+      }
+      .wrapper {
+        height: 300px;
+        overflow: hidden;
+        .error-list {
+          .error-item {
+            height: 30px;
+            .name,
+            .temp,
+            .symptom,
+            .status,
+            .phone {
+              float: left;
+              height: 30px;
+              line-height: 30px;
+              font-size: 10px;
+              text-align: center;
+            }
+            .name {
+              width: 15%;
+            }
+            .temp {
+              width: 10%;
+            }
+            .symptom {
+              width: 25%;
+            }
+            .status {
+              width: 25%;
+            }
+            .phone {
+              width: 25%;
+            }
+          }
+        }
       }
     }
   }

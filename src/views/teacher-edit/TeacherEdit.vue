@@ -29,7 +29,7 @@
       <div class="item" @click="showSchoolList">
         <div class="name">学校</div>
         <div class="edit-value">
-          <input type="text" style="width:260px" placeholder="选择学校" v-model="schoolName" disabled />
+          <input type="text" style="width:230px" placeholder="选择学校" v-model="schoolName" disabled />
         </div>
       </div>
       <!-- <div class="item" @click="showClassList">
@@ -69,11 +69,11 @@
             class="item"
             v-for="(item, index) in enterpriseList"
             :key="index"
-            :class="enterpriseType === item.id?'chosed':''"
+            :class="enterpriseType === item.id ? 'chosed' : ''"
             @click="choseSchoolType(item.id)"
           >{{ item.name }}</div>
         </div>
-        <scroll class="wrapper">
+        <scroll class="wrapper" ref="schoolWrapper">
           <ul>
             <li
               v-for="(item, index) in schoolList"
@@ -241,6 +241,7 @@ export default {
       var vm = this;
       vm.enterpriseType = id;
       vm.getEnterpriseList();
+      this.$refs.schoolWrapper.scrollTo(0, 0);
     },
     // 保存
     saveInfo() {

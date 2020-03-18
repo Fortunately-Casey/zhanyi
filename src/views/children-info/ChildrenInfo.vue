@@ -3,12 +3,21 @@
     <div class="top-bg">
       <div class="title"></div>
     </div>
-    <scroll ref="wrapper" :listenScroll="true" :pullup="true" :data="childList" class="wrapper">
+    <scroll
+      ref="wrapper"
+      :listenScroll="true"
+      :pullup="true"
+      :data="childList"
+      class="wrapper"
+    >
       <ul class="child-list">
         <li class="child" v-for="(item, index) in childList" :key="index">
           <div class="left" @click="editChildren(item)">
             <div class="child-name">
-              <div class="child-logo" :class="item.sex === '男' ? 'boy' : 'girl'"></div>
+              <div
+                class="child-logo"
+                :class="item.sex === '男' ? 'boy' : 'girl'"
+              ></div>
               <div class="name">{{ item.name }}</div>
             </div>
             <div class="child-values">
@@ -21,9 +30,12 @@
                       ? 'isPunch'
                       : ''
                   "
-                >{{ returnPunchStatus(item.lastPeriodplaceTime) }}</span>
+                  >{{ returnPunchStatus(item.lastPeriodplaceTime) }}</span
+                >
               </div>
-              <div class="value schoolName">{{ item.parentEnterpriseName }}</div>
+              <div class="value schoolName">
+                {{ item.parentEnterpriseName }}
+              </div>
               <div class="value">{{ item.idCard }}</div>
             </div>
           </div>
