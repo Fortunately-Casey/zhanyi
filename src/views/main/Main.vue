@@ -107,7 +107,9 @@ export default {
       });
     },
     toWeiXin() {
-      window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%3A10000%2Fapi%2Fweixin%2FgotoPeriodPlace`;
+      // window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%3A10000%2Fapi%2Fweixin%2FgotoPeriodPlace`;
+      window.location.href =
+        "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx63855f15502011ce&redirect_uri=https%3A%2F%2Fyqfk.ntschy.com%3A10000%2Fapi%2Fweixin%2FgotoPeriodPlace&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
     },
     toRegister() {
       window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%3A10000%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterpriseRegister`;
