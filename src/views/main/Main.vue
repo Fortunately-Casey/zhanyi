@@ -107,10 +107,10 @@ export default {
       });
     },
     toWeiXin() {
-      window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlace`;
+      window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%3A10000%2Fapi%2Fweixin%2FgotoPeriodPlace`;
     },
     toRegister() {
-      window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterpriseRegister`;
+      window.location.href = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%3A10000%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterpriseRegister`;
     },
     toQuery() {
       this.$router.push({
