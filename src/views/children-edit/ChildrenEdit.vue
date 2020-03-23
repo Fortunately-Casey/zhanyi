@@ -67,6 +67,7 @@
         <div class="chosedvalue" v-show="chosedValue">
           <div class="item">{{ chosedValue.area }}</div>
           <div class="item">{{ chosedValue.xian }}</div>
+          <div class="item">{{ chosedValue.community }}</div>
         </div>
         <input
           type="text"
@@ -207,7 +208,7 @@ export default {
         },
         {
           id: 5,
-          name: "综合"
+          name: "一贯制"
         }
       ]
     };
@@ -246,7 +247,8 @@ export default {
           vm.enterpriseID = resp.data.data.enterpriseID;
           vm.chosedValue = {
             area: resp.data.data.currCounty,
-            xian: resp.data.data.currStreet
+            xian: resp.data.data.currStreet,
+            community: resp.data.data.currCommunity
           };
           vm.nowAddress = resp.data.data.currAddress;
         } else {
@@ -345,6 +347,7 @@ export default {
         currCity: "南通市",
         currCounty: vm.chosedValue.area,
         currStreet: vm.chosedValue.xian,
+        currCommunity: vm.chosedValue.community,
         currAddress: vm.nowAddress,
         sysUserID: vm.$route.query.userID,
         enterpriseID: vm.enterpriseID,
@@ -445,6 +448,7 @@ export default {
         paramCurrCity: "南通市",
         paramCurrCounty: vm.chosedValue.area,
         paramCurrStreet: vm.chosedValue.xian,
+        paramCurrCommunity: vm.chosedValue.community,
         paramCurrAddress: vm.nowAddress
       }).then(resp => {
         if (resp.data.success) {
@@ -650,6 +654,7 @@ export default {
           font-size: 14px;
           margin: 0;
           height: 40px;
+          box-sizing: border-box;
           width: 200px;
         }
       }
@@ -710,7 +715,7 @@ export default {
   }
   .save-button {
     margin: 0 auto;
-    margin-top: 150px;
+    margin-top: 120px;
     width: 280px;
     height: 42px;
     background-image: linear-gradient(270deg, #ed665b 0%, #d6362e 100%);

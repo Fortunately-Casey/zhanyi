@@ -20,7 +20,7 @@ const routes = [{
   },
   {
     path: "/errorPage",
-    name: "manaerrorPagege",
+    name: "errorPage",
     component: resolve => require(["../views/errorPage/Error.vue"], resolve)
   },
   {

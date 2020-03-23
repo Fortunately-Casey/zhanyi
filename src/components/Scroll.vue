@@ -55,15 +55,17 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      this._initScroll();
-    }, 20);
+    // setTimeout(() => {
+      
+    // }, 200);
+    this._initScroll();
   },
   methods: {
     _initScroll() {
       if (!this.$refs.wrapper) {
         return;
       }
+      console.log(this.$refs.wrapper);
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
         click: this.click,

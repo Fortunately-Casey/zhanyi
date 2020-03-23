@@ -55,6 +55,7 @@
               {{ chosedNantongValue.chosedNantongName }}
             </div>
             <div class="address">{{ chosedNantongValue.chosedXian }}</div>
+            <div class="address">{{ chosedNantongValue.chosedCommunity }}</div>
           </div>
           <input
             type="text"
@@ -108,7 +109,7 @@
       <div class="second">
         <div class="item">
           <div class="name">
-            <div class="cross-title">3月2日至今是否离开过南通</div>
+            <div class="cross-title">3月10日至今是否离开过南通</div>
           </div>
         </div>
         <div
@@ -570,7 +571,8 @@ export default {
       isShowNantongIcon: true,
       chosedNantongValue: {
         chosedNantongName: "",
-        chosedXian: ""
+        chosedXian: "",
+        chosedCommunity: ""
       },
       selectNantongValue: {
         chosedNantongName: "",
@@ -765,6 +767,7 @@ export default {
         vm.className = resp.data.data.enterpriseName;
         vm.chosedNantongValue.chosedNantongName = resp.data.data.currCounty;
         vm.chosedNantongValue.chosedXian = resp.data.data.currStreet;
+        vm.chosedNantongValue.chosedCommunity = resp.data.data.currCommunity;
         vm.nowAddress = resp.data.data.currAddress;
         if (last) {
           vm.chosedCough = last.cough ? 1 : 0;
