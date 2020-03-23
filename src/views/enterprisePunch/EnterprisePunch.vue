@@ -688,8 +688,8 @@ export default {
       ],
       dateOptions: [
         {
-          label: "3天",
-          value: "3"
+          label: "7天",
+          value: "7"
         },
         {
           label: "14天",
