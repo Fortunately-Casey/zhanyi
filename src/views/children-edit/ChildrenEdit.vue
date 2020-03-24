@@ -668,7 +668,7 @@ export default {
     .address {
       height: 40px;
       .click-value {
-        width: 346px;
+        width: 90%;
         margin: 0 auto;
         height: 40px;
         border-bottom: 1px solid #eee;

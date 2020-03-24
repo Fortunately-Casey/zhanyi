@@ -224,3 +224,16 @@ export function getSpecialEnterprise(params) {
       console.log(err);
     });
 }
+
+// 教师删除个人信息
+export function deleteTeacher(params) {
+  const url = getURL("/enterpriseManage/deleteEnterpriseEMPUser");
+  return axios
+    .post(url, params)
+    .then(resp => {
+      return Promise.resolve(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}

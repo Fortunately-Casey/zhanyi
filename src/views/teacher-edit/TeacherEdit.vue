@@ -6,7 +6,7 @@
           <div class="back-icon"></div>
           首页
         </div>
-        <!-- <div class="delete" v-if="isShowDelete" @click="deleteChild">删除</div> -->
+        <div class="delete" v-if="isShowDelete" @click="deleteTeacher">删除</div>
         {{ title }}
       </div>
       <div class="content">
@@ -161,7 +161,8 @@ import {
   updateTeacherInfo,
   deleteEnterpriseEMPUser,
   addDirectEnterpriseUser,
-  getEnterpriseList
+  getEnterpriseList,
+  deleteTeacher
 } from "@/api/schoolRegister.js";
 import { blur } from "@/common/tool/tool";
 import { Indicator, Toast, MessageBox } from "mint-ui";
@@ -465,13 +466,13 @@ export default {
         }
       });
     },
-    // 删除子女
-    deleteChild() {
+    // 删除个人信息
+    deleteTeacher() {
       var vm = this;
-      var parentPassword = window.localStorage.getItem("parentPassword");
-      MessageBox.confirm("确定执行此操作?", "删除当前子女").then(() => {
+      var parentPassword = window.localStorage.getItem("teacherPassword");
+      MessageBox.confirm("确定执行此操作?", "删除个人信息").then(() => {
         Indicator.open();
-        deleteEnterpriseEMPUser({
+        deleteTeacher({
           paramEnterpriseID: vm.oldEnterpriseID,
           paramParentEnterpriseID: vm.oldParentEnterpriseID,
           paramSysUserID: vm.$route.query.userID,
@@ -667,7 +668,7 @@ export default {
     .address {
       height: 40px;
       .click-value {
-        width: 346px;
+        width: 90%;
         margin: 0 auto;
         height: 40px;
         border-bottom: 1px solid #eee;

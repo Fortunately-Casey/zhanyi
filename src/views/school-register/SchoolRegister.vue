@@ -55,7 +55,7 @@
 </template>
 <script>
 import { blur } from "@/common/tool/tool";
-import { Toast, Indicator } from "mint-ui";
+import { Toast, Indicator, MessageBox } from "mint-ui";
 import {
   registerSysUser,
   sysUserLogin,
@@ -200,40 +200,45 @@ export default {
       });
     },
     schoolRegister() {
-      var vm = this;
-      if (!vm.registerPhone || !vm.registerPassword || !vm.confirmPassword) {
-        Toast({
-          message: "手机号码跟密码不能为空！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      if (vm.registerPassword != vm.confirmPassword) {
-        Toast({
-          message: "两次输入的密码不一致！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      var phoneReg = /^1[3456789]\d{9}$/;
-      if (!phoneReg.test(Number(vm.registerPhone))) {
-        Toast({
-          message: "请输入合法手机号！",
-          iconClass: "icon icon-success"
-        });
-        return;
-      }
-      registerSysUser({
-        userID: vm.registerPhone,
-        password: vm.registerPassword
-      }).then(resp => {
-        Toast({
-          message: resp.data.data,
-          iconClass: "icon icon-success"
-        });
-        if (resp.data.success) {
-          vm.isLogin = true;
+      MessageBox.confirm(
+        `确定以${this.registerPhone}手机号注册么?`,
+        "账号注册"
+      ).then(() => {
+        var vm = this;
+        if (!vm.registerPhone || !vm.registerPassword || !vm.confirmPassword) {
+          Toast({
+            message: "手机号码跟密码不能为空！",
+            iconClass: "icon icon-success"
+          });
+          return;
         }
+        if (vm.registerPassword != vm.confirmPassword) {
+          Toast({
+            message: "两次输入的密码不一致！",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+        var phoneReg = /^1[3456789]\d{9}$/;
+        if (!phoneReg.test(Number(vm.registerPhone))) {
+          Toast({
+            message: "请输入合法手机号！",
+            iconClass: "icon icon-success"
+          });
+          return;
+        }
+        registerSysUser({
+          userID: vm.registerPhone,
+          password: vm.registerPassword
+        }).then(resp => {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+          if (resp.data.success) {
+            vm.isLogin = true;
+          }
+        });
       });
     },
     blur() {
@@ -281,7 +286,7 @@ export default {
         top: -5px;
       }
       .title {
-        width: 123px;
+        width: 140px;
         height: 58px;
         background: url("../../assets/image/school-title.png") no-repeat;
         background-size: 100% 100%;

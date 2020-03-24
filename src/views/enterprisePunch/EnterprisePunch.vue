@@ -454,7 +454,6 @@
                 v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseCity(v)"
-                v-if="v.name !== '直辖县'"
               >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>

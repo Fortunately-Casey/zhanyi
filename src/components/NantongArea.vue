@@ -249,7 +249,7 @@ export default {
             }
           }
           li:last-child {
-            padding-bottom: 20px;
+            padding-bottom: 70px;
           }
         }
       }

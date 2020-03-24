@@ -173,7 +173,7 @@ export default {
         top: -5px;
       }
       .title {
-        width: 123px;
+        width: 140px;
         height: 58px;
         background: url("../../assets/image/school-title.png") no-repeat;
         background-size: 100% 100%;

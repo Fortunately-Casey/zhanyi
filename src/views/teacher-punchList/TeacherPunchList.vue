@@ -368,8 +368,8 @@ export default {
       getEnterprisePeriodPlaceList({
         paramPeriodPlaceDate: vm.returnDate(vm.date),
         paramStatus: vm.chosedIndex,
-        paramPage: vm.page,
-        paramPageSize: vm.pageSize,
+        page: vm.page,
+        pageSize: vm.pageSize,
         paramEnterpriseAdminUserId: vm.phoneNumber,
         paramEnterpriseAdminPassword: vm.password,
         paramEnterpriseID: vm.enterpriseID,

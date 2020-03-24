@@ -26,7 +26,7 @@
           <div class="name">{{ type === "Group" ? "班级" : "学校" }}</div>
           <div class="shouldPunch">应打卡</div>
           <div class="punchCount">实打卡</div>
-          <div class="waring">异常</div>
+          <div class="warning">异常</div>
         </div>
         <div
           class="item"
@@ -39,7 +39,7 @@
           <div class="name">{{ item.enterpriseName }}</div>
           <div class="shouldPunch">{{ item.allCount }}</div>
           <div class="punchCount">{{ item.periodPlaceCount }}</div>
-          <div class="waring" :class="item.dangerousCount == 0 ? '' : 'error'">
+          <div class="warning" :class="item.dangerousCount == 0 ? '' : 'error'">
             {{ item.dangerousCount }}
           </div>
         </div>
@@ -595,7 +595,7 @@ export default {
         .name,
         .shouldPunch,
         .punchCount,
-        .waring {
+        .warning {
           float: left;
           height: 40px;
           line-height: 40px;
@@ -626,7 +626,7 @@ export default {
         .punchCount {
           width: 15%;
         }
-        .waring {
+        .warning {
           width: 12%;
         }
         .error {
@@ -791,7 +791,7 @@ export default {
     }
     .warning-list {
       width: 100%;
-      height: 60%;
+      height: 400px;
       background-color: #fff;
       border: 1px solid rgb(196, 193, 193);
       border-radius: 5px;

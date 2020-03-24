@@ -86,7 +86,7 @@ export default {
         top: -5px;
       }
       .title {
-        width: 123px;
+        width: 140px;
         height: 58px;
         background: url("../../assets/image/school-title.png") no-repeat;
         background-size: 100% 100%;
@@ -107,7 +107,7 @@ export default {
   .class-manage-button {
     background: url("../../assets/image/class-manage.png") no-repeat;
     background-size: 100% 100%;
-    margin-top: 140px;
+    margin-top: 70px;
   }
   .teacger-punch-button {
     background: url("../../assets/image/teacher-register.png") no-repeat;
