@@ -630,6 +630,9 @@ export default {
         }
         .name {
           width: 18%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
         .temp {
           width: 12%;
