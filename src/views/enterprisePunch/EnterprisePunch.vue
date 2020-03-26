@@ -520,7 +520,6 @@
                 v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseCity(v)"
-                v-if="v.name !== '直辖县'"
               >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
@@ -534,7 +533,6 @@
                 v-for="(v, i) in item.items"
                 :key="i"
                 @click="choseArea(v)"
-                v-if="v.name !== '市辖区'"
               >
                 <div class="label">{{ i === 0 ? v.key : "" }}</div>
                 <div class="name">{{ v.name }}</div>
@@ -588,9 +586,7 @@ import {
   saveEnterprisePeriodPlace,
   getEnterprise,
   getEnterpriseUser,
-  getHospitalList,
-  getTownArea,
-  getCountyArea
+  getHospitalList
 } from "@/api/enterprisePunch.js";
 import wx from "weixin-js-sdk";
 import axios from "axios";
