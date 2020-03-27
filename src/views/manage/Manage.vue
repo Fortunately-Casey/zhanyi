@@ -20,6 +20,17 @@
         {{ returnDate(date) }}
         <span class="cart"></span>
       </div>
+      <div class="school-type" v-if="type === 'Root' ? true : false">
+        <div
+          class="school-item"
+          :class="chosedSchoolType === index ? 'chosed-schooltype' : ''"
+          v-for="(item, index) in enterpriseList"
+          :key="index"
+          @click="choseSchoolType(index)"
+        >
+          {{ item.name }}
+        </div>
+      </div>
       <div class="list">
         <div class="list-header">
           <div class="index">序号</div>
@@ -49,17 +60,6 @@
         {{ page }}页
         <span @click="next">></span>
       </div>
-      <!-- <div class="bottom">
-        <div class="look-button" @click="download">数据下载</div>
-        <div
-          class="punch-button"
-          @click="approvalPeriodPlace"
-          v-show="chosedIndex === 5 ? false : true"
-        >
-          审核
-        </div>
-        <div class="import-button" @click="importValue">导入数据</div>
-      </div>-->
     </div>
     <mt-datetime-picker
       ref="datepicker"
@@ -147,7 +147,6 @@
 </template>
 <script>
 import { Todate } from "@/common/tool/tool.js";
-import { MessageBox } from "mint-ui";
 import {
   getEnterpriseBaseList,
   getEnterpriseGroupList,
@@ -156,10 +155,7 @@ import {
   updateEnterprisePeriodPlaceDangerousFlag
 } from "@/api/manage.js";
 import { Toast, Indicator } from "mint-ui";
-import VueQr from "vue-qr";
-import Clipboard from "clipboard";
 import Scroll from "@/components/Scroll.vue";
-import { weixinTransform } from "@/common/data.js";
 export default {
   data() {
     return {
@@ -177,8 +173,6 @@ export default {
       handler: function(e) {
         e.preventDefault();
       },
-      text: "",
-      imageUrl: require("../../assets/image/zhanyi-logo.png"),
       isShowDetail: false,
       chosedDetail: "",
       isShowDownload: false,
@@ -191,7 +185,30 @@ export default {
       type: "",
       isShowErrorList: false,
       errorList: [],
-      chosedEnterpriseID: ""
+      chosedEnterpriseID: "",
+      chosedSchoolType: 0,
+      enterpriseList: [
+        {
+          id: 1,
+          name: "幼儿园"
+        },
+        {
+          id: 2,
+          name: "小学"
+        },
+        {
+          id: 3,
+          name: "初中"
+        },
+        {
+          id: 4,
+          name: "高中"
+        },
+        {
+          id: 5,
+          name: "综合"
+        }
+      ]
     };
   },
   created() {
@@ -201,11 +218,8 @@ export default {
     this.titleName = this.$route.query.enterpriseName;
     this.type = this.$route.query.type;
     vm.getList();
-    vm.text = `${weixinTransform}/api/weixin/transponder?redirectUri=https%3A%2F%2Fyqfk.ntschy.com%2Fapi%2Fweixin%2FgotoPeriodPlaceEnterprise%3FenterpriseID%3D${this.$route.query.enterpriseID}`;
   },
-  mounted() {
-    const clipboard = new Clipboard(".btn");
-  },
+  mounted() {},
   methods: {
     returnDate(value) {
       return Todate(value);
@@ -306,34 +320,14 @@ export default {
         return "否";
       }
     },
+    choseSchoolType(index) {
+      this.chosedSchoolType = index;
+      this.getList();
+    },
     importValue() {
       this.importUrl = `http://119.3.194.191:8089/#/importStaff?name=${this.list[0].enterpriseName}&id=${this.$route.query.enterpriseID}`;
       this.isShowImport = true;
     },
-    // deletePunch(item) {
-    //   var vm = this;
-    //   MessageBox.confirm("确定执行此操作?", "删除当前记录").then(() => {
-    //     var params = {
-    //       enterprisePeriodPlaceID: item.id,
-    //       enterpriseID: vm.$route.query.enterpriseID
-    //     };
-    //     deleteEnterprisePeriodPlace(params).then(resp => {
-    //       if (resp.data.success) {
-    //         Toast({
-    //           message: "删除成功！",
-    //           iconClass: "icon icon-success"
-    //         });
-    //         vm.page = 1;
-    //         vm.getList();
-    //       } else {
-    //         Toast({
-    //           message: "删除失败！",
-    //           iconClass: "icon icon-success"
-    //         });
-    //       }
-    //     });
-    //   });
-    // },
     getList() {
       if (this.$route.query.type === "Group") {
         this.isShowTeacherList = true;
@@ -364,6 +358,7 @@ export default {
       var vm = this;
       Indicator.open();
       getEnterpriseGroupList({
+        paramEnterpriseType: vm.chosedSchoolType + 1,
         paramEnterpriseID: vm.$route.query.enterpriseID,
         paramCenterAdminUserId: vm.phoneNumber,
         paramCenterAdminPassword: vm.password,
@@ -401,52 +396,6 @@ export default {
       vm.page++;
       vm.getList();
     },
-    // download() {
-    //   var vm = this;
-    //   Indicator.open();
-    //   exportEnterprisePeriodPlaceList({
-    //     enterpriseID: vm.$route.query.enterpriseID,
-    //     periodPlaceDate: vm.returnDate(vm.date),
-    //     status: vm.chosedIndex
-    //   }).then(resp => {
-    //     Indicator.close();
-    //     this.isShowDownload = true;
-    //     vm.downloadUrl = "https://yqfk.ntschy.com:10000" + resp.data.data;
-    //   });
-    // },
-    copyAlert() {
-      Toast({
-        message: "复制成功！",
-        iconClass: "icon icon-success"
-      });
-    },
-    copyImport() {
-      Toast({
-        message: "复制成功！",
-        iconClass: "icon icon-success"
-      });
-    },
-    approvalPeriodPlace() {
-      var vm = this;
-      Indicator.open();
-      approvalPeriodPlace({
-        enterpriseID: vm.$route.query.enterpriseID,
-        periodPlaceDate: vm.returnDate(vm.date)
-      }).then(resp => {
-        Indicator.close();
-        if (resp.data.success) {
-          Toast({
-            message: "审核成功",
-            iconClass: "icon icon-success"
-          });
-        } else {
-          Toast({
-            message: "审核失败",
-            iconClass: "icon icon-success"
-          });
-        }
-      });
-    },
     returnHot(item) {
       if (
         item.temp >= 37.3 ||
@@ -482,7 +431,6 @@ export default {
     }
   },
   components: {
-    VueQr,
     Scroll
   }
 };
@@ -491,6 +439,7 @@ export default {
 .manage {
   width: 100%;
   height: 100%;
+  overflow-y: auto;
   background-color: #eee;
   .header {
     height: 40px;
@@ -550,6 +499,21 @@ export default {
         border-top: 5px solid #16d0a0;
         border-right: 5px solid transparent;
         border-left: 5px solid transparent;
+      }
+    }
+    .school-type {
+      height: 40px;
+      border-bottom: 1px solid rgb(199, 197, 197);
+      text-align: center;
+      font-size: 14px;
+      line-height: 40px;
+      background-color: #fff;
+      display: flex;
+      .school-item {
+        flex: 1;
+      }
+      .chosed-schooltype {
+        color: #16d0a0;
       }
     }
     .wrapper {
