@@ -1099,7 +1099,7 @@ export default {
               vm.goBack();
             } else {
               Toast({
-                message: "打卡失败!",
+                message: resp.data.data,
                 iconClass: "icon icon-success"
               });
             }
@@ -1115,7 +1115,7 @@ export default {
               vm.goBack();
             } else {
               Toast({
-                message: "打卡失败!",
+                message: resp.data.data,
                 iconClass: "icon icon-success"
               });
             }

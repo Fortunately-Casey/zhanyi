@@ -68,6 +68,26 @@ const routes = [{
     name: "teacherPunchList",
     component: resolve => require(["../views/teacher-punchList/TeacherPunchList.vue"], resolve)
   },
+  {
+    path: "/missClass",//缺课登录
+    name: "missClass",
+    component: resolve => require(["../views/missclass-login/MissLogin.vue"], resolve)
+  },
+  {
+    path: "/missManage",//缺课管理
+    name: "missManage",
+    component: resolve => require(["../views/miss-manage/MissManage.vue"],resolve)
+  },
+  {
+    path: "/missPunch",//缺课登记
+    name: "missPunch",
+    component: resolve => require(["../views/miss-punch/MissPunch.vue"],resolve)
+  },
+  {
+    path: "/schoolMiss",//学校缺课情况
+    name: "schoolMiss",
+    component: resolve => require(["../views/school-miss-manage/SchoolMiss.vue"],resolve)
+  },
 ];
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
@@ -76,7 +96,6 @@ VueRouter.prototype.push = function push(location) {
 
 const router = new VueRouter({
   mode: 'history',
-  
   linkActiveClass: "",
   linkExactActiveClass: "",
   routes: routes

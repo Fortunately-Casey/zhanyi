@@ -10,6 +10,7 @@
     <div class="class-manage-button" @click="classManage"></div>
     <div class="teacger-punch-button" @click="teacherRegister"></div>
     <div class="school-manage-button" @click="schoolManage"></div>
+    <div class="miss-class-button" @click="missClass"></div>
     <div class="bottom-logo"></div>
   </div>
 </template>
@@ -43,6 +44,12 @@ export default {
           type: "school"
         }
       });
+    },
+    // 缺课管理
+    missClass() {
+      this.$router.push({
+        path: "/missClass"
+      });
     }
   }
 };
@@ -65,7 +72,7 @@ export default {
       height: 145px;
       background: url("../../assets/image/top-box.png") no-repeat;
       background-size: 100% 100%;
-      margin-top: 40px;
+      margin-top: 20px;
       position: relative;
       .ball {
         width: 90px;
@@ -99,7 +106,8 @@ export default {
   }
   .class-manage-button,
   .school-manage-button,
-  .teacger-punch-button {
+  .teacger-punch-button,
+  .miss-class-button {
     width: 294px;
     height: 84px;
     margin: 0 auto;
@@ -107,17 +115,22 @@ export default {
   .class-manage-button {
     background: url("../../assets/image/class-manage.png") no-repeat;
     background-size: 100% 100%;
-    margin-top: 70px;
+    margin-top: 45px;
   }
   .teacger-punch-button {
     background: url("../../assets/image/teacher-register.png") no-repeat;
     background-size: 100% 100%;
-    margin-top: 10px;
+    margin-top: 5px;
   }
   .school-manage-button {
     background: url("../../assets/image/school-manage.png") no-repeat;
     background-size: 100% 100%;
-    margin-top: 10px;
+    margin-top: 5px;
+  }
+  .miss-class-button {
+    background: url("../../assets/image/missclass.png") no-repeat;
+    background-size: 100% 100%;
+    margin-top: 5px;
   }
   .bottom-logo {
     width: 307px;
