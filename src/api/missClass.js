@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 import axios from "axios";
-import {
-  getURL
-} from "@/common/tool/tool";
+import { getURL } from "@/common/tool/tool";
 
 // 缺课管理登录
 export function userLogin(params) {

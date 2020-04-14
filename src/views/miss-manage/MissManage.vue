@@ -19,10 +19,12 @@
           <div class="value">
             <input
               type="number"
+              pattern="[0-9]*"
               oninput="if (value.length>4) value=value.slice(0,4)"
               placeholder="请输入"
               v-model="provisionsNum"
               style="padding-right:10px"
+              @blur="blur"
             />
           </div>
         </div>
@@ -32,9 +34,9 @@
             <input
               type="number"
               oninput="if (value.length>4) value=value.slice(0,4)"
-              placeholder="请输入"
               v-model="actualNum"
               style="padding-right:10px"
+              disabled
             />
           </div>
         </div>
@@ -48,13 +50,13 @@
             :class="chosedItem === index ? 'active' : ''"
             @click="choseItem(index)"
           >
-            {{ item.name
-            }}{{ chosedItem === index ? `（${personCount}）` : "" }}
+            {{ item.name }}{{ chosedItem === index ? `(${personCount})` : "" }}
           </div>
         </div>
         <div class="people-header">
           <div class="index">序号</div>
           <div class="name">姓名</div>
+          <div class="class">班级</div>
           <div class="type">缺课类型</div>
           <div class="isReClass">是否复课</div>
         </div>
@@ -68,6 +70,7 @@
               <div class="item">
                 <div class="index">{{ item.rowNumber }}</div>
                 <div class="name">{{ item.name }}</div>
+                <div class="class">{{ item.className }}</div>
                 <div class="type">{{ returnMissType(item.absentType) }}</div>
                 <div class="isReClass">{{ item.resumption ? "是" : "否" }}</div>
               </div>
@@ -98,7 +101,7 @@
   </div>
 </template>
 <script>
-import { Todate } from "@/common/tool/tool.js";
+import { Todate, blur, debounce } from "@/common/tool/tool.js";
 import { Toast, Indicator, MessageBox } from "mint-ui";
 import {
   absentCondition,
@@ -115,9 +118,9 @@ export default {
       date: new Date(),
       pickerValue: new Date(),
       page: 1,
-      pageSize: 8,
+      pageSize: 5,
       list: [],
-      maxPage: 4,
+      maxPage: "",
       handler: function(e) {
         e.preventDefault();
       },
@@ -150,6 +153,20 @@ export default {
       this.isShowTabbar = true;
       this.type = 2;
     }
+    this.$watch(
+      "provisionsNum",
+      debounce((newValue, oldValue) => {
+        if (newValue < this.personCount) {
+          Toast({
+            message: "请输入正确的应到人数！",
+            iconClass: "icon icon-success"
+          });
+          this.$store.commit("SET_ACTUALNUM", 0);
+          return;
+        }
+        this.$store.commit("SET_ACTUALNUM", newValue - this.personCount);
+      }, 1000)
+    );
   },
   computed: {
     provisionsNum: {
@@ -171,7 +188,6 @@ export default {
   },
   mounted() {
     // 获取缺课情况
-    this.absentCondition();
     this.absentStatistics();
   },
   methods: {
@@ -180,10 +196,13 @@ export default {
     }),
     absentStatistics() {
       let vm = this;
+      let type = vm.$route.query.type === "Base" ? 1 : 2;
+      Indicator.open();
       absentStatistics({
-        type: vm.type,
+        type: type,
         absentDate: vm.returnDate(vm.date)
       }).then(resp => {
+        Indicator.close();
         if (resp.data.success && resp.data.data) {
           if (resp.data.data.provisionsNum) {
             this.$store.commit(
@@ -191,9 +210,10 @@ export default {
               resp.data.data.provisionsNum
             );
           }
-          if (resp.data.data.actualNum) {
-            this.$store.commit("SET_ACTUALNUM", resp.data.data.actualNum);
-          }
+          // if (resp.data.data.actualNum) {
+          //   this.$store.commit("SET_ACTUALNUM", resp.data.data.actualNum);
+          // }
+          vm.absentCondition();
         }
       });
     },
@@ -210,6 +230,10 @@ export default {
         Indicator.close();
         vm.peopleList = resp.data.data.obj;
         vm.personCount = resp.data.data.total;
+        if (vm.chosedItem === 0) {
+          vm.$store.commit("SET_ACTUALNUM", vm.provisionsNum - vm.personCount);
+        }
+        vm.maxPage = Math.ceil(resp.data.data.total / resp.data.data.pageSize);
         vm.isShowPeopleList = true;
       });
     },
@@ -224,7 +248,7 @@ export default {
     confirmDate(value) {
       this.date = value;
       this.page = 1;
-      this.absentCondition();
+      this.absentStatistics();
       this.openTouch();
     },
     prev() {
@@ -280,7 +304,7 @@ export default {
               iconClass: "icon icon-success"
             });
             vm.isShowPeopleList = false;
-            vm.absentCondition();
+            vm.absentStatistics();
           } else {
             Toast({
               message: resp.data.data,
@@ -332,7 +356,14 @@ export default {
     },
     commitList() {
       let vm = this;
-      if (!vm.provisionsNum || !vm.actualNum) {
+      if (vm.provisionsNum < this.personCount) {
+        Toast({
+          message: "请输入正确的应到人数！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.provisionsNum) {
         Toast({
           message: "人数不能为空！",
           iconClass: "icon icon-success"
@@ -356,6 +387,9 @@ export default {
           });
         }
       });
+    },
+    blur() {
+      blur();
     }
   },
   components: {
@@ -450,6 +484,10 @@ export default {
           flex-direction: row-reverse;
           input {
             width: 40px;
+            height: 40px;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
             text-align: right;
             text-align: end;
           }
@@ -486,6 +524,7 @@ export default {
         .index,
         .name,
         .type,
+        .class,
         .isReClass {
           text-align: center;
           line-height: 40px;
@@ -494,6 +533,9 @@ export default {
           width: 60px;
         }
         .name {
+          flex: 1;
+        }
+        .class {
           flex: 1;
         }
         .type {
@@ -511,6 +553,7 @@ export default {
           .index,
           .name,
           .type,
+          .class,
           .isReClass {
             text-align: center;
             line-height: 40px;
@@ -519,6 +562,9 @@ export default {
             width: 60px;
           }
           .name {
+            flex: 1;
+          }
+          .class {
             flex: 1;
           }
           .type {

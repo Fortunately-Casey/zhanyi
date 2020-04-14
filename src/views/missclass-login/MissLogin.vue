@@ -1,5 +1,8 @@
 <template>
-  <div class="school-register" :style="{ height: bodyHeight + 'px' }">
+  <div
+    class="school-register"
+    :style="{ height: bodyHeight ? bodyHeight + 'px' : '100%' }"
+  >
     <div class="top-bg">
       <div class="top-box">
         <div class="ball"></div>
@@ -107,39 +110,9 @@ export default {
         }
       });
     },
-    // loginManageEnterprise() {
-    //   var vm = this;
-    //   Indicator.open();
-    //   loginManageEnterprise({
-    //     mobile: vm.phoneNumber,
-    //     password: vm.password
-    //   }).then(resp => {
-    //     Indicator.close();
-    //     if (resp.data.success) {
-    //       window.localStorage.setItem("schoolNumber", vm.phoneNumber);
-    //       window.localStorage.setItem("schoolPassword", vm.password);
-    //       Toast({
-    //         message: "登录成功！",
-    //         iconClass: "icon icon-success"
-    //       });
-    //       this.$router.push({
-    //         path: "/manage",
-    //         query: {
-    //           enterpriseID: resp.data.data.enterpriseID,
-    //           type: resp.data.data.level,
-    //           enterpriseName: resp.data.data.enterpriseName
-    //         }
-    //       });
-    //     } else {
-    //       Toast({
-    //         message: resp.data.data,
-    //         iconClass: "icon icon-success"
-    //       });
-    //     }
-    //   });
-    // },
     blur() {
       blur();
+      this.bodyHeight = document.documentElement.clientHeight;
     }
   }
 };
@@ -230,7 +203,7 @@ export default {
     background: url("../../assets/image/area-logo.png") no-repeat;
     background-size: 100% 100%;
     margin: 0 auto;
-    margin-top: 165px;
+    margin-top: 155px;
   }
 }
 </style>

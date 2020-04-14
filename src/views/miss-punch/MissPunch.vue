@@ -2,116 +2,123 @@
   <div class="miss-punch">
     <div class="header">
       <div class="back" @click="goBack">
-        <div class="back-icon"></div>
-        首页
+        <div class="back-icon"></div>上一页
       </div>
-      新增{{ type === 0 ? "学生" : "教职工" }}缺课
+      新增{{ type === 1 ? "学生" : "教职工" }}缺课
     </div>
-    <scroll class="wrapper">
-      <div class="miss-content">
-        <div class="info-box">
-          <div class="item">
-            <div class="name space">名字</div>
-            <div class="value">
-              <input type="text" v-model="userName" />
-            </div>
+    <!-- <scroll class="wrapper"> -->
+    <div class="miss-content">
+      <div class="info-box">
+        <div class="item">
+          <div class="name space">名字</div>
+          <div class="value">
+            <input type="text" v-model="userName" @blur="blur" @input="usernameSearch" />
           </div>
-          <div class="item">
-            <div class="name">学校名称</div>
-            <div class="value">{{ schoolName }}</div>
-          </div>
-          <!-- <div class="item">
-            <div class="name space">年级</div>
-            <div class="value">一年级</div>
-          </div>-->
-          <div class="item">
-            <div class="name space">班级</div>
-            <div class="value">{{ className }}</div>
+          <div class="name-list" v-if="isShowNameList">
+            <div
+              class="name-item"
+              v-for="(item, index) in nameList"
+              :key="index"
+              @click="choseName(item)"
+            >{{ item.name }}</div>
           </div>
         </div>
-        <div class="miss-type">
-          <div class="title">缺课类型</div>
-          <div
-            class="type-item"
-            v-for="(item, index) in missType"
-            :key="index"
-            @click="choseMissType(index)"
-          >
-            {{ item.name }}
-            <div class="active" v-if="chosedType === index"></div>
-          </div>
+        <div class="item">
+          <div class="name">学校名称</div>
+          <div class="value">{{ schoolName }}</div>
         </div>
-        <div class="physical-condition">
-          <div class="title">目前状况或体温</div>
-          <input
-            type="text"
-            placeholder="输入状况或体温"
-            v-model="currentCondition"
-          />
+        <div class="item">
+          <div class="name space">班级</div>
+          <div class="value">{{ className }}</div>
         </div>
-        <div class="physical-condition">
-          <div class="title">治疗情况说明</div>
-          <input
-            type="text"
-            placeholder="输入治疗情况"
-            v-model="conditionDescription"
-          />
-        </div>
-        <div class="select-box">
-          <div class="title">是否有流行病接触史</div>
-          <div
-            class="select-item"
-            v-for="(item, index) in selectItems"
-            :key="index"
-            @click="selectEpidemic(index)"
-          >
-            {{ item.name }}
-            <div class="active" v-if="chosedEpidemic === index"></div>
-          </div>
-        </div>
-        <div class="select-box">
-          <div class="title">是否新增</div>
-          <div
-            class="select-item"
-            v-for="(item, index) in selectItems"
-            :key="index"
-            @click="selectAdd(index)"
-          >
-            {{ item.name }}
-            <div class="active" v-if="chosedAdd === index"></div>
-          </div>
-        </div>
-        <div class="select-box">
-          <div class="title">是否复课</div>
-          <div
-            class="select-item"
-            v-for="(item, index) in selectItems"
-            :key="index"
-            @click="selectReClass(index)"
-          >
-            {{ item.name }}
-            <div class="active" v-if="chosedReClass === index"></div>
-          </div>
-        </div>
-        <div class="reclass-examine">
-          <div class="title">复课查验情况</div>
-          <input
-            type="text"
-            placeholder="输入治疗情况"
-            v-model="identification"
-          />
-        </div>
-        <div style="height:40px">
-          <div class="reclass-date" v-show="chosedReClass === 0">
-            <div class="name">复课日期</div>
-            <div class="date" @click="openDate">
-              {{ returnDate(reclassDate) }}
-            </div>
-          </div>
-        </div>
-        <div class="commit-button" @click="commitAdd">提交</div>
       </div>
-    </scroll>
+      <div class="miss-type">
+        <div class="title">缺课类型</div>
+        <div
+          class="type-item"
+          v-for="(item, index) in missType"
+          :key="index"
+          @click="choseMissType(index)"
+        >
+          {{ item.name }}
+          <div class="active" v-if="chosedType === index"></div>
+        </div>
+      </div>
+      <div class="physical-condition">
+        <div class="title">目前状况或体温</div>
+        <input
+          type="text"
+          placeholder="输入状况或体温"
+          v-model="currentCondition"
+          @blur="blur"
+          maxlength="20"
+        />
+      </div>
+      <div class="physical-condition">
+        <div class="title">治疗情况说明</div>
+        <input
+          type="text"
+          placeholder="输入治疗情况"
+          v-model="conditionDescription"
+          @blur="blur"
+          maxlength="20"
+        />
+      </div>
+      <div class="select-box">
+        <div class="title">是否有流行病接触史</div>
+        <div
+          class="select-item"
+          v-for="(item, index) in selectItems"
+          :key="index"
+          @click="selectEpidemic(index)"
+        >
+          {{ item.name }}
+          <div class="active" v-if="chosedEpidemic === index"></div>
+        </div>
+      </div>
+      <div class="select-box">
+        <div class="title">是否今日新增</div>
+        <div
+          class="select-item"
+          v-for="(item, index) in selectItems"
+          :key="index"
+          @click="selectAdd(index)"
+        >
+          {{ item.name }}
+          <div class="active" v-if="chosedAdd === index"></div>
+        </div>
+      </div>
+      <div class="select-box">
+        <div class="title">是否复课</div>
+        <div
+          class="select-item"
+          v-for="(item, index) in selectItems"
+          :key="index"
+          @click="selectReClass(index)"
+        >
+          {{ item.name }}
+          <div class="active" v-if="chosedReClass === index"></div>
+        </div>
+      </div>
+      <div class="reclass-examine">
+        <div class="title">复课查验情况</div>
+        <input
+          type="text"
+          placeholder="输入复课查验情况"
+          v-model="identification"
+          @blur="blur"
+          maxlength="20"
+        />
+      </div>
+      <div style="height:40px">
+        <div class="reclass-date" v-show="chosedReClass === 0">
+          <div class="name">复课日期</div>
+          <div class="date" @click="openDate">{{ returnDate(reclassDate) }}</div>
+        </div>
+      </div>
+      <div class="commit-button" @click="commitAdd">提交</div>
+    </div>
+    <!-- </scroll> -->
     <mt-datetime-picker
       ref="datepicker"
       v-model="pickerValue"
@@ -129,7 +136,7 @@
 </template>
 
 <script>
-import { Todate } from "@/common/tool/tool.js";
+import { Todate, blur, debounce } from "@/common/tool/tool.js";
 import { Toast, Indicator } from "mint-ui";
 import Scroll from "@/components/Scroll";
 import { getEnterpriseUsersByName, absentAdd } from "@/api/missClass";
@@ -167,7 +174,7 @@ export default {
           name: "否"
         }
       ],
-      userName: "陆迎",
+      userName: "",
       reclassDate: new Date(),
       handler: function(e) {
         e.preventDefault();
@@ -177,7 +184,10 @@ export default {
       currentCondition: "",
       conditionDescription: "",
       identification: "",
-      type: ""
+      type: "",
+      nameList: [],
+      isShowNameList: false,
+      isWatchName: true
     };
   },
   created() {
@@ -187,21 +197,70 @@ export default {
     } else {
       vm.type = 2;
     }
-    getEnterpriseUsersByName({
-      type: vm.type,
-      userName: vm.userName
-    }).then(resp => {
-      vm.schoolName = resp.data.data[0].parentEnterpriseName;
-      vm.className = resp.data.data[0].enterpriseName;
-      vm.idCard = resp.data.data[0].idCard;
-    });
+    this.$watch(
+      "userName",
+      debounce((newValue, oldValue) => {
+        if (!vm.isWatchName) {
+          return;
+        }
+        vm.getEnterpriseUsersByName();
+      }, 500)
+    );
   },
   methods: {
+    getEnterpriseUsersByName() {
+      let vm = this;
+      if (!vm.userName) {
+        vm.schoolName = "";
+        vm.className = "";
+        vm.idCard = "";
+        vm.isShowNameList = false;
+        return;
+      }
+      Indicator.open();
+      getEnterpriseUsersByName({
+        type: vm.type,
+        userName: vm.userName
+      }).then(resp => {
+        Indicator.close();
+        vm.nameList = resp.data.data;
+        if (vm.nameList.length > 0) {
+          vm.isShowNameList = true;
+        } else {
+          vm.isShowNameList = false;
+        }
+        // vm.schoolName = resp.data.data[0]
+        //   ? resp.data.data[0].parentEnterpriseName
+        //   : "";
+        // vm.className = resp.data.data[0]
+        //   ? resp.data.data[0].enterpriseName
+        //   : "";
+        // vm.idCard = resp.data.data[0] ? resp.data.data[0].idCard : "";
+      });
+    },
+    usernameSearch() {
+      this.isWatchName = true;
+    },
+    choseName(item) {
+      this.schoolName = item.parentEnterpriseName;
+      this.className = item.enterpriseName;
+      this.idCard = item.idCard;
+      this.isWatchName = false;
+      this.userName = item.name;
+      this.isShowNameList = false;
+    },
     returnDate(value) {
       return Todate(value);
     },
     commitAdd() {
       let vm = this;
+      if (!vm.idCard) {
+        Toast({
+          message: "请输入名字进行匹配!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
       if (!vm.chosedType && vm.chosedType !== 0) {
         Toast({
           message: "请选择缺课类型!",
@@ -281,7 +340,9 @@ export default {
         }
       });
     },
-    goBack() {},
+    goBack() {
+      this.$router.go(-1);
+    },
     choseMissType(index) {
       this.chosedType = index;
     },
@@ -318,6 +379,9 @@ export default {
         .addEventListener("touchmove", this.handler, {
           passive: false
         }); //阻止默认事件
+    },
+    blur() {
+      blur();
     }
   },
   components: {
@@ -363,186 +427,202 @@ export default {
       }
     }
   }
-  .wrapper {
-    // height: 400px;
-    flex: 1;
-    overflow: hidden;
-    .miss-content {
-      padding-bottom: 1px;
-      .info-box {
-        background-color: #fff;
-        .item {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          display: flex;
-          .name {
-            width: 105px;
-            text-align: center;
-            line-height: 40px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #222;
-          }
-          .space {
-            letter-spacing: 25px;
-            text-indent: 25px;
-          }
-          .value {
-            flex: 1;
-            line-height: 40px;
-            text-align: right;
-            padding-right: 10px;
-            input {
-              height: 100%;
-              padding: 0;
-              margin: 0;
-              text-align: right;
-            }
-          }
-        }
-      }
-      .miss-type {
-        margin-top: 10px;
-        padding: 0 20px;
-        background-color: #fff;
-        .title {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          line-height: 40px;
-          padding-left: 5px;
-          font-weight: bold;
-          font-size: 14px;
-          color: #222;
-        }
-        .type-item {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          font-size: 14px;
-          line-height: 40px;
-          padding-left: 15px;
-          position: relative;
-          .active {
-            width: 16px;
-            height: 16px;
-            background: url("../../assets/image/green-chosed.png") no-repeat;
-            background-size: 100% 100%;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-          }
-        }
-      }
-      .physical-condition {
-        background-color: #fff;
-        padding: 0 20px;
-        margin-top: 10px;
-        .title {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          line-height: 40px;
-          padding-left: 5px;
-          font-weight: bold;
-          color: #222;
-          font-size: 14px;
-        }
-        input {
-          width: 100%;
-          font-size: 14px;
-          margin: 10px 0;
-          height: 40px;
-          padding-left: 15px;
-        }
-      }
-      .select-box {
-        background-color: #fff;
-        padding: 0 20px;
-        margin-top: 10px;
-        .title {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          line-height: 40px;
-          padding-left: 5px;
-          font-weight: bold;
-          color: #222;
-          font-size: 14px;
-        }
-        .select-item {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          font-size: 14px;
-          line-height: 40px;
-          padding-left: 15px;
-          position: relative;
-          .active {
-            width: 16px;
-            height: 16px;
-            background: url("../../assets/image/green-chosed.png") no-repeat;
-            background-size: 100% 100%;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-          }
-        }
-      }
-      .reclass-examine {
-        background-color: #fff;
-        padding: 0 20px;
-        .title {
-          height: 40px;
-          border-bottom: 1px solid #efefef;
-          line-height: 40px;
-          padding-left: 5px;
-          font-weight: bold;
-          color: #222;
-          font-size: 14px;
-        }
-        input {
-          width: 100%;
-          font-size: 14px;
-          margin: 10px 0;
-          height: 40px;
-          padding-left: 15px;
-        }
-      }
-      .reclass-date {
-        border-top: 1px solid #efefef;
+  // .wrapper {
+  //   // height: 400px;
+  //   flex: 1;
+  //   overflow: hidden;
+  .miss-content {
+    padding-bottom: 1px;
+    .info-box {
+      background-color: #fff;
+      .item {
         height: 40px;
-        background-color: #fff;
+        border-bottom: 1px solid #efefef;
         display: flex;
+        position: relative;
         .name {
-          width: 100px;
-          height: 40px;
-          line-height: 40px;
+          width: 105px;
           text-align: center;
-          color: #222;
+          line-height: 40px;
           font-size: 14px;
           font-weight: bold;
-          padding-left: 5px;
+          color: #222;
         }
-        .date {
+        .space {
+          letter-spacing: 25px;
+          text-indent: 25px;
+        }
+        .value {
           flex: 1;
           line-height: 40px;
           text-align: right;
           padding-right: 10px;
+          input {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            text-align: right;
+          }
+        }
+        .name-list {
+          position: absolute;
+          width: 150px;
+          height: 100px;
+          overflow-y: auto;
+          background-color: #fff;
+          right: 10px;
+          top: 41px;
+          z-index: 999;
+          border: 1px solid #eee;
+          .name-item {
+            padding-left: 5px;
+          }
         }
       }
-      .commit-button {
-        width: 280px;
-        height: 42px;
-        background-color: #16d0a0;
-        text-align: center;
+    }
+    .miss-type {
+      margin-top: 10px;
+      padding: 0 20px;
+      background-color: #fff;
+      .title {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
         line-height: 40px;
-        border-radius: 20px;
-        margin: 20px auto;
-        letter-spacing: 15px;
-        text-indent: 15px;
-        color: #fff;
-        font-size: 16px;
+        padding-left: 5px;
         font-weight: bold;
+        font-size: 14px;
+        color: #222;
+      }
+      .type-item {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
+        font-size: 14px;
+        line-height: 40px;
+        padding-left: 15px;
+        position: relative;
+        .active {
+          width: 16px;
+          height: 16px;
+          background: url("../../assets/image/green-chosed.png") no-repeat;
+          background-size: 100% 100%;
+          position: absolute;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
       }
     }
+    .physical-condition {
+      background-color: #fff;
+      padding: 0 20px;
+      margin-top: 10px;
+      .title {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
+        line-height: 40px;
+        padding-left: 5px;
+        font-weight: bold;
+        color: #222;
+        font-size: 14px;
+      }
+      input {
+        width: 100%;
+        font-size: 14px;
+        margin: 10px 0;
+        height: 40px;
+        padding-left: 15px;
+      }
+    }
+    .select-box {
+      background-color: #fff;
+      padding: 0 20px;
+      margin-top: 10px;
+      .title {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
+        line-height: 40px;
+        padding-left: 5px;
+        font-weight: bold;
+        color: #222;
+        font-size: 14px;
+      }
+      .select-item {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
+        font-size: 14px;
+        line-height: 40px;
+        padding-left: 15px;
+        position: relative;
+        .active {
+          width: 16px;
+          height: 16px;
+          background: url("../../assets/image/green-chosed.png") no-repeat;
+          background-size: 100% 100%;
+          position: absolute;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+    }
+    .reclass-examine {
+      background-color: #fff;
+      padding: 0 20px;
+      .title {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
+        line-height: 40px;
+        padding-left: 5px;
+        font-weight: bold;
+        color: #222;
+        font-size: 14px;
+      }
+      input {
+        width: 100%;
+        font-size: 14px;
+        margin: 10px 0;
+        height: 40px;
+        padding-left: 15px;
+      }
+    }
+    .reclass-date {
+      border-top: 1px solid #efefef;
+      height: 40px;
+      background-color: #fff;
+      display: flex;
+      .name {
+        width: 100px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: #222;
+        font-size: 14px;
+        font-weight: bold;
+        padding-left: 5px;
+      }
+      .date {
+        flex: 1;
+        line-height: 40px;
+        text-align: right;
+        padding-right: 10px;
+      }
+    }
+    .commit-button {
+      width: 280px;
+      height: 42px;
+      background-color: #16d0a0;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 20px;
+      margin: 20px auto;
+      letter-spacing: 15px;
+      text-indent: 15px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
+  // }
 }
 </style>

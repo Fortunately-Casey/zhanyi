@@ -37,7 +37,7 @@ export function getURL(url) {
     return _result;
 }
 
-export function chinaDateTime(chinadatetime) {
+export function chinaDateTime(chinadatetime) { 
     // // 转为正常的时间格式 年-月-日 时:分:秒
     // var T_pos = utc_datetime.indexOf('T');
     // var Z_pos = utc_datetime.indexOf('Z');

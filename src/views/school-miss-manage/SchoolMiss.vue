@@ -2,8 +2,10 @@
   <div class="school-miss-manage">
     <div class="header">
       <div class="back" @click="goBack">
-        <div class="back-icon"></div>上一页
-      </div>学校缺课上报情况
+        <div class="back-icon"></div>
+        上一页
+      </div>
+      学校缺课上报情况
     </div>
     <div class="content">
       <div class="date" @click="openDate">
@@ -68,7 +70,11 @@
           </li>
           <li>
             <div class="name">是否上报:</div>
-            <div class="value">{{ chosedDetail.studentSum ? "是" : "否" }}</div>
+            <div class="value">
+              {{
+                chosedDetail.studentSum || chosedDetail.facultySum ? "是" : "否"
+              }}
+            </div>
           </li>
         </ul>
       </div>
@@ -92,7 +98,7 @@ export default {
       isShowDetail: false,
       chosedDetail: {},
       pageSize: 10,
-      maxPage:4
+      maxPage: ""
     };
   },
   mounted() {
@@ -111,6 +117,9 @@ export default {
         if (resp.data.success && resp.data.data) {
           Indicator.close();
           vm.schoollist = resp.data.data.obj;
+          vm.maxPage = Math.ceil(
+            resp.data.data.total / resp.data.data.pageSize
+          );
         }
       });
     },

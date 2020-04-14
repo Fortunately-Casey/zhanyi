@@ -1,5 +1,8 @@
 <template>
-  <div class="school-register" :style="{ height: bodyHeight + 'px' }">
+  <div
+    class="school-register"
+    :style="{ height: bodyHeight ? bodyHeight + 'px' : '100%' }"
+  >
     <div class="top-bg">
       <div class="top-box">
         <div class="ball"></div>
@@ -130,6 +133,7 @@ export default {
     },
     blur() {
       blur();
+      this.bodyHeight = document.documentElement.clientHeight;
     }
   }
 };
