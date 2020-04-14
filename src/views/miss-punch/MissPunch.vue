@@ -5,26 +5,28 @@
         <div class="back-icon"></div>
         首页
       </div>
-      新增学生缺课
+      新增{{ type === 0 ? "学生" : "教职工" }}缺课
     </div>
     <scroll class="wrapper">
       <div class="miss-content">
         <div class="info-box">
           <div class="item">
             <div class="name space">名字</div>
-            <div class="value">王子易</div>
+            <div class="value">
+              <input type="text" v-model="userName" />
+            </div>
           </div>
           <div class="item">
             <div class="name">学校名称</div>
-            <div class="value">南通市开发区东方小学</div>
+            <div class="value">{{ schoolName }}</div>
           </div>
-          <div class="item">
+          <!-- <div class="item">
             <div class="name space">年级</div>
             <div class="value">一年级</div>
-          </div>
+          </div>-->
           <div class="item">
             <div class="name space">班级</div>
-            <div class="value">三班</div>
+            <div class="value">{{ className }}</div>
           </div>
         </div>
         <div class="miss-type">
@@ -41,11 +43,19 @@
         </div>
         <div class="physical-condition">
           <div class="title">目前状况或体温</div>
-          <input type="text" placeholder="输入状况或体温" />
+          <input
+            type="text"
+            placeholder="输入状况或体温"
+            v-model="currentCondition"
+          />
         </div>
         <div class="physical-condition">
           <div class="title">治疗情况说明</div>
-          <input type="text" placeholder="输入治疗情况" />
+          <input
+            type="text"
+            placeholder="输入治疗情况"
+            v-model="conditionDescription"
+          />
         </div>
         <div class="select-box">
           <div class="title">是否有流行病接触史</div>
@@ -85,15 +95,21 @@
         </div>
         <div class="reclass-examine">
           <div class="title">复课查验情况</div>
-          <input type="text" placeholder="输入治疗情况" />
+          <input
+            type="text"
+            placeholder="输入治疗情况"
+            v-model="identification"
+          />
         </div>
-        <div class="reclass-date">
-          <div class="name">复课日期</div>
-          <div class="date" @click="openDate">
-            {{ returnDate(reclassDate) }}
+        <div style="height:40px">
+          <div class="reclass-date" v-show="chosedReClass === 0">
+            <div class="name">复课日期</div>
+            <div class="date" @click="openDate">
+              {{ returnDate(reclassDate) }}
+            </div>
           </div>
         </div>
-        <div class="commit-button">提交</div>
+        <div class="commit-button" @click="commitAdd">提交</div>
       </div>
     </scroll>
     <mt-datetime-picker
@@ -114,11 +130,14 @@
 
 <script>
 import { Todate } from "@/common/tool/tool.js";
+import { Toast, Indicator } from "mint-ui";
 import Scroll from "@/components/Scroll";
+import { getEnterpriseUsersByName, absentAdd } from "@/api/missClass";
 export default {
   data() {
     return {
       pickerValue: new Date(),
+      idCard: "",
       missType: [
         {
           name: "在外地"
@@ -148,15 +167,119 @@ export default {
           name: "否"
         }
       ],
+      userName: "陆迎",
       reclassDate: new Date(),
       handler: function(e) {
         e.preventDefault();
-      }
+      },
+      schoolName: "",
+      className: "",
+      currentCondition: "",
+      conditionDescription: "",
+      identification: "",
+      type: ""
     };
+  },
+  created() {
+    let vm = this;
+    if (vm.$route.query.type === "Base") {
+      vm.type = 1;
+    } else {
+      vm.type = 2;
+    }
+    getEnterpriseUsersByName({
+      type: vm.type,
+      userName: vm.userName
+    }).then(resp => {
+      vm.schoolName = resp.data.data[0].parentEnterpriseName;
+      vm.className = resp.data.data[0].enterpriseName;
+      vm.idCard = resp.data.data[0].idCard;
+    });
   },
   methods: {
     returnDate(value) {
       return Todate(value);
+    },
+    commitAdd() {
+      let vm = this;
+      if (!vm.chosedType && vm.chosedType !== 0) {
+        Toast({
+          message: "请选择缺课类型!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.currentCondition) {
+        Toast({
+          message: "请填写目前状况!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.conditionDescription) {
+        Toast({
+          message: "请填写治疗情况!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.chosedEpidemic && vm.chosedEpidemic !== 0) {
+        Toast({
+          message: "请选择是否有流行病接触史!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.chosedAdd && vm.chosedAdd !== 0) {
+        Toast({
+          message: "请选择是否新增!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.chosedReClass && vm.chosedReClass !== 0) {
+        Toast({
+          message: "请选择是否复课!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      if (!vm.identification) {
+        Toast({
+          message: "请填写复课查验情况!",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      let params = {
+        idCard: vm.idCard,
+        absentType: vm.chosedType + 1,
+        currentCondition: vm.currentCondition,
+        conditionDescription: vm.conditionDescription,
+        contactHistory: vm.chosedEpidemic === 0 ? true : false,
+        increase: vm.chosedAdd === 0 ? true : false,
+        resumption: vm.chosedReClass === 0 ? true : false,
+        identification: vm.identification,
+        resumptionDate:
+          vm.chosedReClass === 0 ? vm.returnDate(vm.reclassDate) : "",
+        type: vm.type
+      };
+      Indicator.open();
+      absentAdd(params).then(resp => {
+        Indicator.close();
+        if (resp.data.success) {
+          Toast({
+            message: "新增成功！",
+            iconClass: "icon icon-success"
+          });
+          vm.goBack();
+        } else {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+        }
+      });
     },
     goBack() {},
     choseMissType(index) {
@@ -269,6 +392,12 @@ export default {
             line-height: 40px;
             text-align: right;
             padding-right: 10px;
+            input {
+              height: 100%;
+              padding: 0;
+              margin: 0;
+              text-align: right;
+            }
           }
         }
       }
@@ -282,6 +411,7 @@ export default {
           line-height: 40px;
           padding-left: 5px;
           font-weight: bold;
+          font-size: 14px;
           color: #222;
         }
         .type-item {
@@ -314,6 +444,7 @@ export default {
           padding-left: 5px;
           font-weight: bold;
           color: #222;
+          font-size: 14px;
         }
         input {
           width: 100%;
@@ -334,6 +465,7 @@ export default {
           padding-left: 5px;
           font-weight: bold;
           color: #222;
+          font-size: 14px;
         }
         .select-item {
           height: 40px;
@@ -364,6 +496,7 @@ export default {
           padding-left: 5px;
           font-weight: bold;
           color: #222;
+          font-size: 14px;
         }
         input {
           width: 100%;

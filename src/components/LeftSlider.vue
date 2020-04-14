@@ -35,6 +35,9 @@ export default {
       moveY: 0 //滑动时的位置
     };
   },
+  mounted() {
+    this.restSlideDelete();
+  },
   methods: {
     touchStart(ev) {
       this.restSlide();
@@ -107,6 +110,15 @@ export default {
       for (let i = 0; i < listItems.length; i++) {
         listItems[i].firstChild.style = "transform:translateX(0" + "rem)";
       }
+    },
+    restSlideDelete() {
+      this.$on("restSlide", () => {
+        let listItems = document.querySelectorAll(".slider-item");
+        // 复位
+        for (let i = 0; i < listItems.length; i++) {
+          listItems[i].firstChild.style = "transform:translateX(0" + "rem)";
+        }
+      });
     },
     deleteItem: function(index) {
       this.$emit("deleteItem", index);

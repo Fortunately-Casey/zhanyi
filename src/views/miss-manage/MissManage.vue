@@ -1,12 +1,12 @@
 <template>
   <div class="manage">
     <div class="header">
-      教职工缺课
+      {{ titleName }}缺课
       <div class="back" @click="goBack">
         首页
         <div class="back-icon"></div>
       </div>
-      <span class="teacher-punchList">新增缺课</span>
+      <span class="teacher-punchList" @click="addMissClass">新增缺课</span>
     </div>
     <div class="content">
       <div class="date" @click="openDate">
@@ -15,32 +15,63 @@
       </div>
       <div class="people-number">
         <div class="should-be">
-          <div class="name">当日应到学生数</div>
+          <div class="name">当日应到{{ titleName }}数</div>
           <div class="value">
-            <input type="number" oninput="if (value.length>4) value=value.slice(0,4)" />
+            <input
+              type="number"
+              oninput="if (value.length>4) value=value.slice(0,4)"
+              placeholder="请输入"
+              v-model="provisionsNum"
+              style="padding-right:10px"
+            />
           </div>
         </div>
         <div class="actual-arrival">
-          <div class="name">当日实到学生数</div>
+          <div class="name">当日实到{{ titleName }}数</div>
           <div class="value">
-            <input type="number" oninput="if (value.length>4) value=value.slice(0,4)" />
+            <input
+              type="number"
+              oninput="if (value.length>4) value=value.slice(0,4)"
+              placeholder="请输入"
+              v-model="actualNum"
+              style="padding-right:10px"
+            />
           </div>
         </div>
       </div>
       <div class="people-content">
-        <!-- <div class="tab-bar"></div> -->
+        <div class="tab-bar" v-if="isShowTabbar">
+          <div
+            class="tab-item"
+            v-for="(item, index) in tabItems"
+            :key="index"
+            :class="chosedItem === index ? 'active' : ''"
+            @click="choseItem(index)"
+          >
+            {{ item.name
+            }}{{ chosedItem === index ? `（${personCount}）` : "" }}
+          </div>
+        </div>
         <div class="people-header">
           <div class="index">序号</div>
           <div class="name">姓名</div>
           <div class="type">缺课类型</div>
           <div class="isReClass">是否复课</div>
         </div>
-        <div class="people-list">
-          <div class="item" v-for="(item,index) in 8" :key="index">
-            <div class="index">1</div>
-            <div class="name">邱佳佳</div>
-            <div class="type">发热</div>
-            <div class="isReClass">否</div>
+        <div class="people-list" v-if="isShowPeopleList">
+          <div v-for="(item, index) in peopleList" :key="index">
+            <left-slider
+              :index="index"
+              @deleteItem="deleteItem(item)"
+              :ref="item.rowNumber"
+            >
+              <div class="item">
+                <div class="index">{{ item.rowNumber }}</div>
+                <div class="name">{{ item.name }}</div>
+                <div class="type">{{ returnMissType(item.absentType) }}</div>
+                <div class="isReClass">{{ item.resumption ? "是" : "否" }}</div>
+              </div>
+            </left-slider>
           </div>
         </div>
       </div>
@@ -49,7 +80,7 @@
         {{ page }}页
         <span @click="next">></span>
       </div>
-      <div class="commit-button">提交</div>
+      <div class="commit-button" @click="commitList">提交</div>
     </div>
     <mt-datetime-picker
       ref="datepicker"
@@ -68,66 +99,120 @@
 </template>
 <script>
 import { Todate } from "@/common/tool/tool.js";
-import { Toast, Indicator } from "mint-ui";
+import { Toast, Indicator, MessageBox } from "mint-ui";
+import {
+  absentCondition,
+  deleteAbsentByID,
+  commitAbsentLog,
+  absentStatistics
+} from "@/api/missClass";
 import Scroll from "@/components/Scroll.vue";
+import LeftSlider from "@/components/LeftSlider.vue";
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
       date: new Date(),
       pickerValue: new Date(),
-      isShowTeacherList: true,
-      chosedIndex: 3,
       page: 1,
-      pageSize: 10,
+      pageSize: 8,
       list: [],
-      maxPage: 0,
-      imgUrl: "",
-      count: 0,
-      isShowQrcode: false,
+      maxPage: 4,
       handler: function(e) {
         e.preventDefault();
       },
-      isShowDetail: false,
-      chosedDetail: "",
-      isShowDownload: false,
-      downloadUrl: "",
-      isShowImport: false,
-      importUrl: "",
       phoneNumber: "",
       password: "",
       titleName: "",
       type: "",
-      isShowErrorList: false,
-      errorList: [],
-      chosedEnterpriseID: "",
-      chosedSchoolType: 0,
-      enterpriseList: [
+      peopleList: [],
+      isShowPeopleList: true,
+      tabItems: [
         {
-          id: 1,
-          name: "幼儿园"
+          name: "教职工"
         },
         {
-          id: 2,
-          name: "小学"
-        },
-        {
-          id: 3,
-          name: "初中"
-        },
-        {
-          id: 4,
-          name: "高中"
-        },
-        {
-          id: 5,
-          name: "综合"
+          name: "学生"
         }
-      ]
+      ],
+      chosedItem: 0,
+      personCount: "",
+      isShowTabbar: false
     };
   },
-  created() {},
-  mounted() {},
+  created() {
+    if (this.$route.query.type === "Base") {
+      this.titleName = "学生";
+      this.type = 1;
+      this.isShowTabbar = false;
+    } else {
+      this.titleName = "教职工";
+      this.isShowTabbar = true;
+      this.type = 2;
+    }
+  },
+  computed: {
+    provisionsNum: {
+      get() {
+        return this.$store.state[0].commitPersonCount.provisionsNum;
+      },
+      set(value) {
+        this.$store.commit("SET_PROVISIONSNUM", value);
+      }
+    },
+    actualNum: {
+      get() {
+        return this.$store.state[0].commitPersonCount.actualNum;
+      },
+      set(value) {
+        this.$store.commit("SET_ACTUALNUM", value);
+      }
+    }
+  },
+  mounted() {
+    // 获取缺课情况
+    this.absentCondition();
+    this.absentStatistics();
+  },
   methods: {
+    ...mapActions({
+      setCommitPerson: "setCommitPersonCount"
+    }),
+    absentStatistics() {
+      let vm = this;
+      absentStatistics({
+        type: vm.type,
+        absentDate: vm.returnDate(vm.date)
+      }).then(resp => {
+        if (resp.data.success && resp.data.data) {
+          if (resp.data.data.provisionsNum) {
+            this.$store.commit(
+              "SET_PROVISIONSNUM",
+              resp.data.data.provisionsNum
+            );
+          }
+          if (resp.data.data.actualNum) {
+            this.$store.commit("SET_ACTUALNUM", resp.data.data.actualNum);
+          }
+        }
+      });
+    },
+    absentCondition() {
+      let vm = this;
+      Indicator.open();
+      vm.isShowPeopleList = false;
+      absentCondition({
+        type: vm.type,
+        absentDate: vm.returnDate(vm.date),
+        currPage: vm.page,
+        pageSize: vm.pageSize
+      }).then(resp => {
+        Indicator.close();
+        vm.peopleList = resp.data.data.obj;
+        vm.personCount = resp.data.data.total;
+        vm.isShowPeopleList = true;
+      });
+    },
     returnDate(value) {
       return Todate(value);
     },
@@ -138,7 +223,8 @@ export default {
     },
     confirmDate(value) {
       this.date = value;
-      this.getList();
+      this.page = 1;
+      this.absentCondition();
       this.openTouch();
     },
     prev() {
@@ -147,7 +233,7 @@ export default {
         return;
       }
       vm.page--;
-      vm.getList();
+      vm.absentCondition();
     },
     next() {
       var vm = this;
@@ -155,7 +241,64 @@ export default {
         return;
       }
       vm.page++;
-      vm.getList();
+      vm.absentCondition();
+    },
+    returnMissType(type) {
+      let missType;
+      switch (type) {
+        case 1:
+          missType = "在外地";
+          break;
+        case 2:
+          missType = "发热";
+          break;
+        case 3:
+          missType = "其他症状";
+          break;
+        case 4:
+          missType = "隔离中";
+          break;
+        case 5:
+          missType = "其他原因";
+          break;
+      }
+      return missType;
+    },
+    // 删除缺课记录
+    deleteItem(item) {
+      let vm = this;
+      MessageBox.confirm("", {
+        message: "确定要执行此操作吗？",
+        title: "删除缺课记录"
+      }).then(() => {
+        Indicator.open();
+        deleteAbsentByID(item.absentID).then(resp => {
+          Indicator.close();
+          if (resp.data.success) {
+            Toast({
+              message: "删除成功！",
+              iconClass: "icon icon-success"
+            });
+            vm.isShowPeopleList = false;
+            vm.absentCondition();
+          } else {
+            Toast({
+              message: resp.data.data,
+              iconClass: "icon icon-success"
+            });
+          }
+        });
+      });
+    },
+    choseItem(index) {
+      this.chosedItem = index;
+      if (index === 0) {
+        this.type = 2;
+      } else {
+        this.type = 1;
+      }
+      this.page = 1;
+      this.absentCondition();
     },
     closeDate() {
       this.openTouch();
@@ -177,11 +320,49 @@ export default {
         .removeEventListener("touchmove", this.handler, {
           passive: true
         }); //打开默认事件
+    },
+    // 新增缺课
+    addMissClass() {
+      this.$router.push({
+        path: "/missPunch",
+        query: {
+          type: this.$route.query.type
+        }
+      });
+    },
+    commitList() {
+      let vm = this;
+      if (!vm.provisionsNum || !vm.actualNum) {
+        Toast({
+          message: "人数不能为空！",
+          iconClass: "icon icon-success"
+        });
+        return;
+      }
+      commitAbsentLog({
+        absentDate: vm.returnDate(vm.date),
+        provisionsNum: vm.provisionsNum,
+        actualNum: vm.actualNum
+      }).then(resp => {
+        if (resp.data.success) {
+          Toast({
+            message: "提交成功！",
+            iconClass: "icon icon-success"
+          });
+        } else {
+          Toast({
+            message: resp.data.data,
+            iconClass: "icon icon-success"
+          });
+        }
+      });
     }
   },
   components: {
-    Scroll
-  }
+    // Scroll,
+    LeftSlider
+  },
+  watch: {}
 };
 </script>
 <style lang="less" scoped>
@@ -278,6 +459,25 @@ export default {
     .people-content {
       margin-top: 10px;
       background-color: #fff;
+      .tab-bar {
+        height: 40px;
+        border-bottom: 1px solid #efefef;
+        padding-left: 15px;
+        display: flex;
+        align-items: center;
+        .tab-item {
+          width: 80px;
+          height: 30px;
+          border-radius: 15px;
+          line-height: 30px;
+          text-align: center;
+          color: #aaa;
+        }
+        .active {
+          color: #16d0a0;
+          background-color: #dcfff6;
+        }
+      }
       .people-header {
         height: 40px;
         display: flex;
@@ -307,6 +507,7 @@ export default {
         .item {
           height: 40px;
           display: flex;
+          background-color: #fff;
           .index,
           .name,
           .type,
@@ -343,6 +544,7 @@ export default {
       font-size: 16px;
       font-weight: bold;
       margin-top: 20px;
+      margin-bottom: 20px;
     }
     .pagenation {
       height: 30px;

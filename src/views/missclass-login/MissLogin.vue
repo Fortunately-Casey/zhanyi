@@ -28,7 +28,7 @@
 </template>
 <script>
 import { blur } from "@/common/tool/tool";
-import { loginEnterprise, loginManageEnterprise } from "@/api/schoolRegister";
+import { userLogin } from "@/api/missClass";
 import { Toast, Indicator } from "mint-ui";
 export default {
   data() {
@@ -39,13 +39,13 @@ export default {
     };
   },
   created() {
-    if (this.$route.query.type == "class") {
-      this.phoneNumber = window.localStorage.getItem("classNumber");
-      this.password = window.localStorage.getItem("classPassword");
-    } else {
-      this.phoneNumber = window.localStorage.getItem("schoolNumber");
-      this.password = window.localStorage.getItem("schoolPassword");
-    }
+    // if (this.$route.query.type == "class") {
+    this.phoneNumber = window.localStorage.getItem("missNumber");
+    this.password = window.localStorage.getItem("missPassword");
+    // } else {
+    //   this.phoneNumber = window.localStorage.getItem("schoolNumber");
+    //   this.password = window.localStorage.getItem("schoolPassword");
+    // }
   },
   mounted() {
     this.bodyHeight = document.documentElement.clientHeight;
@@ -60,35 +60,45 @@ export default {
         });
         return;
       }
-      if (this.$route.query.type == "class") {
-        this.loginEnterprise();
-      } else {
-        this.loginManageEnterprise();
-      }
+      this.userLogin();
+      // if (this.$route.query.type == "class") {
+      //   this.loginEnterprise();
+      // } else {
+      //   this.loginManageEnterprise();
+      // }
     },
-    loginEnterprise() {
+    userLogin() {
       var vm = this;
       Indicator.open();
-      loginEnterprise({
-        mobile: vm.phoneNumber,
-        password: vm.password
+      userLogin({
+        userID: vm.phoneNumber,
+        pwd: vm.password
       }).then(resp => {
         Indicator.close();
         if (resp.data.success) {
-          window.localStorage.setItem("classNumber", vm.phoneNumber);
-          window.localStorage.setItem("classPassword", vm.password);
+          window.localStorage.setItem("missNumber", vm.phoneNumber);
+          window.localStorage.setItem("missPassword", vm.password);
           Toast({
             message: "登录成功！",
             iconClass: "icon icon-success"
           });
-          this.$router.push({
-            path: "/schoolManage",
-            query: {
-              enterpriseID: resp.data.data.enterpriseID,
-              parentEnterpriseID: resp.data.data.parentEnterpriseID,
-              enterpriseName: resp.data.data.enterpriseName
-            }
-          });
+          if (resp.data.data.level === "Root") {
+            vm.$router.push({
+              path: "/schoolMiss",
+              query: {
+                type: resp.data.data.level
+              }
+            });
+            window.localStorage.setItem("token", resp.data.data.token);
+          } else {
+            this.$router.push({
+              path: "/missManage",
+              query: {
+                type: resp.data.data.level
+              }
+            });
+            window.localStorage.setItem("token", resp.data.data.token);
+          }
         } else {
           Toast({
             message: resp.data.data,
@@ -97,37 +107,37 @@ export default {
         }
       });
     },
-    loginManageEnterprise() {
-      var vm = this;
-      Indicator.open();
-      loginManageEnterprise({
-        mobile: vm.phoneNumber,
-        password: vm.password
-      }).then(resp => {
-        Indicator.close();
-        if (resp.data.success) {
-          window.localStorage.setItem("schoolNumber", vm.phoneNumber);
-          window.localStorage.setItem("schoolPassword", vm.password);
-          Toast({
-            message: "登录成功！",
-            iconClass: "icon icon-success"
-          });
-          this.$router.push({
-            path: "/manage",
-            query: {
-              enterpriseID: resp.data.data.enterpriseID,
-              type: resp.data.data.level,
-              enterpriseName: resp.data.data.enterpriseName
-            }
-          });
-        } else {
-          Toast({
-            message: resp.data.data,
-            iconClass: "icon icon-success"
-          });
-        }
-      });
-    },
+    // loginManageEnterprise() {
+    //   var vm = this;
+    //   Indicator.open();
+    //   loginManageEnterprise({
+    //     mobile: vm.phoneNumber,
+    //     password: vm.password
+    //   }).then(resp => {
+    //     Indicator.close();
+    //     if (resp.data.success) {
+    //       window.localStorage.setItem("schoolNumber", vm.phoneNumber);
+    //       window.localStorage.setItem("schoolPassword", vm.password);
+    //       Toast({
+    //         message: "登录成功！",
+    //         iconClass: "icon icon-success"
+    //       });
+    //       this.$router.push({
+    //         path: "/manage",
+    //         query: {
+    //           enterpriseID: resp.data.data.enterpriseID,
+    //           type: resp.data.data.level,
+    //           enterpriseName: resp.data.data.enterpriseName
+    //         }
+    //       });
+    //     } else {
+    //       Toast({
+    //         message: resp.data.data,
+    //         iconClass: "icon icon-success"
+    //       });
+    //     }
+    //   });
+    // },
     blur() {
       blur();
     }
@@ -220,7 +230,7 @@ export default {
     background: url("../../assets/image/area-logo.png") no-repeat;
     background-size: 100% 100%;
     margin: 0 auto;
-    margin-top: 130px;
+    margin-top: 165px;
   }
 }
 </style>
