@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="school-register"
-    :style="{ height: bodyHeight ? bodyHeight + 'px' : '100%' }"
-  >
+  <div class="school-register" :style="{ height: bodyHeight ? bodyHeight + 'px' : '100%' }">
     <div class="top-bg">
       <div class="top-box">
         <div class="ball"></div>
@@ -12,18 +9,8 @@
     </div>
     <div class="title-message">欢迎您，请登录</div>
     <div class="login">
-      <input
-        type="text"
-        placeholder="账号"
-        v-model="phoneNumber"
-        @blur="blur"
-      />
-      <input
-        type="password"
-        placeholder="输入密码"
-        v-model="password"
-        @blur="blur"
-      />
+      <input type="text" placeholder="账号" v-model="phoneNumber" @blur="blur" />
+      <input type="password" placeholder="输入密码" v-model="password" @blur="blur" />
     </div>
     <div class="login-button" @click="login">登录</div>
     <div class="bottom-logo"></div>
@@ -79,6 +66,19 @@ export default {
       }).then(resp => {
         Indicator.close();
         if (resp.data.success) {
+          let type = resp.data.data.enterpriseType;
+          if (
+            type === "01" ||
+            type === "02" ||
+            type === "03" ||
+            type === "04"
+          ) {
+            Toast({
+              message: "幼儿园不需要填写缺课记录！",
+              iconClass: "icon icon-success"
+            });
+            return;
+          }
           window.localStorage.setItem("missNumber", vm.phoneNumber);
           window.localStorage.setItem("missPassword", vm.password);
           Toast({
