@@ -46,6 +46,12 @@
       </ul>
     </scroll>
     <div class="add-button" @click="addChild"></div>
+    <van-overlay :show="show">
+      <div class="advertising"></div>
+      <div class="close">
+        <van-icon name="cross" size="40" @click="closeAdvertising" />
+      </div>
+    </van-overlay>
   </div>
 </template>
 <script>
@@ -56,7 +62,8 @@ import { Todate } from "@/common/tool/tool";
 export default {
   data() {
     return {
-      childList: []
+      childList: [],
+      show: true
     };
   },
   created() {
@@ -118,6 +125,9 @@ export default {
           idCard: idCard
         }
       });
+    },
+    closeAdvertising() {
+      this.show = false;
     }
   },
   components: {
@@ -238,6 +248,24 @@ export default {
     background-size: 100% 100%;
     margin: 0 auto;
     margin-top: 20px;
+  }
+  .advertising {
+    width: 90%;
+    height: 70%;
+    background: url("../../assets/image/advertising.jpg") no-repeat;
+    background-size: 100% 100%;
+    margin: 0 auto;
+    margin-top: 20%;
+  }
+  .close {
+    width: 100px;
+    height: 30px;
+    margin: 0 auto;
+    margin-top: 15px;
+    text-align: center;
+    i {
+      color: #fff;
+    }
   }
 }
 </style>

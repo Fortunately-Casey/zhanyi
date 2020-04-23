@@ -19,6 +19,7 @@
     "mint-ui": "^2.2.13",
     "postcss-px2rem-exclude": "0.0.6",
     "qrcode.vue": "^1.7.0",
+    "vant": "^2.6.3",
     "vue": "^2.6.10",
     "vue-baidu-map": "^0.21.22",
     "vue-qr": "^2.2.1",

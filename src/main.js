@@ -6,8 +6,11 @@ import BaiduMap from "vue-baidu-map";
 import Mint from "mint-ui";
 import "mint-ui/lib/style.css";
 import "lib-flexible/flexible.js";
+import Vant from "vant";
+import "vant/lib/index.css";
 
 Vue.use(Mint);
+Vue.use(Vant);
 Vue.use(BaiduMap, {
   ak: "Ocm4ieXqGPaZZgblGHi4GTnDfGfZcBbv"
 });
