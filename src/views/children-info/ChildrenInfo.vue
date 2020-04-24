@@ -51,6 +51,9 @@
       <div class="close">
         <van-icon name="cross" size="40" @click="closeAdvertising" />
       </div>
+      <p @click="goToUrl">
+        共同关注宝宝健康，4.25预防接种日南通疾控邀您答题抢红包！
+      </p>
     </van-overlay>
   </div>
 </template>
@@ -128,6 +131,10 @@ export default {
     },
     closeAdvertising() {
       this.show = false;
+    },
+    goToUrl() {
+      window.location.href =
+        "https://e554723823435.fengchuanba.com/index.html?from=singlemessage&isappinstalled=0#554723823435-7moudWwxlpTWbGeXPasI7jZilVUfqTMG_1040165432_2";
     }
   },
   components: {
@@ -266,6 +273,11 @@ export default {
     i {
       color: #fff;
     }
+  }
+  p {
+    font-size: 14px;
+    color: #fff;
+    padding: 5px 20px 0 20px;
   }
 }
 </style>
