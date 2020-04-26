@@ -80,6 +80,7 @@ export default {
         if (resp.data.success) {
           window.localStorage.setItem("classNumber", vm.phoneNumber);
           window.localStorage.setItem("classPassword", vm.password);
+          window.localStorage.setItem("token", resp.data.data.token);
           Toast({
             message: "登录成功！",
             iconClass: "icon icon-success"
@@ -111,6 +112,7 @@ export default {
         if (resp.data.success) {
           window.localStorage.setItem("schoolNumber", vm.phoneNumber);
           window.localStorage.setItem("schoolPassword", vm.password);
+          window.localStorage.setItem("token", resp.data.data.token);
           Toast({
             message: "登录成功！",
             iconClass: "icon icon-success"

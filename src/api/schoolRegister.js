@@ -29,10 +29,14 @@ export function sysUserLogin(params) {
 
 // 子女列表
 export function getEnterpriseUserBySysUserID(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getEnterpriseUserBySysUserID");
   return axios
     .get(url, {
-      params: params
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -44,10 +48,14 @@ export function getEnterpriseUserBySysUserID(params) {
 
 // 获取子女信息
 export function getEnterpriseUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getEnterpriseUser");
   return axios
     .get(url, {
-      params: params
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -59,9 +67,14 @@ export function getEnterpriseUser(params) {
 
 // 修改子女信息
 export function updateEnterpriseEMPUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/updateEnterpriseEMPUser");
   return axios
-    .post(url, params)
+    .post(url, params, {
+      headers: {
+        token: token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })
@@ -72,9 +85,14 @@ export function updateEnterpriseEMPUser(params) {
 
 // 删除子女
 export function deleteEnterpriseEMPUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/deleteEnterpriseEMPUser");
   return axios
-    .post(url, params)
+    .post(url, params, {
+      headers: {
+        token: token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })
@@ -85,9 +103,14 @@ export function deleteEnterpriseEMPUser(params) {
 
 // 新增子女
 export function addEnterpriseUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/addEnterpriseUser");
   return axios
-    .post(url, params)
+    .post(url, params, {
+      headers: {
+        token: token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })
@@ -98,10 +121,14 @@ export function addEnterpriseUser(params) {
 
 // 获取学校班级
 export function getEnterpriseListV2(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getEnterpriseListV2");
   return axios
     .get(url, {
-      params: params
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -156,10 +183,14 @@ export function teacherLogin(params) {
 
 // 获取教职工学校班级
 export function getEnterpriseList(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/getEnterpriseListV2");
   return axios
     .get(url, {
-      params: params
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -171,9 +202,14 @@ export function getEnterpriseList(params) {
 
 // 新增教职工个人信息
 export function addDirectEnterpriseUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/addDirectEnterpriseUser");
   return axios
-    .post(url, params)
+    .post(url, params, {
+      headers: {
+        token: token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })
@@ -184,10 +220,14 @@ export function addDirectEnterpriseUser(params) {
 
 // 获取教职工基本信息
 export function getTeacherBySysUserID(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/getEnterpriseUserBySysUserID");
   return axios
     .get(url, {
-      params: params
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -199,9 +239,14 @@ export function getTeacherBySysUserID(params) {
 
 //修改教师基本信息
 export function updateTeacherInfo(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/updateEnterpriseEMPUser");
   return axios
-    .post(url, params)
+    .post(url, params, {
+      headers: {
+        token: token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })
@@ -212,10 +257,14 @@ export function updateTeacherInfo(params) {
 
 //获取教务处信息
 export function getSpecialEnterprise(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/getSpecialEnterprise");
   return axios
     .get(url, {
-      params: params
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -227,9 +276,14 @@ export function getSpecialEnterprise(params) {
 
 // 教师删除个人信息
 export function deleteTeacher(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/deleteEnterpriseEMPUser");
   return axios
-    .post(url, params)
+    .post(url, params, {
+      headers: {
+        token: token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })

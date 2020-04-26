@@ -142,6 +142,7 @@ export default {
           });
           window.localStorage.setItem("teacherNumber", vm.loginPhone);
           window.localStorage.setItem("teacherPassword", vm.loginPassword);
+          window.localStorage.setItem("token", resp.data.data.token);
           vm.$router.push({
             path: "teacherInfo",
             query: {
@@ -185,6 +186,7 @@ export default {
           });
           window.localStorage.setItem("parentNumber", vm.loginPhone);
           window.localStorage.setItem("parentPassword", vm.loginPassword);
+          window.localStorage.setItem("token", resp.data.data.token);
           vm.$router.push({
             path: "childrenInfo",
             query: {

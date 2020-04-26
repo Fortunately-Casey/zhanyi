@@ -8,8 +8,13 @@ import {
 
 // 学生打卡
 export function saveEnterprisePeriodPlace(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/saveEnterprisePeriodPlace")
-  return axios.post(url, params).then((resp) => {
+  return axios.post(url, params,{
+    headers:{
+      token:token
+    }
+  }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
       console.log(err)
@@ -18,9 +23,13 @@ export function saveEnterprisePeriodPlace(params) {
 
 // 获取企业信息
 export function getEnterprise(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getEnterprise")
   return axios.get(url, {
-    params:params
+    params:params,
+    headers:{
+      token:token
+    }
   }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
@@ -31,9 +40,13 @@ export function getEnterprise(params) {
 
 // 医院/诊所模糊查询
 export function getHospitalList(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getHospitalList")
   return axios.get(url, {
-    params:params
+    params:params,
+    headers:{
+      token:token
+    }
   }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
@@ -43,9 +56,13 @@ export function getHospitalList(params) {
 
 // 获取区/县
 export function getCountyArea(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getCountyArea")
   return axios.get(url, {
-    params:params
+    params:params,
+    headers:{
+      token:token
+    }
   }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
@@ -54,9 +71,13 @@ export function getCountyArea(params) {
 }
 // 获取镇
 export function getTownArea(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getTownArea")
   return axios.get(url, {
-    params:params
+    params:params,
+    headers:{
+      token:token
+    }
   }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
@@ -66,9 +87,13 @@ export function getTownArea(params) {
 
 // 获取子女基本信息跟子女最新打卡信息
 export function getEnterpriseUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getEnterpriseUser")
   return axios.get(url, {
-    params:params
+    params:params,
+    headers:{
+      token:token
+    }
   }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
@@ -79,8 +104,13 @@ export function getEnterpriseUser(params) {
 
 // 教师打卡
 export function directEnterprisePeriodPlace(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterpriseManage/directEnterprisePeriodPlace")
-  return axios.post(url, params).then((resp) => {
+  return axios.post(url, params,{
+    headers:{
+      token:token
+    }
+  }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
       console.log(err)
