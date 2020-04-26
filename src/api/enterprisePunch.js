@@ -8,8 +8,13 @@ import {
 
 // 企业打卡
 export function saveEnterprisePeriodPlace(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/saveEnterprisePeriodPlace")
-  return axios.post(url, params).then((resp) => {
+  return axios.post(url, params,{
+    headers:{
+      token:token
+    }
+  }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {
       console.log(err)
@@ -18,9 +23,13 @@ export function saveEnterprisePeriodPlace(params) {
 
 // 获取企业信息
 export function getEnterprise(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getEnterprise")
   return axios.get(url, {
-    params:params
+    params:params,
+    headers:{
+      token:token
+    }
   }).then((resp) => {
       return Promise.resolve(resp)
   }).catch((err) => {

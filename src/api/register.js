@@ -7,9 +7,14 @@ import {
 
 // 注册
 export function saveEnterprise(params) {
+    let token = window.localStorage.getItem("token");
     const url = getURL("/enterprise/saveEnterprise");
     return axios
-        .post(url, params)
+        .post(url, params,{
+            headers:{
+                token:token
+            }
+        })
         .then(resp => {
             return Promise.resolve(resp);
         })
@@ -22,7 +27,7 @@ export function loginEnterprise(params) {
     const url = getURL("/enterprise/loginEnterprise");
     return axios
         .get(url, {
-            params: params
+            params: params,
         })
         .then(resp => {
             return Promise.resolve(resp);
@@ -34,10 +39,14 @@ export function loginEnterprise(params) {
 
 // 打卡查询
 export function getEnterprisePeriodPlaceList(params) {
+    let token = window.localStorage.getItem("token");
     const url = getURL("/enterprise/getEnterprisePeriodPlaceList");
     return axios
         .get(url, {
-            params:params
+            params:params,
+            headers:{
+                token:token
+            }
         })
         .then(resp => {
             return Promise.resolve(resp);
@@ -50,10 +59,14 @@ export function getEnterprisePeriodPlaceList(params) {
 
 //审核
 export function approvalPeriodPlace(params) {
+    let token = window.localStorage.getItem("token");
     const url = getURL("/enterprise/approvalPeriodPlace");
     return axios
         .get(url, {
-            params:params
+            params:params,
+            headers:{
+                token:token
+            }
         })
         .then(resp => {
             return Promise.resolve(resp);
@@ -65,10 +78,14 @@ export function approvalPeriodPlace(params) {
 
 // 单位查询
 export function selectEnterpriseNameLib(params) {
+    let token = window.localStorage.getItem("token");
     const url = getURL("/enterprise/selectEnterpriseNameLib");
     return axios
         .get(url, {
-            params:params
+            params:params,
+            headers:{
+                token:token
+            }
         })
         .then(resp => {
             return Promise.resolve(resp);
@@ -81,10 +98,14 @@ export function selectEnterpriseNameLib(params) {
 
 // 删除打卡记录
 export function deleteEnterprisePeriodPlace(params) {
+    let token = window.localStorage.getItem("token");
     const url = getURL("/enterprise/deleteEnterprisePeriodPlace");
     return axios
         .get(url, {
-            params:params
+            params:params,
+            headers:{
+                token:token
+            }
         })
         .then(resp => {
             return Promise.resolve(resp);
@@ -96,10 +117,14 @@ export function deleteEnterprisePeriodPlace(params) {
 
 //打卡记录下载
 export function exportEnterprisePeriodPlaceList(params) {
+    let token = window.localStorage.getItem("token");
     const url = getURL("/enterprise/exportEnterprisePeriodPlaceList");
     return axios
         .get(url, {
-            params:params
+            params:params,
+            headers:{
+                token:token
+            }
         })
         .then(resp => {
             return Promise.resolve(resp);

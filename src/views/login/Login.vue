@@ -138,6 +138,7 @@ export default {
             });
             window.localStorage.setItem("phoneNumber", vm.phoneNumber);
             window.localStorage.setItem("password", vm.password);
+            window.localStorage.setItem("token", resp.data.data.token);
             if (vm.$route.query.type === "punch") {
               vm.$router.push({
                 path: "/manage",

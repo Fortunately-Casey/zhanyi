@@ -4,9 +4,14 @@ import { getURL } from "@/common/tool/tool";
 
 // 员工注册
 export function registerUser(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/registerUser");
   return axios
-    .post(url, params)
+    .post(url, params,{
+      headers:{
+        token:token
+      }
+    })
     .then(resp => {
       return Promise.resolve(resp);
     })

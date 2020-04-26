@@ -187,6 +187,7 @@ export default {
             });
             window.localStorage.setItem("userID", vm.phoneNumber2);
             window.localStorage.setItem("userPassword", vm.loginPassword);
+            window.localStorage.setItem("token", resp.data.data.token);
             vm.$router.push({
               path: "/enterprisePunch",
               query: {

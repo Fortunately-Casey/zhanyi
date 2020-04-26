@@ -1,0 +1,93 @@
+Date : 2020-04-18 09:06:45
+Directory : /Users/apple/Desktop/zhanyi/src
+Total : 41 files,  12118 codes, 336 comments, 233 blanks, all 12687 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Vue        |         24 |     10,560 |        211 |        124 |     10,895 |
+| JavaScript |         17 |      1,558 |        125 |        109 |      1,792 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                         | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                            |         41 |     12,118 |        336 |        233 |     12,687 |
+| api                                                                          |          9 |        744 |         71 |         62 |        877 |
+| assets                                                                       |          1 |        116 |         16 |         10 |        142 |
+| assets/js                                                                    |          1 |        116 |         16 |         10 |        142 |
+| common                                                                       |          2 |        534 |         37 |         24 |        595 |
+| common/tool                                                                  |          1 |        183 |         37 |         23 |        243 |
+| components                                                                   |          4 |        695 |         32 |         17 |        744 |
+| router                                                                       |          1 |         99 |          1 |          4 |        104 |
+| store                                                                        |          3 |         47 |          0 |          7 |         54 |
+| store/modules                                                                |          2 |         36 |          0 |          5 |         41 |
+| views                                                                        |         19 |      9,750 |        172 |        100 |     10,022 |
+| views/children-edit                                                          |          1 |        814 |         11 |         12 |        837 |
+| views/children-info                                                          |          1 |        239 |          4 |          1 |        244 |
+| views/enterprisePunch                                                        |          1 |      2,315 |         54 |         45 |      2,414 |
+| views/errorPage                                                              |          1 |         34 |          0 |          1 |         35 |
+| views/manage                                                                 |          1 |        847 |          4 |          3 |        854 |
+| views/miss-manage                                                            |          1 |        829 |         11 |          2 |        842 |
+| views/miss-punch                                                             |          1 |        614 |         12 |          3 |        629 |
+| views/missclass-login                                                        |          1 |        199 |         10 |          1 |        210 |
+| views/school-login                                                           |          1 |        230 |          0 |          1 |        231 |
+| views/school-main                                                            |          1 |        144 |          2 |          1 |        147 |
+| views/school-manage                                                          |          1 |        732 |         13 |          3 |        748 |
+| views/school-miss-manage                                                     |          1 |        524 |          5 |          1 |        530 |
+| views/school-register                                                        |          1 |        354 |          7 |          1 |        362 |
+| views/teacher-edit                                                           |          1 |        814 |         11 |         12 |        837 |
+| views/teacher-info                                                           |          1 |        222 |          4 |          1 |        227 |
+| views/teacher-punchList                                                      |          1 |        780 |         13 |          3 |        796 |
+| views/temp                                                                   |          3 |         59 |         11 |          9 |         79 |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                     | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| /Users/apple/Desktop/zhanyi/src/App.vue                                      | Vue        |        115 |          7 |          7 |        129 |
+| /Users/apple/Desktop/zhanyi/src/api/aliApi.js                                | JavaScript |         28 |          5 |          1 |         34 |
+| /Users/apple/Desktop/zhanyi/src/api/enterprisePunch.js                       | JavaScript |         70 |          9 |          9 |         88 |
+| /Users/apple/Desktop/zhanyi/src/api/homeMap.js                               | JavaScript |         63 |          6 |          4 |         73 |
+| /Users/apple/Desktop/zhanyi/src/api/manage.js                                | JavaScript |         96 |          9 |         10 |        115 |
+| /Users/apple/Desktop/zhanyi/src/api/missClass.js                             | JavaScript |        126 |          9 |          9 |        144 |
+| /Users/apple/Desktop/zhanyi/src/api/punch.js                                 | JavaScript |         39 |          4 |          2 |         45 |
+| /Users/apple/Desktop/zhanyi/src/api/punchLogin.js                            | JavaScript |         24 |          3 |          2 |         29 |
+| /Users/apple/Desktop/zhanyi/src/api/register.js                              | JavaScript |         93 |          9 |          8 |        110 |
+| /Users/apple/Desktop/zhanyi/src/api/schoolRegister.js                        | JavaScript |        205 |         17 |         17 |        239 |
+| /Users/apple/Desktop/zhanyi/src/assets/js/BMapLib_EventWrapper.js            | JavaScript |        116 |         16 |         10 |        142 |
+| /Users/apple/Desktop/zhanyi/src/common/data.js                               | JavaScript |        351 |          0 |          1 |        352 |
+| /Users/apple/Desktop/zhanyi/src/common/tool/tool.js                          | JavaScript |        183 |         37 |         23 |        243 |
+| /Users/apple/Desktop/zhanyi/src/components/DropDown.vue                      | Vue        |        139 |          3 |          6 |        148 |
+| /Users/apple/Desktop/zhanyi/src/components/LeftSlider.vue                    | Vue        |        149 |         14 |          5 |        168 |
+| /Users/apple/Desktop/zhanyi/src/components/NantongArea.vue                   | Vue        |        298 |          2 |          1 |        301 |
+| /Users/apple/Desktop/zhanyi/src/components/Scroll.vue                        | Vue        |        109 |         13 |          5 |        127 |
+| /Users/apple/Desktop/zhanyi/src/main.js                                      | JavaScript |         18 |          0 |          2 |         20 |
+| /Users/apple/Desktop/zhanyi/src/router/index.js                              | JavaScript |         99 |          1 |          4 |        104 |
+| /Users/apple/Desktop/zhanyi/src/store/index.js                               | JavaScript |         11 |          0 |          2 |         13 |
+| /Users/apple/Desktop/zhanyi/src/store/modules/missClass.js                   | JavaScript |         34 |          0 |          4 |         38 |
+| /Users/apple/Desktop/zhanyi/src/store/modules/mutation-type.js               | JavaScript |          2 |          0 |          1 |          3 |
+| /Users/apple/Desktop/zhanyi/src/views/children-edit/ChildrenEdit.vue         | Vue        |        814 |         11 |         12 |        837 |
+| /Users/apple/Desktop/zhanyi/src/views/children-info/ChildrenInfo.vue         | Vue        |        239 |          4 |          1 |        244 |
+| /Users/apple/Desktop/zhanyi/src/views/enterprisePunch/EnterprisePunch.vue    | Vue        |      2,315 |         54 |         45 |      2,414 |
+| /Users/apple/Desktop/zhanyi/src/views/errorPage/Error.vue                    | Vue        |         34 |          0 |          1 |         35 |
+| /Users/apple/Desktop/zhanyi/src/views/manage/Manage.vue                      | Vue        |        847 |          4 |          3 |        854 |
+| /Users/apple/Desktop/zhanyi/src/views/miss-manage/MissManage.vue             | Vue        |        829 |         11 |          2 |        842 |
+| /Users/apple/Desktop/zhanyi/src/views/miss-punch/MissPunch.vue               | Vue        |        614 |         12 |          3 |        629 |
+| /Users/apple/Desktop/zhanyi/src/views/missclass-login/MissLogin.vue          | Vue        |        199 |         10 |          1 |        210 |
+| /Users/apple/Desktop/zhanyi/src/views/school-login/SchoolLogin.vue           | Vue        |        230 |          0 |          1 |        231 |
+| /Users/apple/Desktop/zhanyi/src/views/school-main/SchoolMain.vue             | Vue        |        144 |          2 |          1 |        147 |
+| /Users/apple/Desktop/zhanyi/src/views/school-manage/SchoolManage.vue         | Vue        |        732 |         13 |          3 |        748 |
+| /Users/apple/Desktop/zhanyi/src/views/school-miss-manage/SchoolMiss.vue      | Vue        |        524 |          5 |          1 |        530 |
+| /Users/apple/Desktop/zhanyi/src/views/school-register/SchoolRegister.vue     | Vue        |        354 |          7 |          1 |        362 |
+| /Users/apple/Desktop/zhanyi/src/views/teacher-edit/TeacherEdit.vue           | Vue        |        814 |         11 |         12 |        837 |
+| /Users/apple/Desktop/zhanyi/src/views/teacher-info/TeacherInfo.vue           | Vue        |        222 |          4 |          1 |        227 |
+| /Users/apple/Desktop/zhanyi/src/views/teacher-punchList/TeacherPunchList.vue | Vue        |        780 |         13 |          3 |        796 |
+| /Users/apple/Desktop/zhanyi/src/views/temp/Query.vue                         | Vue        |         21 |          2 |          3 |         26 |
+| /Users/apple/Desktop/zhanyi/src/views/temp/Register.vue                      | Vue        |         18 |          8 |          3 |         29 |
+| /Users/apple/Desktop/zhanyi/src/views/temp/Temp.vue                          | Vue        |         20 |          1 |          3 |         24 |
+| Total                                                                        |            |     12,118 |        336 |        233 |     12,687 |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

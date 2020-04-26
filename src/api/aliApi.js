@@ -1,13 +1,18 @@
 /* eslint-disable no-console */
 import axios from "axios";
-import { getURL } from "@/common/tool/tool";
+import {
+  getURL
+} from "@/common/tool/tool";
 // 获取所有省会
 export function getProvinceList(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getProvinceArea");
   return axios
     .get(url, {
-      params: params
-      // headers: { Authorization: "APPCODE 06fa92c24ef74f3084ccca081dfbd5e5" }
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
@@ -18,11 +23,14 @@ export function getProvinceList(params) {
 }
 // 获取下级城市
 export function getCityList(params) {
+  let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/getSubArea");
   return axios
     .get(url, {
-      params: params
-      // headers: { Authorization: "APPCODE 06fa92c24ef74f3084ccca081dfbd5e5" }
+      params: params,
+      headers: {
+        token: token
+      }
     })
     .then(resp => {
       return Promise.resolve(resp);
