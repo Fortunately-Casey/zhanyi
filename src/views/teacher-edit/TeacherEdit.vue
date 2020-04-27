@@ -787,6 +787,7 @@ export default {
             height: 35px;
             line-height: 35px;
             font-size: 14px;
+            padding-left: 15px;
           }
         }
       }
@@ -827,6 +828,7 @@ export default {
             height: 35px;
             line-height: 35px;
             font-size: 14px;
+            padding-left: 15px;
           }
         }
       }
