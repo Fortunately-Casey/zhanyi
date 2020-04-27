@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       childList: [],
-      show: true
+      show: false
     };
   },
   created() {
