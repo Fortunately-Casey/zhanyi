@@ -272,7 +272,9 @@ export default {
       }
     },
     importValue() {
-      this.importUrl = `http://119.3.194.191:8089/#/importStaff?name=${this.list[0].enterpriseName}&id=${this.$route.query.enterpriseID}`;
+      let phoneNumber = window.localStorage.getItem("phoneNumber");
+      let password = window.localStorage.getItem("password");
+      this.importUrl = `http://58.221.154.38:8089/#/importStaff?name=${this.list[0].enterpriseName}&id=${this.$route.query.enterpriseID}&loginname=${phoneNumber}&password=${password}`;
       this.isShowImport = true;
     },
     deletePunch(item) {

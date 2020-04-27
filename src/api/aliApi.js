@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 import axios from "axios";
-import {
-  getURL
-} from "@/common/tool/tool";
+import { getURL } from "@/common/tool/tool";
 // 获取所有省会
 export function getProvinceList(params) {
   let token = window.localStorage.getItem("token");

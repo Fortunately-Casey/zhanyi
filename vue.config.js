@@ -18,7 +18,7 @@ module.exports = {
     open: true,
     /* 设置为0.0.0.0则所有的地址均能访问 */
     // eslint-disable-next-line prettier/prettier
-    host: '127.0.0.1',
+    // host: '127.0.0.1',
     port: 8066,
     // https: true,
     hotOnly: true,
@@ -26,7 +26,8 @@ module.exports = {
     proxy: {
       "/api": {
         /* 目标代理服务器地址 */
-        target: "https://yqfk.ntschy.com:10000",
+        // target: "https://yqfk.ntschy.com:10000",
+        target: "http://192.168.3.14:9090",
         /* 允许跨域 */
         changeOrigin: true
       }
