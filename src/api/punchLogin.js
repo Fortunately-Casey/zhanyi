@@ -7,9 +7,9 @@ export function registerUser(params) {
   let token = window.localStorage.getItem("token");
   const url = getURL("/enterprise/registerUser");
   return axios
-    .post(url, params,{
-      headers:{
-        token:token
+    .post(url, params, {
+      headers: {
+        token: token
       }
     })
     .then(resp => {

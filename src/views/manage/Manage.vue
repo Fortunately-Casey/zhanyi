@@ -18,37 +18,27 @@
           class="item"
           :class="chosedIndex === 3 ? 'active' : ''"
           @click="choseTab(3)"
-        >
-          全部{{ chosedIndex === 3 ? `(${count})` : "" }}
-        </div>
+        >全部{{ chosedIndex === 3 ? `(${count})` : "" }}</div>
         <div
           class="item"
           :class="chosedIndex === 5 ? 'active' : ''"
           @click="choseTab(5)"
-        >
-          已审核{{ chosedIndex === 5 ? `(${count})` : "" }}
-        </div>
+        >已审核{{ chosedIndex === 5 ? `(${count})` : "" }}</div>
         <div
           class="item"
           :class="chosedIndex === 4 ? 'active' : ''"
           @click="choseTab(4)"
-        >
-          未审核{{ chosedIndex === 4 ? `(${count})` : "" }}
-        </div>
+        >未审核{{ chosedIndex === 4 ? `(${count})` : "" }}</div>
         <div
           class="item"
           :class="chosedIndex === 0 ? 'active' : ''"
           @click="choseTab(0)"
-        >
-          未申报{{ chosedIndex === 0 ? `(${count})` : "" }}
-        </div>
+        >未申报{{ chosedIndex === 0 ? `(${count})` : "" }}</div>
         <div
           class="item"
           :class="chosedIndex === 6 ? 'active' : ''"
           @click="choseTab(6)"
-        >
-          异常{{ chosedIndex === 6 ? `(${count})` : "" }}
-        </div>
+        >异常{{ chosedIndex === 6 ? `(${count})` : "" }}</div>
       </div>
       <div class="list">
         <div class="list-header">
@@ -73,9 +63,7 @@
           <div class="phone">{{ item.mobile }}</div>
           <div class="option">
             <span v-if="item.id === 0">未打卡</span>
-            <div class="delete-button" @click.stop="deletePunch(item)" v-else>
-              删除
-            </div>
+            <div class="delete-button" @click.stop="deletePunch(item)" v-else>删除</div>
           </div>
         </div>
       </div>
@@ -90,10 +78,8 @@
           class="punch-button"
           @click="approvalPeriodPlace"
           v-show="chosedIndex === 5 ? false : true"
-        >
-          审核
-        </div>
-        <div class="import-button" @click="importValue">导入数据</div>
+        >审核</div>
+        <div class="import-button" @click="importValue" v-if="chosedIndex == 3">导入数据</div>
       </div>
     </div>
     <mt-datetime-picker
@@ -113,12 +99,7 @@
       <div class="punch-success">
         <div class="icon-close" @click="isShowQrcode = false"></div>
         <div class="red-message">长按分享二维码</div>
-        <vue-qr
-          :text="text"
-          :logoScale="50"
-          :size="250"
-          :logoSrc="imageUrl"
-        ></vue-qr>
+        <vue-qr :text="text" :logoScale="50" :size="250" :logoSrc="imageUrl"></vue-qr>
       </div>
     </div>
     <div class="modal" v-show="isShowDetail">
@@ -149,9 +130,9 @@
             <div class="name">返通居住地:</div>
             <div class="value">
               {{
-                chosedDetail.ntCity +
-                  chosedDetail.ntCounty +
-                  chosedDetail.ntAddress
+              chosedDetail.ntCity +
+              chosedDetail.ntCounty +
+              chosedDetail.ntAddress
               }}
             </div>
           </li>
@@ -161,17 +142,9 @@
     <div class="modal" v-show="isShowDownload">
       <div class="punch-detail">
         <div class="icon-close" @click="isShowDownload = false"></div>
-        <div class="download-message">
-          下载今日健康报告信息请复制以下链接到浏览器中打开
-        </div>
+        <div class="download-message">下载今日健康报告信息请复制以下链接到浏览器中打开</div>
         <div class="url-message">{{ downloadUrl }}</div>
-        <button
-          class="btn"
-          :data-clipboard-text="downloadUrl"
-          @click="copyAlert"
-        >
-          复制链接
-        </button>
+        <button class="btn" :data-clipboard-text="downloadUrl" @click="copyAlert">复制链接</button>
       </div>
     </div>
     <div class="modal" v-show="isShowImport">
@@ -179,13 +152,7 @@
         <div class="icon-close" @click="isShowImport = false"></div>
         <div class="download-message">导入数据请复制以下链接到浏览器中打开</div>
         <div class="url-message">{{ importUrl }}</div>
-        <button
-          class="btn"
-          :data-clipboard-text="importUrl"
-          @click="copyImport"
-        >
-          复制链接
-        </button>
+        <button class="btn" :data-clipboard-text="importUrl" @click="copyImport">复制链接</button>
       </div>
     </div>
   </div>
@@ -272,6 +239,9 @@ export default {
       }
     },
     importValue() {
+      if (this.list.length === 0) {
+        return;
+      }
       let phoneNumber = window.localStorage.getItem("phoneNumber");
       let password = window.localStorage.getItem("password");
       this.importUrl = `http://58.221.154.38:8089/#/importStaff?name=${this.list[0].enterpriseName}&id=${this.$route.query.enterpriseID}&loginname=${phoneNumber}&password=${password}`;
