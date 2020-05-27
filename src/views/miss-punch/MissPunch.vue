@@ -2,7 +2,8 @@
   <div class="miss-punch">
     <div class="header">
       <div class="back" @click="goBack">
-        <div class="back-icon"></div>上一页
+        <div class="back-icon"></div>
+        上一页
       </div>
       新增{{ type === 1 ? "学生" : "教职工" }}缺课
     </div>
@@ -12,7 +13,12 @@
         <div class="item">
           <div class="name space">名字</div>
           <div class="value">
-            <input type="text" v-model="userName" @blur="blur" @input="usernameSearch" />
+            <input
+              type="text"
+              v-model="userName"
+              @blur="blur"
+              @input="usernameSearch"
+            />
           </div>
           <div class="name-list" v-if="isShowNameList">
             <div
@@ -20,7 +26,9 @@
               v-for="(item, index) in nameList"
               :key="index"
               @click="choseName(item)"
-            >{{ item.name }}</div>
+            >
+              {{ item.name }}
+            </div>
           </div>
         </div>
         <div class="item">
@@ -113,7 +121,9 @@
       <div style="height:40px">
         <div class="reclass-date" v-show="chosedReClass === 0">
           <div class="name">复课日期</div>
-          <div class="date" @click="openDate">{{ returnDate(reclassDate) }}</div>
+          <div class="date" @click="openDate">
+            {{ returnDate(reclassDate) }}
+          </div>
         </div>
       </div>
       <div class="commit-button" @click="commitAdd">提交</div>
